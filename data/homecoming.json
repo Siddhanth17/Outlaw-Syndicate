@@ -1,0 +1,15 @@
+{
+  "id": "ACT1_01", "title": "The Last Address", "district": "Iron Harbor",
+  "purpose": "Adrian finds Mara's abandoned courier ledger and chooses to preserve her evidence.",
+  "characters": ["Adrian Vale", "Dante Cross", "Elena Voss"],
+  "stages": [
+    {"objective": "Meet Dante at the garage. Press E nearby.", "position": [0, 0, 0], "kind": "interact", "speaker": "Dante", "line": "Mara left her car here. The ledger is in warehouse nine. Someone else is looking for it."},
+    {"objective": "Enter the red car with E. Drive to warehouse nine.", "position": [0, 0, -85], "kind": "drive", "speaker": "Adrian", "line": "Same docks. Different owners. I'll bring back what she found."},
+    {"objective": "Leave the car. Recover Mara's ledger at the amber marker with E.", "position": [12, 0, -95], "kind": "interact", "speaker": "Mara's note", "line": "The payments lead to Blackwater. Elena knows the names. Trust the evidence, Adrian."},
+    {"objective": "Lose the search: leave the warehouse and stay out of sight.", "position": [0, 0, 0], "kind": "escape", "speaker": "Elena", "line": "You have her ledger? Then keep moving. The harbor cameras are already looking for you."},
+    {"objective": "Return the ledger to Dante's garage. Press E nearby.", "position": [0, 0, 0], "kind": "interact", "speaker": "Dante", "line": "I'll hide the car. You find Elena. Whatever Mara found, we finish it together."}
+  ],
+  "reward": 500, "failure": "Player health depleted; restore last checkpoint.",
+  "assets": "Original geometric blockout; text dialogue. Final cinematics, performances and art pending.",
+  "playtest": "NOT RUN"
+}
