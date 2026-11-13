@@ -1,5 +1,7 @@
 # Production state — 14 November 2026
 
+Visual correction audit completed: see visual-production-audit.md. All current art remains graybox; no production art milestone completed. Recommendation is retain Godot with a proper Blender/glTF asset pipeline, pending user engine decision. Original build preserved under builds/preserved-11aedc2 with matching hashes. No engine migration or renderer change performed.
+
 Milestone 0: project, engine and Jolt configured; Git/LFS configured. Milestone 1: partial implementation. Milestone 2: NOT COMPLETE. Milestones 3–11: NOT COMPLETE.
 
 Implemented: runtime-generated harbor blockout, capsule character with camera-relative movement/jump/sprint/slow stance, SpringArm camera, four-wheel VehicleBody3D car, hitscan training targets, moving geometric civilians, basic controller bindings, pause/save/load/new-game controls, subtitle dialogue, data-defined five-stage opening mission, event deduplication and one persistent mission consequence. Atomic save replacement has one backup.
