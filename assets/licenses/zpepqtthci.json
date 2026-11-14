@@ -1,0 +1,69 @@
+{
+    "asset": {
+        "id": "zpepqtthci",
+        "category": "3d",
+        "title": "Rigged male camper in plaid flannel shirt (Meshy)",
+        "description": "Realistic adult male camper: red/black buffalo plaid flannel over grey tee, brown canvas work pants, leather hiking boots, short beard. Meshy 7.1 image-to-3d (~30k tris) + Meshy auto-rig, Mixamo-style bones (Hips, Spine, Spine01, Spine02, neck, Head, Left/Right Shoulder/Arm/ForeArm/Hand, UpLeg/Leg/Foot/ToeBase",
+        "tags": [
+            "character",
+            "rigged",
+            "human",
+            "man",
+            "camper",
+            "hiker",
+            "flannel",
+            "plaid",
+            "lumberjack",
+            "realistic",
+            "meshy",
+            "mixamo",
+            "first-person",
+            "humanoid",
+            "outdoors"
+        ],
+        "filename": "camper_rigged.glb",
+        "format": "glb",
+        "size_bytes": 2991172,
+        "downloads": 1534,
+        "license": "CC0-1.0",
+        "created_at": "2026-10-24T15:50:20+00:00",
+        "preview_status": "done",
+        "preview_url": "https://vibeassets.io/shots/zpepqtthci.png",
+        "download_url": "https://vibeassets.io/download/zpepqtthci",
+        "page_url": "https://vibeassets.io/a/zpepqtthci",
+        "animated": true,
+        "clip_only": false,
+        "clips": [
+            {
+                "name": "Armature|clip0|baselayer",
+                "label": "T-pose",
+                "duration": 0.033,
+                "static": true
+            }
+        ],
+        "clip_count": 2,
+        "rig_signature": "cb3e6af4a6d3309060e1152313e4d0d11280372b",
+        "rig_joints": 24,
+        "animates_asset_id": null,
+        "animates_page_url": null,
+        "linked_clips": [
+            {
+                "id": "cy69g7t2a0",
+                "title": "Camper walk cycle (armature clip)",
+                "clip_name": "Walk",
+                "duration": 1.067,
+                "page_url": "https://vibeassets.io/a/cy69g7t2a0",
+                "download_url": "https://vibeassets.io/download/cy69g7t2a0"
+            },
+            {
+                "id": "vb5npv0n6u",
+                "title": "Camper run cycle (armature clip)",
+                "clip_name": "Run",
+                "duration": 0.667,
+                "page_url": "https://vibeassets.io/a/vb5npv0n6u",
+                "download_url": "https://vibeassets.io/download/vb5npv0n6u"
+            }
+        ],
+        "combined_download_url": "https://vibeassets.io/download/zpepqtthci?combined=1"
+    }
+}

@@ -1,0 +1,174 @@
+{
+  "date": "2026-11-14",
+  "human": {
+    "source": "https://vibeassets.io/a/zpepqtthci",
+    "license": "CC0-1.0",
+    "origin": "Meshy-generated clothed human and auto-rig; publisher-generated Meshy walk/run clips. See source metadata JSON snapshots.",
+    "changes": "Blender normalization/export, gait-average neutral pose, additional project-keyframed action clips; same human temporarily reused for Dante/security."
+  },
+  "textures": {
+    "author": "Rob Tuytel / Poly Haven",
+    "license": "CC0-1.0",
+    "sources": [
+      "https://polyhaven.com/a/asphalt_02",
+      "https://polyhaven.com/a/concrete_layers_02"
+    ]
+  },
+  "original": {
+    "models": "Sable sedan/wheel/sidearm and modular harbor kit, authored by art/build_assets.py",
+    "audio": "Synthesized by art/build_audio.py; no external samples",
+    "license": "Project-owned; no general third-party reuse license assigned"
+  },
+  "files": [
+    {
+      "path": "assets/audio/engine.wav",
+      "bytes": 88244,
+      "sha256": "fafd98f1027d8dfff45172d100886468ceda01c23acb8760a61df15136e569a0"
+    },
+    {
+      "path": "assets/audio/harbor.wav",
+      "bytes": 264644,
+      "sha256": "b1070d7383cf76c3a39cc76831fdf92e77069036f914fc4e09ba5458f952ba72"
+    },
+    {
+      "path": "assets/audio/reload.wav",
+      "bytes": 26504,
+      "sha256": "573e26f4392a75a71cf1751d50c6f171c51616375198ed11ebf3041b68e684a6"
+    },
+    {
+      "path": "assets/audio/shot.wav",
+      "bytes": 9746,
+      "sha256": "c39086d8f0290196ee867f485cfa878ed77b8ca17e7e5cf4c93b433cfec6c231"
+    },
+    {
+      "path": "assets/audio/step.wav",
+      "bytes": 7100,
+      "sha256": "4818c410c70d5e6a47c0f622225ec9242993ffdaff9ca2f387a11ca8e10e6e7e"
+    },
+    {
+      "path": "assets/audio/tire.wav",
+      "bytes": 88244,
+      "sha256": "7b04feb6cd6f28ca687d731130b7c1a0e67cd8cd7528324f38ba435bb9dfba72"
+    },
+    {
+      "path": "assets/characters/adrian.glb",
+      "bytes": 2495028,
+      "sha256": "db473c6bf9551ef8d3533dcd0d9a1af5beeeebf56ee42890778513bc8a39dc24"
+    },
+    {
+      "path": "assets/characters/adrian_Image_0.jpg",
+      "bytes": 151894,
+      "sha256": "d3ac793327fd43d6d545fabdb55ee495a9a9c4b8e2538dbadcbac3ad19af5bf2"
+    },
+    {
+      "path": "assets/environment/cargo.glb",
+      "bytes": 181444,
+      "sha256": "0451f6ecfb30ef02b7af12b2c2df604c04a16e3414266cb84300935bc2d1c20d"
+    },
+    {
+      "path": "assets/environment/container.glb",
+      "bytes": 865060,
+      "sha256": "c7ec5c91b545e497f454d7d18f50dd4fc391fa4eaf628348aaacd149e01239c4"
+    },
+    {
+      "path": "assets/environment/crane.glb",
+      "bytes": 307592,
+      "sha256": "40330bbaa4e25d3421a961ab40146cba6ada42ffd189ae87934694e4bcb692ca"
+    },
+    {
+      "path": "assets/environment/fence.glb",
+      "bytes": 311720,
+      "sha256": "bf1612ad524fc3e134ced0ca021118b82cd247e2b7151063a4aac345e1ff3879"
+    },
+    {
+      "path": "assets/environment/streetlamp.glb",
+      "bytes": 33648,
+      "sha256": "aa41047a41b0f40c6417c64b1c8ed28437bbd7a6c85275e4cb4ac077ffb82195"
+    },
+    {
+      "path": "assets/environment/warehouse.glb",
+      "bytes": 3187368,
+      "sha256": "9ee0d6ab3a6ca936152147b91137f8747f8f7b334c4e29906f5c845377bcce85"
+    },
+    {
+      "path": "assets/environment/warehouse_concrete_diff.jpg",
+      "bytes": 598800,
+      "sha256": "cca314fbb793e3928111912f1d6d4d79edf4420402e56019d70fec0bdc2efca5"
+    },
+    {
+      "path": "assets/environment/warehouse_concrete_normal.jpg",
+      "bytes": 734532,
+      "sha256": "ee35d817b5fa26f824479ef9d3a5ab308f4f33846c7d62d6583457dc900c6049"
+    },
+    {
+      "path": "assets/textures/asphalt_diff.jpg",
+      "bytes": 731707,
+      "sha256": "1aa5ce99f58a625c71d48cfc3e68b65ca85ccb00f39e045c0a928608a0ea25ed"
+    },
+    {
+      "path": "assets/textures/asphalt_normal.jpg",
+      "bytes": 1240122,
+      "sha256": "42a1c381b53204e83a982db2864479a30bc127bbdeebb1006f8ee51bff099df3"
+    },
+    {
+      "path": "assets/textures/asphalt_rough.jpg",
+      "bytes": 544032,
+      "sha256": "70ba3edc65525eb4dc366cf010ca7ae0bd34e0251ff0225c2dad627a873d0712"
+    },
+    {
+      "path": "assets/textures/concrete_diff.jpg",
+      "bytes": 598800,
+      "sha256": "cca314fbb793e3928111912f1d6d4d79edf4420402e56019d70fec0bdc2efca5"
+    },
+    {
+      "path": "assets/textures/concrete_normal.jpg",
+      "bytes": 734532,
+      "sha256": "ee35d817b5fa26f824479ef9d3a5ab308f4f33846c7d62d6583457dc900c6049"
+    },
+    {
+      "path": "assets/vehicles/sable_body.glb",
+      "bytes": 420140,
+      "sha256": "6921488eab41eb09fd682febc2ce488a5c4395cdbbf12235928813a71712eeb1"
+    },
+    {
+      "path": "assets/vehicles/sable_wheel.glb",
+      "bytes": 532420,
+      "sha256": "bd1bb25e8607f693357b995243c3f5b5c1ace366dccf01c9a89a1af7977bcd4d"
+    },
+    {
+      "path": "assets/vehicles/sidearm.glb",
+      "bytes": 22904,
+      "sha256": "896aa0f727c201cc362e4b2e657dbfa284a5d757f8e0eb242f2368a52914fb36"
+    },
+    {
+      "path": "art/source/adrian.blend",
+      "bytes": 9230501,
+      "sha256": "be810826e2e181102b8486ee8ce30648c42e76efa450c618841f599324aebeaf"
+    },
+    {
+      "path": "art/source/camper-cc0.glb",
+      "bytes": 3062188,
+      "sha256": "940444190abb1f3731675678277e9c3f27be1783966987f0a02ccd9fd1405193"
+    },
+    {
+      "path": "art/source/container.blend",
+      "bytes": 1430222,
+      "sha256": "f77e73b6d55973c5b36d1f033fec00f644e51cefb6ccc07194184a16d867e1ae"
+    },
+    {
+      "path": "art/source/crane.blend",
+      "bytes": 912280,
+      "sha256": "5edecd217be63fef33e72cec3d65ee5e5935782847f83d64025a937a6108d4ec"
+    },
+    {
+      "path": "art/source/sable_body.blend",
+      "bytes": 1000794,
+      "sha256": "ad07b1550cd9f72e6c4c60e413e9a34712d542d1a213c249f0f77ef54473ae6e"
+    },
+    {
+      "path": "art/source/warehouse.blend",
+      "bytes": 2271189,
+      "sha256": "8622d7e262232f3e4276d4ef0db5f5f43120218ee57aad281154590c0b743a6a"
+    }
+  ]
+}

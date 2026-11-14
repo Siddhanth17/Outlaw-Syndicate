@@ -1,0 +1,46 @@
+{
+    "asset": {
+        "id": "vb5npv0n6u",
+        "category": "3d",
+        "title": "Camper run cycle (armature clip)",
+        "description": "Looping run cycle, armature only, for the rigged camper man (Meshy rig, Mixamo-style bone names). Generated with Meshy for Campfire, a three.js multiplayer campfire game; textures shrunk to 1024 px JPEG. CC0.",
+        "tags": [
+            "animation",
+            "clip",
+            "armature",
+            "run",
+            "running",
+            "loop",
+            "humanoid",
+            "mixamo",
+            "meshy"
+        ],
+        "filename": "anim_run.glb",
+        "format": "glb",
+        "size_bytes": 79132,
+        "downloads": 34,
+        "license": "CC0-1.0",
+        "created_at": "2026-10-25T22:19:00+00:00",
+        "preview_status": "done",
+        "preview_url": "https://vibeassets.io/shots/vb5npv0n6u.png",
+        "download_url": "https://vibeassets.io/download/vb5npv0n6u",
+        "page_url": "https://vibeassets.io/a/vb5npv0n6u",
+        "animated": true,
+        "clip_only": false,
+        "clips": [
+            {
+                "name": "Armature|running|baselayer",
+                "label": "Run",
+                "duration": 0.667,
+                "static": false
+            }
+        ],
+        "clip_count": 1,
+        "rig_signature": "cb3e6af4a6d3309060e1152313e4d0d11280372b",
+        "rig_joints": 24,
+        "animates_asset_id": null,
+        "animates_page_url": null,
+        "linked_clips": [],
+        "combined_download_url": null
+    }
+}

@@ -4,6 +4,10 @@ tools/runtime-data/
 tools/remote-inspection/
 tools/templates.zip
 tools/templates/
+tools/downloads/
+tools/blender/
+tools/blender-config/
+art/source/*.blend1
 tests/artifacts/
 godot.zip
 builds/
