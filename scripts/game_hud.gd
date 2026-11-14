@@ -126,9 +126,9 @@ func show_screen(screen: String) -> void:
 	modal_column.add_child(label("THE CITY THAT SOLD ITS SOUL", 13, Color(0.8, 0.57, 0.32)))
 	var actions: Array[String] = []
 	match screen:
-		"main": actions = ["New game", "Continue", "Driving course", "Crash Test Facility", "Living City Laboratory", "Human Motion Laboratory", "Settings", "Controls", "Credits", "Exit"]
+		"main": actions = ["New game", "Continue", "Driving course", "Crash Test Facility", "Living City Laboratory", "Movement Audio Laboratory", "Human Motion Laboratory", "Settings", "Controls", "Credits", "Exit"]
 		"pause": actions = ["Resume", "Save checkpoint", "Load checkpoint", "Settings", "Controls", "Main menu", "Exit"]
-		"settings": actions = ["Graphics: Low", "Graphics: Balanced", "Graphics: High", "Sensitivity +", "Sensitivity -", "Dialogue volume +", "Dialogue volume -", "Subtitles toggle", "Reduced shake toggle", "Back"]
+		"settings": actions = ["Graphics: Low", "Graphics: Balanced", "Graphics: High", "Sensitivity +", "Sensitivity -", "Dialogue volume +", "Dialogue volume -", "Movement volume +", "Movement volume -", "Subtitles toggle", "Reduced shake toggle", "Back"]
 		"controls":
 			var controls := label("WASD / Left stick — walk or drive\nMouse / Right stick — look\nShift — sprint    Space / A — jump or brake\nE / Y — interact or enter / exit vehicle\nRight mouse — aim    Left mouse / RB — fire\nR / X — reload    Esc / Start — pause\nF5 — save    F9 — load\nEnter / A — skip cinematic\n\nExit a vehicle only when moving slowly.", 17)
 			modal_column.add_child(controls)

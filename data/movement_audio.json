@@ -1,0 +1,112 @@
+{
+  "asphalt": {
+    "samples": [
+      "res://assets/audio/movement/asphalt_00.wav",
+      "res://assets/audio/movement/asphalt_01.wav",
+      "res://assets/audio/movement/asphalt_02.wav",
+      "res://assets/audio/movement/asphalt_03.wav"
+    ],
+    "gain_db": -2,
+    "pitch": 0.94,
+    "source_family": "footstep_concrete"
+  },
+  "concrete": {
+    "samples": [
+      "res://assets/audio/movement/concrete_00.wav",
+      "res://assets/audio/movement/concrete_01.wav",
+      "res://assets/audio/movement/concrete_02.wav",
+      "res://assets/audio/movement/concrete_03.wav"
+    ],
+    "gain_db": -3,
+    "pitch": 1.0,
+    "source_family": "footstep_concrete"
+  },
+  "warehouse": {
+    "samples": [
+      "res://assets/audio/movement/warehouse_00.wav",
+      "res://assets/audio/movement/warehouse_01.wav",
+      "res://assets/audio/movement/warehouse_02.wav",
+      "res://assets/audio/movement/warehouse_03.wav"
+    ],
+    "gain_db": -4,
+    "pitch": 0.95,
+    "source_family": "footstep_concrete"
+  },
+  "metal": {
+    "samples": [
+      "res://assets/audio/movement/metal_00.wav",
+      "res://assets/audio/movement/metal_01.wav",
+      "res://assets/audio/movement/metal_02.wav",
+      "res://assets/audio/movement/metal_03.wav"
+    ],
+    "gain_db": -8,
+    "pitch": 0.94,
+    "source_family": "impactMetal_light"
+  },
+  "dirt": {
+    "samples": [
+      "res://assets/audio/movement/dirt_00.wav",
+      "res://assets/audio/movement/dirt_01.wav",
+      "res://assets/audio/movement/dirt_02.wav",
+      "res://assets/audio/movement/dirt_03.wav"
+    ],
+    "gain_db": -4,
+    "pitch": 0.9,
+    "source_family": "footstep_grass"
+  },
+  "grass": {
+    "samples": [
+      "res://assets/audio/movement/grass_00.wav",
+      "res://assets/audio/movement/grass_01.wav",
+      "res://assets/audio/movement/grass_02.wav",
+      "res://assets/audio/movement/grass_03.wav"
+    ],
+    "gain_db": -5,
+    "pitch": 1.0,
+    "source_family": "footstep_grass"
+  },
+  "wood": {
+    "samples": [
+      "res://assets/audio/movement/wood_00.wav",
+      "res://assets/audio/movement/wood_01.wav",
+      "res://assets/audio/movement/wood_02.wav",
+      "res://assets/audio/movement/wood_03.wav"
+    ],
+    "gain_db": -5,
+    "pitch": 0.96,
+    "source_family": "footstep_wood"
+  },
+  "interior": {
+    "samples": [
+      "res://assets/audio/movement/interior_00.wav",
+      "res://assets/audio/movement/interior_01.wav",
+      "res://assets/audio/movement/interior_02.wav",
+      "res://assets/audio/movement/interior_03.wav"
+    ],
+    "gain_db": -6,
+    "pitch": 1.08,
+    "source_family": "footstep_wood"
+  },
+  "stairs": {
+    "samples": [
+      "res://assets/audio/movement/stairs_00.wav",
+      "res://assets/audio/movement/stairs_01.wav",
+      "res://assets/audio/movement/stairs_02.wav",
+      "res://assets/audio/movement/stairs_03.wav"
+    ],
+    "gain_db": -4,
+    "pitch": 0.92,
+    "source_family": "footstep_concrete"
+  },
+  "cloth": {
+    "samples": [
+      "res://assets/audio/movement/cloth_00.wav",
+      "res://assets/audio/movement/cloth_01.wav",
+      "res://assets/audio/movement/cloth_02.wav",
+      "res://assets/audio/movement/cloth_03.wav"
+    ],
+    "gain_db": -18,
+    "pitch": 0.9,
+    "source_family": "impactSoft_medium"
+  }
+}

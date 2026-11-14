@@ -5,7 +5,7 @@ var grid := AStarGrid2D.new()
 var built: bool = false
 
 func rebuild() -> void:
-	grid.region=Rect2i(-11,-82,23,105)
+	grid.region=Rect2i(-60,-108,121,144)
 	grid.cell_size=Vector2(2,2)
 	grid.diagonal_mode=AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
 	grid.update()
@@ -14,8 +14,8 @@ func rebuild() -> void:
 	shape.size=Vector3(1.5,1.4,1.5)
 	query.shape=shape
 	query.collision_mask=CollisionLayers.STATIC
-	for x: int in range(-11,12):
-		for z: int in range(-82,23):
+	for x: int in range(-60,61):
+		for z: int in range(-108,36):
 			query.transform=Transform3D(Basis.IDENTITY,Vector3(x*2,1.0,z*2))
 			grid.set_point_solid(Vector2i(x,z),not get_parent().get_world_3d().direct_space_state.intersect_shape(query,1).is_empty())
 			grid.set_point_weight_scale(Vector2i(x,z),3.0 if abs(x*2)<8 else 1.0)

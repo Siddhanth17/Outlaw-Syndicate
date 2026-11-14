@@ -9,3 +9,8 @@ Automatic checkpoint after each stage; manual F5/F9 and pause save/load. Defeate
 Presentation: simple skippable opening/closing camera move with text subtitles and a shared human stand-in for cast. No voice, facial performance or production cinematic animation. Main mission can be completed in automated movement/driving/combat tests; no manual human duration measured. Playtest result: 14 automated physical-route checkpoints PASS, manual quality/playtime NOT RUN.
 
 Remaining work: artist-reviewed action/cinematic animation, distinct Dante/security identity, navigation/cover, authored investigation prop/interior, richer dialogue choice, polished sound/encounter balance, additional missions only after this route passes human QA.
+
+
+## Broken Trust expansion layout — design only, not playable mission content
+
+The reference/mobility increment adds usable roads and routed actors for the next mission. Proposed investigation: meet west_supervisor_01 near (-83,-50), inspect west freight near (-88,-38), cross the north warehouse alley centered (-35,-19.5), meet quay_delivery_01 near (82,-85), and use the south connector at z=-176 for a return/chase alternative. These coordinates are (x,z) meters. Optional Harrier traversal exists in free roam, but no mission requirement currently accepts it. Five prepared dialogue WAVs remain preparatory. No new mission-completion count, checkpoint chain or campaign duration is asserted.

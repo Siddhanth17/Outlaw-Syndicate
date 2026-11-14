@@ -1,0 +1,8 @@
+{
+  "source": "Actual reference-mobility Windows executable viewport and AudioEffectRecord output mix",
+  "input": "Automated physics and input scenarios, not a full human keyboard/gamepad playthrough",
+  "clips": "Silent sampled frames; approximate cadence, encoding affects timeline. Audio is separate, not synchronized to video.",
+  "reference": "User image inspected locally; not included in this evidence or game assets",
+  "quality": "Prototype art and procedural contact animation; reference parity and full campaign incomplete",
+  "measurements": "Separate uncapped short 1080p Balanced samples without capture encoding during timed sections"
+}

@@ -1,14 +1,14 @@
-Latest increment: nine NPC appearance variants, offline neural dialogue, contact-driven NPC reactions, vehicle component gunfire damage, and a partial signature Adrian outfit/hair pass. See [current production report](docs/living-city-signature-report.md) and [export validation](docs/living-city-validation.md). The visual target and campaign remain incomplete.
+Latest increment: reference-directed half-tied Adrian prototype, surface-aware movement audio, timed hinged car doors, a usable Harrier motorcycle prototype and an expanded service-road loop. See [current scope](docs/reference-mobility-report.md) and [export validation](docs/reference-mobility-validation.md). Art quality, full interaction polish and the campaign remain incomplete.
 
 # OUTLAW SYNDICATE
 
 Godot 4.6 / Jolt, Windows-first third-person crime game in active production.
 
-**Current build: living city and signature hero systems increment. One short opening mission, not the complete game or a ten-hour campaign.**
+**Current build: reference-directed mobility prototype. One short opening mission, not the complete game or a ten-hour campaign.**
 
 ## Play the new build
 
-On this development machine run `D:/OutlawSyndicate/builds/living-city-signature/OutlawSyndicate.exe` with its adjacent PCK file. The original graybox package remains under `builds/windows` and `builds/preserved-11aedc2`. Binaries are local artifacts, not committed downloads.
+On this development machine run `D:/OutlawSyndicate/builds/reference-mobility/OutlawSyndicate.exe` with its adjacent PCK file. The original graybox package remains under `builds/windows` and `builds/preserved-11aedc2`. Binaries are local artifacts, not committed downloads.
 
 Choose **New game** for the introduction, or **Continue** for your checkpoint. Enter / controller A skips the introduction. Pause â†’ Controls lists bindings. The separate **Driving course** menu entry opens a handling test scene.
 
@@ -31,3 +31,5 @@ Portable Blender **4.5.3 LTS** is local under ignored tools/blender. Rebuild bas
 See `docs/production-checklist.md`, `docs/testing-report.md`, `docs/asset-licenses.md`, and `docs/development-progress.md`. No additional districts or later campaign acts have been implemented.
 
 Living City Laboratory shows the nine role assets and real vehicle/person experiments. F6 cycles voice samples; F7 starts the Adrian/Dante conversation. Press P to pause as an alternative to Esc. Actual district NPCs use the same models and behaviors.
+
+The Harrier motorcycle is parked near (-5, 10) in the starting area: approach and press E/Y, then use normal drive/brake/look controls. Stop before dismounting. Car doors animate during normal gameplay. Movement Audio Laboratory provides nine labeled acoustic pads; number keys 1–9 select a pad. Pause > Settings offers separate movement volume. Side roads at x=-70 and x=72 connect through streets at z=58 and z=-176. Bike traversal currently supports free roam; the opening mission still requires the Sable.

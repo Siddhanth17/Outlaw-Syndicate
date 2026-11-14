@@ -1,3 +1,11 @@
+# Latest continuation — reference-directed mobility
+
+Continued ff5e16e without restarting. Preserved old hero/NPC/voice assets and the previous Windows package. New separate half-tied hero derivative, nine-profile movement audio, real hinged driver door/timed transitions, an original assisted two-wheel motorcycle and a multi-road district expansion are implemented. See reference-mobility-report.md and reference-mobility-validation.md for actual evidence and scope. All remain partial production quality; no photorealism claim.
+
+COMPLETE for the scoped systems increment: surface lookup/cadence/sample variation/volume; door timeline/pause/block/cancel; core bike mount/ride/brake/dismount; connected expanded road paths. PARTIAL: reference face/hair/physique/clothing fidelity, nine-surface world art coverage, contact-quality door/rider animation, bike balance/visuals/damage and district density. NOT STARTED runtime: Mission02, remaining campaign, terrain foot IK and full articulated ragdolls. Next: manually listen/play; refine groom/skin/hand/outfit assets, door grips/legs and rider pegs/bars; improve dynamic transition clearance/balance; implement Broken Trust objectives/checkpoints/dialogue partners in the new road loop. No work continues in the background after this session.
+
+Earlier entries below are historical and may contain superseded limitations.
+
 # Latest continuation — living city and signature hero
 
 Preserved the interrupted local assets and original Windows build. Implemented nine role variants, eight stock neural voice profiles and current dialogue, shared incidents/navigation, actual vehicle/person contacts, component gunfire damage/persistence, separate partial Adrian jacket/hair, moving-leg aiming, bounded recoil, directional knockdown and injury masks. See living-city-signature-report.md and living-city-validation.md for scope/evidence.

@@ -31,17 +31,19 @@ func run() -> void:
 	player.action_time=0
 	player.injuries.restore([])
 	var skeleton: Skeleton3D=player.visual.find_children("*","Skeleton3D",true,false)[0]
-	check(player.visual.scene_file_path.ends_with("adrian_signature.glb"),"signature hero asset integrated without overwriting base human")
+	check(player.visual.scene_file_path.ends_with("adrian_reference.glb"),"signature hero asset integrated without overwriting base human")
 	for name: String in ["LongHairBackL","LongHairBackR","LongHairSideL","LongHairSideR"]:
 		check(skeleton.find_bone(name)>=0 and skeleton.find_bone(name+"Tip")>=0,"weighted long-hair spring chain: "+name)
-	check(player.visual.find_children("*","MeshInstance3D",true,false).size()<=10,"signature garment and hair attachments have bounded draw meshes")
-	game.cine_camera.current=true
+	check(player.visual.find_children("*","MeshInstance3D",true,false).size()<=12,"signature garment and hair attachments have bounded draw meshes")
 	game.cine_camera.current=true
 	game.cine_camera.position=player.position+Vector3(0.65,1.65,-1.2)
 	game.cine_camera.look_at(player.position+Vector3.UP*1.5)
 	game.cine_camera.fov=40
 	await frames(30)
 	await capture("adrian-signature-close")
+	game.cine_camera.position=player.position+Vector3(-0.7,1.7,1.2)
+	game.cine_camera.look_at(player.position+Vector3.UP*1.6)
+	await capture("adrian-half-tied-rear")
 	Input.action_press("forward")
 	Input.action_press("aim")
 	await frames(30)
@@ -85,7 +87,6 @@ func run() -> void:
 	player.injuries.restore([])
 	game._load()
 	check(player.injuries.marks.size()==4,"checkpoint preserves player injury appearance")
-	game.cine_camera.current=true
 	game.cine_camera.current=true
 	game.cine_camera.position=player.position+Vector3(0.65,1.65,-1.2)
 	game.cine_camera.look_at(player.position+Vector3.UP*1.5)

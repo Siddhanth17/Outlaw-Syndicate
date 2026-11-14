@@ -18,3 +18,6 @@ __pycache__/
 tools/physics-test-data/
 tools/qa-data/
 tools/voice-tools/
+
+# User visual direction, not licensed for redistribution
+references/

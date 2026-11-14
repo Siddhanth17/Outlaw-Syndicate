@@ -1,3 +1,5 @@
+Reference/mobility increment adds timed hinged car-door root transitions and a separate Ride pose. Exact handle/wheel/peg contact, leg-over and leg-withdrawal clips remain incomplete.
+
 # Animation implementation
 
 Imported clothed human has a 32-joint skinned skeleton (24 original + eight secondary bones). Source CC0 Walk and Run clips come from publisher Meshy generation. Blender-authored Idle (gait-average neutral/breathing), Sprint (retimed run), Turn, Jump, Land, Aim, Shoot, Reload, Interact and basic Enter/Exit pose clips are exported with the model.

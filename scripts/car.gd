@@ -2,6 +2,7 @@ class_name VeyraCar
 extends VehicleBody3D
 
 signal crashed(point: Vector3, speed: float)
+var driver_door: Node3D
 var damage: VehicleDamage
 var pending_npc_contacts: Array[Dictionary]=[]
 var npc_contact_times: Dictionary={}
@@ -43,9 +44,11 @@ func _ready() -> void:
 	collision.shape = box
 	collision.position.y = -0.13
 	add_child(collision)
-	var body: Node3D = load("res://assets/vehicles/sable_body.glb").instantiate()
+	var body: Node3D = load("res://assets/vehicles/sable_interactive.glb").instantiate()
 	body.position.y = -0.80
 	add_child(body)
+	var hinges:=body.find_children("DriverDoorHinge", "Node3D", true, false)
+	if not hinges.is_empty(): driver_door=hinges[0]
 	damage = VehicleDamage.new()
 	add_child(damage)
 	damage.setup(body, self)
@@ -273,3 +276,6 @@ func receive_bullet(at: Vector3, direction: Vector3, power: float, kind: String=
 	damage.bullet(to_local(at),global_basis.inverse()*direction,power,kind,index)
 	integrity=maxf(0,integrity-power*(0.08 if to_local(at).z>1.15 else 0.02))
 	sleeping=false
+
+func set_driver_door(angle: float) -> void:
+	if is_instance_valid(driver_door): driver_door.rotation.y=clampf(angle,0,1.2)

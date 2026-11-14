@@ -1,0 +1,290 @@
+{
+  "author": "Kenney",
+  "pack": "Impact Sounds 1.0",
+  "license": "CC0-1.0",
+  "page": "https://kenney.nl/assets/impact-sounds",
+  "archive_sha256": "029d734af1582474edf3a694d1b0cebc97c1c152f2f39fa34d4c2bafc5de77f8",
+  "scope": "Nine surface profiles plus cloth. Asphalt/concrete/warehouse/stairs share concrete recordings with different EQ/tails; dirt uses grass recordings. Metal and cloth use curated impact foley, not dedicated boot/jacket recording sessions. Short authored echo tails, not dynamic room acoustics.",
+  "files": [
+    {
+      "output": "assets/audio/movement/asphalt_00.wav",
+      "source": "footstep_concrete_000.ogg",
+      "source_sha256": "d7267e183067757c92c169de2a379abea592cfca6b39bb2e8feea15221ad79fe",
+      "processing": "highpass=f=90,lowpass=f=4800",
+      "sha256": "14102f771d795a390604f0fb5a58d9e7033c97e68be0d191f8e281dc4f96295c"
+    },
+    {
+      "output": "assets/audio/movement/asphalt_01.wav",
+      "source": "footstep_concrete_001.ogg",
+      "source_sha256": "507a75eb19b897087855a3be3cf11a12d7fa37d143ad535eeebe0b8031c7325d",
+      "processing": "highpass=f=90,lowpass=f=4800",
+      "sha256": "c44edd014b140e41c50a6f746ade3d954d94151113f930017b186400e128f547"
+    },
+    {
+      "output": "assets/audio/movement/asphalt_02.wav",
+      "source": "footstep_concrete_002.ogg",
+      "source_sha256": "b21fa546d74941196b25da8a20b7010abd8c05c4fcf93545d1f344e66a664e13",
+      "processing": "highpass=f=90,lowpass=f=4800",
+      "sha256": "45d0bfad616780049525c8707410d371dbe2e811ad16c01e4e8f6b9c41e9cbde"
+    },
+    {
+      "output": "assets/audio/movement/asphalt_03.wav",
+      "source": "footstep_concrete_003.ogg",
+      "source_sha256": "8b513c2f0316324060b9174b8f28df6c2147418c506e6a53b77f18e149a5547b",
+      "processing": "highpass=f=90,lowpass=f=4800",
+      "sha256": "ed0bca99e57135d71ac79a237ecdce6727e6a3faed0a62054db91d5a8568c018"
+    },
+    {
+      "output": "assets/audio/movement/concrete_00.wav",
+      "source": "footstep_concrete_000.ogg",
+      "source_sha256": "d7267e183067757c92c169de2a379abea592cfca6b39bb2e8feea15221ad79fe",
+      "processing": "highpass=f=65,lowpass=f=6500",
+      "sha256": "6363eb75636bc2bec208e58ed3dbfcacd5a267515a184b9ee2a6bbaaf2e049fd"
+    },
+    {
+      "output": "assets/audio/movement/concrete_01.wav",
+      "source": "footstep_concrete_001.ogg",
+      "source_sha256": "507a75eb19b897087855a3be3cf11a12d7fa37d143ad535eeebe0b8031c7325d",
+      "processing": "highpass=f=65,lowpass=f=6500",
+      "sha256": "d45d3cb0b64cff8ab41217207383178aacffc976d634e636487c7e2f1ccd686e"
+    },
+    {
+      "output": "assets/audio/movement/concrete_02.wav",
+      "source": "footstep_concrete_002.ogg",
+      "source_sha256": "b21fa546d74941196b25da8a20b7010abd8c05c4fcf93545d1f344e66a664e13",
+      "processing": "highpass=f=65,lowpass=f=6500",
+      "sha256": "04ba1b340ebf4a24cc47eb9b740d45356a83c62aff10d13fd86a12b43dff16c5"
+    },
+    {
+      "output": "assets/audio/movement/concrete_03.wav",
+      "source": "footstep_concrete_003.ogg",
+      "source_sha256": "8b513c2f0316324060b9174b8f28df6c2147418c506e6a53b77f18e149a5547b",
+      "processing": "highpass=f=65,lowpass=f=6500",
+      "sha256": "d2449cae1cd230706f8aaeaa3fe9b7bc93044233061b051a53772c8952b7abfb"
+    },
+    {
+      "output": "assets/audio/movement/warehouse_00.wav",
+      "source": "footstep_concrete_000.ogg",
+      "source_sha256": "d7267e183067757c92c169de2a379abea592cfca6b39bb2e8feea15221ad79fe",
+      "processing": "highpass=f=80,lowpass=f=6000,aecho=0.8:0.6:45:0.13",
+      "sha256": "cbf00af32d92c82a04f092ca9083e5ecaef06b87b8902fdca4d5a3b9ba2cd02d"
+    },
+    {
+      "output": "assets/audio/movement/warehouse_01.wav",
+      "source": "footstep_concrete_001.ogg",
+      "source_sha256": "507a75eb19b897087855a3be3cf11a12d7fa37d143ad535eeebe0b8031c7325d",
+      "processing": "highpass=f=80,lowpass=f=6000,aecho=0.8:0.6:45:0.13",
+      "sha256": "40c8c625f3b5e0cc96b35167cba275ef1efb74c978267c3ec3e8ee94c2e6cdc4"
+    },
+    {
+      "output": "assets/audio/movement/warehouse_02.wav",
+      "source": "footstep_concrete_002.ogg",
+      "source_sha256": "b21fa546d74941196b25da8a20b7010abd8c05c4fcf93545d1f344e66a664e13",
+      "processing": "highpass=f=80,lowpass=f=6000,aecho=0.8:0.6:45:0.13",
+      "sha256": "b51858f3ab28c4d291399a1592081c7847fa19ffdc4421aca1838b1ba5fc8c98"
+    },
+    {
+      "output": "assets/audio/movement/warehouse_03.wav",
+      "source": "footstep_concrete_003.ogg",
+      "source_sha256": "8b513c2f0316324060b9174b8f28df6c2147418c506e6a53b77f18e149a5547b",
+      "processing": "highpass=f=80,lowpass=f=6000,aecho=0.8:0.6:45:0.13",
+      "sha256": "cd323234a14c935cdb38f7c4cdfd7587c5e79644851be4e9a1ba57ae753e9d0b"
+    },
+    {
+      "output": "assets/audio/movement/metal_00.wav",
+      "source": "impactMetal_light_000.ogg",
+      "source_sha256": "33b5e6e37c6e9d54e07bf5a89b12c76e879f40c1ea83cdd82714df1d6f9fec6d",
+      "processing": "highpass=f=130,lowpass=f=5200",
+      "sha256": "b1ccca7a72fc50bcd470d23cb664f592da825ecec9f5494c420af3487f51239c"
+    },
+    {
+      "output": "assets/audio/movement/metal_01.wav",
+      "source": "impactMetal_light_001.ogg",
+      "source_sha256": "fba69c467ddd85da7b1d82e259f936b876d9ba6a3d6f1b24bdd10468e46bfe08",
+      "processing": "highpass=f=130,lowpass=f=5200",
+      "sha256": "a62cae4b3fa5d01689304a2dcf74c18619748b4f5309ee30161eca96a4728c9f"
+    },
+    {
+      "output": "assets/audio/movement/metal_02.wav",
+      "source": "impactMetal_light_002.ogg",
+      "source_sha256": "25a96f90a9a1f88a531e824e126f0519504625e5635e65a72e4f31611428db29",
+      "processing": "highpass=f=130,lowpass=f=5200",
+      "sha256": "e1cc4d94dd091ddecaaf3d023f9b5d5b24a1c5d50592a098304d0c4b5d23495c"
+    },
+    {
+      "output": "assets/audio/movement/metal_03.wav",
+      "source": "impactMetal_light_003.ogg",
+      "source_sha256": "92d5db6bfc672d9dc1b4f390b2900504f013187fa36335472554fafefa9050b1",
+      "processing": "highpass=f=130,lowpass=f=5200",
+      "sha256": "1b8859fba8496ff010090a85348f5d76f6630f300868c0d996547212c7a3d14f"
+    },
+    {
+      "output": "assets/audio/movement/dirt_00.wav",
+      "source": "footstep_grass_000.ogg",
+      "source_sha256": "9d49497777405d78d7cf7f2888e28277f3a23192300cfd1d79d54876b20f479f",
+      "processing": "highpass=f=80,lowpass=f=2800",
+      "sha256": "4755602711afc83e40740341ea5b36a7ccdb66a678a308226456e898cd23e6c3"
+    },
+    {
+      "output": "assets/audio/movement/dirt_01.wav",
+      "source": "footstep_grass_001.ogg",
+      "source_sha256": "fb28781bd22b2eefdc14077f1adf5c94d7fe9c3a130194633b55f3e0d39d9f04",
+      "processing": "highpass=f=80,lowpass=f=2800",
+      "sha256": "7f510536f2d28c16cf5e5d8ab03b564b3f329e4811233296e5bf3d2e985c0f03"
+    },
+    {
+      "output": "assets/audio/movement/dirt_02.wav",
+      "source": "footstep_grass_002.ogg",
+      "source_sha256": "73a520139f5be716a403bfe9c80e0e94d1e61d8e9de04a354b336392164b53dc",
+      "processing": "highpass=f=80,lowpass=f=2800",
+      "sha256": "5e86b87edeac8a7e4297cefa96bab2575228505cb760312af3f72622d215727a"
+    },
+    {
+      "output": "assets/audio/movement/dirt_03.wav",
+      "source": "footstep_grass_003.ogg",
+      "source_sha256": "0546e1d8ab2def714425701a18bd34c5ee2794b12e858e5b595aabcf38a34137",
+      "processing": "highpass=f=80,lowpass=f=2800",
+      "sha256": "b4852d5783f67eeece96b51668adf264c7bd119236b717ae9bc8055242360e6d"
+    },
+    {
+      "output": "assets/audio/movement/grass_00.wav",
+      "source": "footstep_grass_000.ogg",
+      "source_sha256": "9d49497777405d78d7cf7f2888e28277f3a23192300cfd1d79d54876b20f479f",
+      "processing": "highpass=f=110,lowpass=f=5200",
+      "sha256": "eba100f53c8961fe57e395b51b9d30eebf48647ef038dc8d0a1a5ad308a1363a"
+    },
+    {
+      "output": "assets/audio/movement/grass_01.wav",
+      "source": "footstep_grass_001.ogg",
+      "source_sha256": "fb28781bd22b2eefdc14077f1adf5c94d7fe9c3a130194633b55f3e0d39d9f04",
+      "processing": "highpass=f=110,lowpass=f=5200",
+      "sha256": "97ed8bb20e786702d25a5e6a62fc14ca68ea8f86ac70f88de560b59cf8390062"
+    },
+    {
+      "output": "assets/audio/movement/grass_02.wav",
+      "source": "footstep_grass_002.ogg",
+      "source_sha256": "73a520139f5be716a403bfe9c80e0e94d1e61d8e9de04a354b336392164b53dc",
+      "processing": "highpass=f=110,lowpass=f=5200",
+      "sha256": "e4d10e5e4ec9ccdc8ce2dc8509092f7324f413261b50c6d79fb4a25d7dbda30b"
+    },
+    {
+      "output": "assets/audio/movement/grass_03.wav",
+      "source": "footstep_grass_003.ogg",
+      "source_sha256": "0546e1d8ab2def714425701a18bd34c5ee2794b12e858e5b595aabcf38a34137",
+      "processing": "highpass=f=110,lowpass=f=5200",
+      "sha256": "4a7df1219b8ef279c7fe74f056356e295edf4901f972f0323b64f2c5cad23918"
+    },
+    {
+      "output": "assets/audio/movement/wood_00.wav",
+      "source": "footstep_wood_000.ogg",
+      "source_sha256": "5f1c252942a220d658121bd9417448cd19649ded9fff2ff15f6e50899373ce8e",
+      "processing": "highpass=f=80,lowpass=f=5200",
+      "sha256": "e8fb7262a1652efe7bebddcd7d32a469e8c001318b8881371fe1d6dfa9f9c11c"
+    },
+    {
+      "output": "assets/audio/movement/wood_01.wav",
+      "source": "footstep_wood_001.ogg",
+      "source_sha256": "e4f68e1c9fd55b4dc8ca89ed2bbab6f200171bc54bdc18aa96b80d8e7336f462",
+      "processing": "highpass=f=80,lowpass=f=5200",
+      "sha256": "a310306010e9bec625913e036a4c69e7abbc74a39899373177d08673162813da"
+    },
+    {
+      "output": "assets/audio/movement/wood_02.wav",
+      "source": "footstep_wood_002.ogg",
+      "source_sha256": "9ff095b05cee5eec40b081defe3f0eef7232bb16d4865ce03b9f6dbab875cfdd",
+      "processing": "highpass=f=80,lowpass=f=5200",
+      "sha256": "7d5e34c8fa55b66f0355f4d4bed954ac8317a8924151f97ee4b55bfc44d70fda"
+    },
+    {
+      "output": "assets/audio/movement/wood_03.wav",
+      "source": "footstep_wood_003.ogg",
+      "source_sha256": "2a68a083daa9eda08fed0ea5da5280dfbe0de226196c576be02f95259dd139d9",
+      "processing": "highpass=f=80,lowpass=f=5200",
+      "sha256": "4ea6cf7643081a1ec9f6dcb746447629af20884fc55f1a153a2dcde6a1d2b2b6"
+    },
+    {
+      "output": "assets/audio/movement/interior_00.wav",
+      "source": "footstep_wood_000.ogg",
+      "source_sha256": "5f1c252942a220d658121bd9417448cd19649ded9fff2ff15f6e50899373ce8e",
+      "processing": "highpass=f=100,lowpass=f=4500,aecho=0.8:0.6:32:0.10",
+      "sha256": "ccf1183160229ecebb9a8c67452a2495ffd54da6433d8962215e08c4b5a9db89"
+    },
+    {
+      "output": "assets/audio/movement/interior_01.wav",
+      "source": "footstep_wood_001.ogg",
+      "source_sha256": "e4f68e1c9fd55b4dc8ca89ed2bbab6f200171bc54bdc18aa96b80d8e7336f462",
+      "processing": "highpass=f=100,lowpass=f=4500,aecho=0.8:0.6:32:0.10",
+      "sha256": "b8d304f0158283ed0742909752819101255f0a1c6334e891732a04c044ee4490"
+    },
+    {
+      "output": "assets/audio/movement/interior_02.wav",
+      "source": "footstep_wood_002.ogg",
+      "source_sha256": "9ff095b05cee5eec40b081defe3f0eef7232bb16d4865ce03b9f6dbab875cfdd",
+      "processing": "highpass=f=100,lowpass=f=4500,aecho=0.8:0.6:32:0.10",
+      "sha256": "529926de44f2dcc1c3365afb7aeb04bad13468c26be40cb78465178fd712b4eb"
+    },
+    {
+      "output": "assets/audio/movement/interior_03.wav",
+      "source": "footstep_wood_003.ogg",
+      "source_sha256": "2a68a083daa9eda08fed0ea5da5280dfbe0de226196c576be02f95259dd139d9",
+      "processing": "highpass=f=100,lowpass=f=4500,aecho=0.8:0.6:32:0.10",
+      "sha256": "1b33ac7e0717676837c9b0875228be5dcb0e6da428f6072adc51c26e2ef338de"
+    },
+    {
+      "output": "assets/audio/movement/stairs_00.wav",
+      "source": "footstep_concrete_000.ogg",
+      "source_sha256": "d7267e183067757c92c169de2a379abea592cfca6b39bb2e8feea15221ad79fe",
+      "processing": "highpass=f=70,lowpass=f=6200,aecho=0.8:0.6:38:0.10",
+      "sha256": "9eb2695109d71a33581eb0f3f148b7d651b764aff72960d6085d1bc6fb61ed91"
+    },
+    {
+      "output": "assets/audio/movement/stairs_01.wav",
+      "source": "footstep_concrete_001.ogg",
+      "source_sha256": "507a75eb19b897087855a3be3cf11a12d7fa37d143ad535eeebe0b8031c7325d",
+      "processing": "highpass=f=70,lowpass=f=6200,aecho=0.8:0.6:38:0.10",
+      "sha256": "0068994e672741e6e5021b2a62d40a8838bc1db2fab933d5ec5a1c551f0f626f"
+    },
+    {
+      "output": "assets/audio/movement/stairs_02.wav",
+      "source": "footstep_concrete_002.ogg",
+      "source_sha256": "b21fa546d74941196b25da8a20b7010abd8c05c4fcf93545d1f344e66a664e13",
+      "processing": "highpass=f=70,lowpass=f=6200,aecho=0.8:0.6:38:0.10",
+      "sha256": "cc4e45223db8d55008b56c60ff90a4dea06bba3162e4968466d881a92bfd074c"
+    },
+    {
+      "output": "assets/audio/movement/stairs_03.wav",
+      "source": "footstep_concrete_003.ogg",
+      "source_sha256": "8b513c2f0316324060b9174b8f28df6c2147418c506e6a53b77f18e149a5547b",
+      "processing": "highpass=f=70,lowpass=f=6200,aecho=0.8:0.6:38:0.10",
+      "sha256": "04e16455c862c0f74b42539bdd49a75ec9851cd9775815000251d49ecafdde7b"
+    },
+    {
+      "output": "assets/audio/movement/cloth_00.wav",
+      "source": "impactSoft_medium_000.ogg",
+      "source_sha256": "7d3ba0bb5e60a11b5d3e558c141303dcf494256675fbf753c0d252d2cf0481e3",
+      "processing": "highpass=f=250,lowpass=f=2800",
+      "sha256": "3afdff2c374aa46664b8bacdfe2bfe13733559b2ad9a8ebdabf9b2aced962a29"
+    },
+    {
+      "output": "assets/audio/movement/cloth_01.wav",
+      "source": "impactSoft_medium_001.ogg",
+      "source_sha256": "7642a4fd43e547afe4f7adfadb3dabb681c0ff512f52c1674bae30a726841faf",
+      "processing": "highpass=f=250,lowpass=f=2800",
+      "sha256": "82fd724f771aa70d7023a51bea70ca1e27210a6a617fa45d222cae2a6f81b6fc"
+    },
+    {
+      "output": "assets/audio/movement/cloth_02.wav",
+      "source": "impactSoft_medium_002.ogg",
+      "source_sha256": "5069e3571a77d7f7aae9ef71d0364aa245fb7d64a7c8cc9956f221d03088c089",
+      "processing": "highpass=f=250,lowpass=f=2800",
+      "sha256": "269e09d92476e9fa316642c93a124f4c63b6589867495e94dacbfc5107cb9af1"
+    },
+    {
+      "output": "assets/audio/movement/cloth_03.wav",
+      "source": "impactSoft_medium_003.ogg",
+      "source_sha256": "5c4a1f35fde7e14046931da7bc3d1b23736541b7190ba107e08a379c4ca43cd6",
+      "processing": "highpass=f=250,lowpass=f=2800",
+      "sha256": "16f4ff5af938a096e98a8b093b78cd041a8ec6caf6e7b69113d7b1471e8862a1"
+    }
+  ]
+}

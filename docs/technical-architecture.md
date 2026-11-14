@@ -1,3 +1,5 @@
+Current mobility additions: MovementAudio pooled surface foley; VehicleTransition explicit transient door timeline; HarborMotorcycle assisted two-wheel physics and occupancy; expanded collision-sampled city grid. See reference-mobility-report.md for persistence/fallback limitations.
+
 Latest interaction increment: see [interaction validation](interaction-validation.md) and [implementation/limits](physics-acting-report.md). Older counts and architecture statements below describe earlier builds.
 
 # Architecture — production increment

@@ -1,0 +1,37 @@
+{
+	"phases": {
+		"combat": {
+			"average_fps": 172.22049964638,
+			"combatants": 3,
+			"frames": 516,
+			"max_ms": 14.571,
+			"mean_ms": 5.80650968992248,
+			"p95_ms": 8.543,
+			"population": 12,
+			"video_memory_bytes": 962121440.0
+		},
+		"driving": {
+			"average_fps": 155.035606510962,
+			"frames": 465,
+			"max_ms": 11.571,
+			"mean_ms": 6.4501311827957,
+			"one_percent_low_fps": 89.5455563017685,
+			"p95_ms": 8.244,
+			"population": 12,
+			"video_memory_bytes": 959691824.0
+		},
+		"populated_walk": {
+			"average_fps": 157.545881490857,
+			"frames": 473,
+			"max_ms": 11.427,
+			"mean_ms": 6.34735729386892,
+			"one_percent_low_fps": 89.4534394847482,
+			"p95_ms": 8.266,
+			"population": 12,
+			"video_memory_bytes": 959560752.0
+		}
+	},
+	"quality": "Balanced",
+	"resolution": "1920x1080",
+	"scope": "Short populated walk, driving and combat samples; not sustained/thermal or isolated GPU profiling"
+}

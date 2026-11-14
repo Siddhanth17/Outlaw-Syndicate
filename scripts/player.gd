@@ -9,6 +9,8 @@ var yaw: float = 0.0
 var pitch: float = -0.12
 var sensitivity: float = 0.0025
 var driving: bool = false
+var riding_bike: bool = false
+var transitioning: bool = false
 var aiming: bool = false
 var health: float = 100
 var pivot: Node3D
@@ -27,6 +29,7 @@ var weapon: Node3D
 var last_yaw: float = 0
 var step_time: float = 0
 var footstep: AudioStreamPlayer3D
+var movement_audio: MovementAudio
 var vehicle: VeyraCar
 var camera_manual_time: float = 0
 var dynamics: HumanDynamics
@@ -42,7 +45,7 @@ func _ready() -> void:
 	shape.shape = capsule
 	shape.position.y = 0.9
 	add_child(shape)
-	visual = load("res://assets/characters/adrian_signature.glb").instantiate()
+	visual = load("res://assets/characters/adrian_reference.glb").instantiate()
 	visual.name = "AdrianVisual"
 	add_child(visual)
 	visual.rotation.y = PI
@@ -86,10 +89,9 @@ func _ready() -> void:
 		weapon.scale = Vector3.ONE * 100
 		weapon.position = Vector3(0, 7, 0)
 	weapon.hide()
-	footstep = AudioStreamPlayer3D.new()
-	footstep.stream = load("res://assets/audio/step.wav")
-	footstep.volume_db = -12
-	add_child(footstep)
+	movement_audio = MovementAudio.new()
+	add_child(movement_audio)
+	footstep = movement_audio.pool[0]
 
 func _setup_animation() -> void:
 	tree = AnimationTree.new()
@@ -98,11 +100,11 @@ func _setup_animation() -> void:
 	tree.root_node = tree.get_path_to(animator.get_node(animator.root_node))
 	var states := AnimationNodeStateMachine.new()
 	var names: Array[String] = []
-	for key: String in ["Idle", "Walk", "Run", "Sprint", "Interact", "Aim", "Shoot", "Reload", "Jump", "Land", "Turn", "Enter", "Exit", "Drive"]:
+	for key: String in ["Idle", "Walk", "Run", "Sprint", "Interact", "Aim", "Shoot", "Reload", "Jump", "Land", "Turn", "Enter", "Exit", "Drive", "Ride"]:
 		for animation: String in animator.get_animation_list():
 			if animation.ends_with(key):
 				var clip := animator.get_animation(animation)
-				clip.loop_mode = Animation.LOOP_LINEAR if key in ["Idle", "Walk", "Run", "Sprint", "Aim", "Drive"] else Animation.LOOP_NONE
+				clip.loop_mode = Animation.LOOP_LINEAR if key in ["Idle", "Walk", "Run", "Sprint", "Aim", "Drive", "Ride"] else Animation.LOOP_NONE
 				var node := AnimationNodeAnimation.new()
 				node.animation = animation
 				if key in ["Walk", "Run", "Sprint"]:
@@ -169,6 +171,7 @@ func _input(event: InputEvent) -> void:
 		pitch = clampf(pitch - event.screen_relative.y * sensitivity, -0.85, 0.45)
 
 func _physics_process(delta: float) -> void:
+	var in_vehicle: bool=driving or riding_bike
 	var rx: float = Input.get_joy_axis(0, JOY_AXIS_RIGHT_X)
 	var ry: float = Input.get_joy_axis(0, JOY_AXIS_RIGHT_Y)
 	yaw -= (rx if absf(rx) > 0.15 else 0.0) * delta * 2
@@ -177,13 +180,14 @@ func _physics_process(delta: float) -> void:
 	camera_manual_time -= delta
 	if driving and is_instance_valid(vehicle) and absf(rx) < 0.15 and camera_manual_time <= 0:
 		yaw = lerp_angle(yaw, vehicle.rotation.y + PI, 1 - exp(-delta * 1.3))
-	aiming = Input.is_action_pressed("aim") and not driving
-	var offset := Basis(Vector3.UP, yaw) * Vector3(0.55 if not driving else 0.0, 1.45 if not driving else 1.6, 0)
+	aiming = Input.is_action_pressed("aim") and not in_vehicle
+	var offset := Basis(Vector3.UP, yaw) * Vector3(0.55 if not in_vehicle else 0.0, 1.45 if not in_vehicle else 1.6, 0)
 	pivot.position = pivot.position.lerp(offset, 1 - exp(-delta * 9))
-	pivot.rotation = Vector3(pitch+recoil_offset.x, yaw+recoil_offset.y + (PI if driving and Input.is_action_pressed("rear_view") else 0.0), 0)
-	arm.spring_length = lerpf(arm.spring_length, 6.8 if driving else (2.3 if aiming else 3.6), 1 - exp(-delta * 6))
-	camera.fov = lerpf(camera.fov, 74 if driving else (52 if aiming else 66), delta * 6)
-	if driving:
+	pivot.rotation = Vector3(pitch+recoil_offset.x, yaw+recoil_offset.y + (PI if in_vehicle and Input.is_action_pressed("rear_view") else 0.0), 0)
+	arm.spring_length = lerpf(arm.spring_length, 6.8 if in_vehicle else (2.3 if aiming else 3.6), 1 - exp(-delta * 6))
+	camera.fov = lerpf(camera.fov, 74 if in_vehicle else (52 if aiming else 66), delta * 6)
+	if driving or riding_bike or transitioning:
+		movement_audio.reset_motion()
 		return
 	var axis := Input.get_vector("left", "right", "forward", "back")
 	var direction := Basis(Vector3.UP, yaw) * Vector3(axis.x, 0, axis.y)
@@ -199,6 +203,8 @@ func _physics_process(delta: float) -> void:
 		perform("Jump", 0.6)
 	if is_on_floor() and direction.length() > 0.1:
 		_step_up(direction.normalized())
+	var before_move: Vector3 = global_position
+	var before_vertical: float = velocity.y
 	move_and_slide()
 	for i: int in range(get_slide_collision_count()):
 		var contact := get_slide_collision(i)
@@ -208,6 +214,7 @@ func _physics_process(delta: float) -> void:
 				rigid.apply_central_impulse(-contact.get_normal() * minf(rigid.mass * 0.6, 25))
 	if is_on_floor() and not was_grounded:
 		perform("Land", 0.25)
+	movement_audio.update_motion(delta, is_on_floor(), is_on_floor() and not was_grounded, Vector2(global_position.x-before_move.x, global_position.z-before_move.z).length(), Vector2(velocity.x,velocity.z).length(), before_vertical)
 	was_grounded = is_on_floor()
 	if direction.length() > 0.1 or aiming:
 		var facing: float = yaw + PI if aiming else atan2(direction.x, direction.z)
@@ -229,10 +236,6 @@ func _physics_process(delta: float) -> void:
 	weapon.visible = aiming or action_name in ["Shoot", "Reload"] and action_time > 0
 	if weapon.visible:
 		weapon.global_basis = Basis(Vector3.UP, visual.global_rotation.y)
-	step_time -= delta
-	if is_on_floor() and direction.length() > 0.1 and step_time <= 0:
-		if DisplayServer.get_name() != "headless": footstep.play()
-		step_time = 0.29 if speed > 3 else 0.45
 	if position.y < -20:
 		position = Vector3(0, 2, 12)
 

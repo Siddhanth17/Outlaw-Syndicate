@@ -67,7 +67,7 @@ func run() -> void:
 	check(absf(game.car.steering_visual.rotation.z) > 0.05, "steering wheel responds to vehicle input")
 	game._leave_car()
 	check(game.player.visual.position.is_zero_approx(), "exit restores walking visual transform")
-	check(game.harbor.shutters.size() == 14, "warehouse refinement preserves world layout")
+	check(game.harbor.shutters.size() == 19, "warehouse expansion preserves original fourteen plus five side-road buildings")
 	check(game.harbor.wind_materials.size() == 3, "shared wind also drives hanging fabric")
 	game.queue_free()
 	await create_timer(0.7).timeout

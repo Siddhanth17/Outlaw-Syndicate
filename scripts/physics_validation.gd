@@ -102,6 +102,7 @@ func run() -> void:
 	await capture("exploration")
 	game.player.position = game.car.position
 	game._interact()
+	if game.vehicle_transition.active: await frames(190)
 	old=game.player.yaw
 	await mouse(Vector2(100,0))
 	check(game.player.driving and not is_equal_approx(old,game.player.yaw),"mouse orbit after vehicle entry")
@@ -110,6 +111,7 @@ func run() -> void:
 	check(is_equal_approx(old,game.player.yaw),"driving recenter waits after mouse movement")
 	game.car.linear_velocity=Vector3.ZERO
 	game._leave_car()
+	if game.vehicle_transition.active: await frames(190)
 	old=game.player.yaw
 	await mouse(Vector2(100,0))
 	check(not game.player.driving and not is_equal_approx(old,game.player.yaw),"mouse look after vehicle exit")

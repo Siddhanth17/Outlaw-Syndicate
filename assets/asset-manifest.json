@@ -21,6 +21,86 @@
   },
   "files": [
     {
+      "path": "art/source/adrian.blend",
+      "bytes": 11731585,
+      "sha256": "768d0e174062f659589ed61f8a793b39e579aa3759c0875e4d9469107ba96e49"
+    },
+    {
+      "path": "art/source/adrian_reference.blend",
+      "bytes": 14971302,
+      "sha256": "573200d4ac49b2f73be75e520602f2c0e6d25ceff07ed7c1ca1f5751d7b47353"
+    },
+    {
+      "path": "art/source/adrian_signature.blend",
+      "bytes": 16176355,
+      "sha256": "853c84e4d3e25ad9f8cabd80f92029502d768f51be5d35eeebc241ad2301287b"
+    },
+    {
+      "path": "art/source/camper-cc0.glb",
+      "bytes": 3062188,
+      "sha256": "940444190abb1f3731675678277e9c3f27be1783966987f0a02ccd9fd1405193"
+    },
+    {
+      "path": "art/source/container.blend",
+      "bytes": 1430222,
+      "sha256": "f77e73b6d55973c5b36d1f033fec00f644e51cefb6ccc07194184a16d867e1ae"
+    },
+    {
+      "path": "art/source/crane.blend",
+      "bytes": 912280,
+      "sha256": "5edecd217be63fef33e72cec3d65ee5e5935782847f83d64025a937a6108d4ec"
+    },
+    {
+      "path": "art/source/forklift.blend",
+      "bytes": 622941,
+      "sha256": "7f81fe335b9488ed70c652bacac36ab9721cdd46fcaee6141e37bfd6cfc0da49"
+    },
+    {
+      "path": "art/source/harrier_bike.blend",
+      "bytes": 992483,
+      "sha256": "e8c23fe782a912c038f07c6e65e56ce786b79c319cd60bfe0d6c164a7059ca28"
+    },
+    {
+      "path": "art/source/harrier_wheel.blend",
+      "bytes": 604688,
+      "sha256": "9a83175dab48563417c68791544cc4e3d66b029fb1ed26fd645d80b6efbfd25c"
+    },
+    {
+      "path": "art/source/sable_body.blend",
+      "bytes": 1157295,
+      "sha256": "a219e27be53f53f3a077ee7c6e497a74fe8c7395e6e71447aa5f064509676834"
+    },
+    {
+      "path": "art/source/sable_interactive.blend",
+      "bytes": 1899972,
+      "sha256": "77a54ce90923a311d92e9ec993198a7e7a456ecbfec4ee2b84a7ba34d3c76a2e"
+    },
+    {
+      "path": "art/source/warehouse.blend",
+      "bytes": 2271189,
+      "sha256": "8622d7e262232f3e4276d4ef0db5f5f43120218ee57aad281154590c0b743a6a"
+    },
+    {
+      "path": "art/source/warehouse_realism_0.blend",
+      "bytes": 2839748,
+      "sha256": "3b3950a2f1bebe2aeb3926b7d3caf007456b6ad3367199df098231159829d713"
+    },
+    {
+      "path": "art/source/warehouse_realism_1.blend",
+      "bytes": 3067619,
+      "sha256": "592ae646f8bc4c4d37ef410403bdfb6ebadc1b52a370f31cef782efd3b81c5b2"
+    },
+    {
+      "path": "art/source/warehouse_realism_2.blend",
+      "bytes": 3054704,
+      "sha256": "ce349978c64d86e6aadcc4a5d502ad2da2b65f9bb46f7699581a55ce538c2c78"
+    },
+    {
+      "path": "assets/audio/bike-engine.wav",
+      "bytes": 96044,
+      "sha256": "c697ae66c1d614ec6a22599768a460e080a0f893091b0dfc9e914050b2c9639f"
+    },
+    {
       "path": "assets/audio/crash.wav",
       "bytes": 28708,
       "sha256": "ab357716450a78f32c5542424eb417944d5249c32d7ee93435282a82642c57fc"
@@ -96,6 +176,206 @@
       "sha256": "b1070d7383cf76c3a39cc76831fdf92e77069036f914fc4e09ba5458f952ba72"
     },
     {
+      "path": "assets/audio/movement/asphalt_00.wav",
+      "bytes": 5024,
+      "sha256": "14102f771d795a390604f0fb5a58d9e7033c97e68be0d191f8e281dc4f96295c"
+    },
+    {
+      "path": "assets/audio/movement/asphalt_01.wav",
+      "bytes": 5106,
+      "sha256": "c44edd014b140e41c50a6f746ade3d954d94151113f930017b186400e128f547"
+    },
+    {
+      "path": "assets/audio/movement/asphalt_02.wav",
+      "bytes": 5352,
+      "sha256": "45d0bfad616780049525c8707410d371dbe2e811ad16c01e4e8f6b9c41e9cbde"
+    },
+    {
+      "path": "assets/audio/movement/asphalt_03.wav",
+      "bytes": 5242,
+      "sha256": "ed0bca99e57135d71ac79a237ecdce6727e6a3faed0a62054db91d5a8568c018"
+    },
+    {
+      "path": "assets/audio/movement/cloth_00.wav",
+      "bytes": 5604,
+      "sha256": "3afdff2c374aa46664b8bacdfe2bfe13733559b2ad9a8ebdabf9b2aced962a29"
+    },
+    {
+      "path": "assets/audio/movement/cloth_01.wav",
+      "bytes": 8736,
+      "sha256": "82fd724f771aa70d7023a51bea70ca1e27210a6a617fa45d222cae2a6f81b6fc"
+    },
+    {
+      "path": "assets/audio/movement/cloth_02.wav",
+      "bytes": 6428,
+      "sha256": "269e09d92476e9fa316642c93a124f4c63b6589867495e94dacbfc5107cb9af1"
+    },
+    {
+      "path": "assets/audio/movement/cloth_03.wav",
+      "bytes": 6670,
+      "sha256": "16f4ff5af938a096e98a8b093b78cd041a8ec6caf6e7b69113d7b1471e8862a1"
+    },
+    {
+      "path": "assets/audio/movement/concrete_00.wav",
+      "bytes": 5024,
+      "sha256": "6363eb75636bc2bec208e58ed3dbfcacd5a267515a184b9ee2a6bbaaf2e049fd"
+    },
+    {
+      "path": "assets/audio/movement/concrete_01.wav",
+      "bytes": 5106,
+      "sha256": "d45d3cb0b64cff8ab41217207383178aacffc976d634e636487c7e2f1ccd686e"
+    },
+    {
+      "path": "assets/audio/movement/concrete_02.wav",
+      "bytes": 5352,
+      "sha256": "04ba1b340ebf4a24cc47eb9b740d45356a83c62aff10d13fd86a12b43dff16c5"
+    },
+    {
+      "path": "assets/audio/movement/concrete_03.wav",
+      "bytes": 5242,
+      "sha256": "d2449cae1cd230706f8aaeaa3fe9b7bc93044233061b051a53772c8952b7abfb"
+    },
+    {
+      "path": "assets/audio/movement/dirt_00.wav",
+      "bytes": 37262,
+      "sha256": "4755602711afc83e40740341ea5b36a7ccdb66a678a308226456e898cd23e6c3"
+    },
+    {
+      "path": "assets/audio/movement/dirt_01.wav",
+      "bytes": 32272,
+      "sha256": "7f510536f2d28c16cf5e5d8ab03b564b3f329e4811233296e5bf3d2e985c0f03"
+    },
+    {
+      "path": "assets/audio/movement/dirt_02.wav",
+      "bytes": 33176,
+      "sha256": "5e86b87edeac8a7e4297cefa96bab2575228505cb760312af3f72622d215727a"
+    },
+    {
+      "path": "assets/audio/movement/dirt_03.wav",
+      "bytes": 32066,
+      "sha256": "b4852d5783f67eeece96b51668adf264c7bd119236b717ae9bc8055242360e6d"
+    },
+    {
+      "path": "assets/audio/movement/grass_00.wav",
+      "bytes": 37262,
+      "sha256": "eba100f53c8961fe57e395b51b9d30eebf48647ef038dc8d0a1a5ad308a1363a"
+    },
+    {
+      "path": "assets/audio/movement/grass_01.wav",
+      "bytes": 32272,
+      "sha256": "97ed8bb20e786702d25a5e6a62fc14ca68ea8f86ac70f88de560b59cf8390062"
+    },
+    {
+      "path": "assets/audio/movement/grass_02.wav",
+      "bytes": 33176,
+      "sha256": "e4d10e5e4ec9ccdc8ce2dc8509092f7324f413261b50c6d79fb4a25d7dbda30b"
+    },
+    {
+      "path": "assets/audio/movement/grass_03.wav",
+      "bytes": 32066,
+      "sha256": "4a7df1219b8ef279c7fe74f056356e295edf4901f972f0323b64f2c5cad23918"
+    },
+    {
+      "path": "assets/audio/movement/interior_00.wav",
+      "bytes": 14640,
+      "sha256": "ccf1183160229ecebb9a8c67452a2495ffd54da6433d8962215e08c4b5a9db89"
+    },
+    {
+      "path": "assets/audio/movement/interior_01.wav",
+      "bytes": 13550,
+      "sha256": "b8d304f0158283ed0742909752819101255f0a1c6334e891732a04c044ee4490"
+    },
+    {
+      "path": "assets/audio/movement/interior_02.wav",
+      "bytes": 13542,
+      "sha256": "529926de44f2dcc1c3365afb7aeb04bad13468c26be40cb78465178fd712b4eb"
+    },
+    {
+      "path": "assets/audio/movement/interior_03.wav",
+      "bytes": 13548,
+      "sha256": "1b33ac7e0717676837c9b0875228be5dcb0e6da428f6072adc51c26e2ef338de"
+    },
+    {
+      "path": "assets/audio/movement/metal_00.wav",
+      "bytes": 17980,
+      "sha256": "b1ccca7a72fc50bcd470d23cb664f592da825ecec9f5494c420af3487f51239c"
+    },
+    {
+      "path": "assets/audio/movement/metal_01.wav",
+      "bytes": 12028,
+      "sha256": "a62cae4b3fa5d01689304a2dcf74c18619748b4f5309ee30161eca96a4728c9f"
+    },
+    {
+      "path": "assets/audio/movement/metal_02.wav",
+      "bytes": 11256,
+      "sha256": "e1cc4d94dd091ddecaaf3d023f9b5d5b24a1c5d50592a098304d0c4b5d23495c"
+    },
+    {
+      "path": "assets/audio/movement/metal_03.wav",
+      "bytes": 23216,
+      "sha256": "1b8859fba8496ff010090a85348f5d76f6630f300868c0d996547212c7a3d14f"
+    },
+    {
+      "path": "assets/audio/movement/stairs_00.wav",
+      "bytes": 6846,
+      "sha256": "9eb2695109d71a33581eb0f3f148b7d651b764aff72960d6085d1bc6fb61ed91"
+    },
+    {
+      "path": "assets/audio/movement/stairs_01.wav",
+      "bytes": 6928,
+      "sha256": "0068994e672741e6e5021b2a62d40a8838bc1db2fab933d5ec5a1c551f0f626f"
+    },
+    {
+      "path": "assets/audio/movement/stairs_02.wav",
+      "bytes": 7176,
+      "sha256": "cc4e45223db8d55008b56c60ff90a4dea06bba3162e4968466d881a92bfd074c"
+    },
+    {
+      "path": "assets/audio/movement/stairs_03.wav",
+      "bytes": 7066,
+      "sha256": "04e16455c862c0f74b42539bdd49a75ec9851cd9775815000251d49ecafdde7b"
+    },
+    {
+      "path": "assets/audio/movement/warehouse_00.wav",
+      "bytes": 7182,
+      "sha256": "cbf00af32d92c82a04f092ca9083e5ecaef06b87b8902fdca4d5a3b9ba2cd02d"
+    },
+    {
+      "path": "assets/audio/movement/warehouse_01.wav",
+      "bytes": 7266,
+      "sha256": "40c8c625f3b5e0cc96b35167cba275ef1efb74c978267c3ec3e8ee94c2e6cdc4"
+    },
+    {
+      "path": "assets/audio/movement/warehouse_02.wav",
+      "bytes": 7512,
+      "sha256": "b51858f3ab28c4d291399a1592081c7847fa19ffdc4421aca1838b1ba5fc8c98"
+    },
+    {
+      "path": "assets/audio/movement/warehouse_03.wav",
+      "bytes": 7402,
+      "sha256": "cd323234a14c935cdb38f7c4cdfd7587c5e79644851be4e9a1ba57ae753e9d0b"
+    },
+    {
+      "path": "assets/audio/movement/wood_00.wav",
+      "bytes": 13104,
+      "sha256": "e8fb7262a1652efe7bebddcd7d32a469e8c001318b8881371fe1d6dfa9f9c11c"
+    },
+    {
+      "path": "assets/audio/movement/wood_01.wav",
+      "bytes": 12014,
+      "sha256": "a310306010e9bec625913e036a4c69e7abbc74a39899373177d08673162813da"
+    },
+    {
+      "path": "assets/audio/movement/wood_02.wav",
+      "bytes": 12006,
+      "sha256": "7d5e34c8fa55b66f0355f4d4bed954ac8317a8924151f97ee4b55bfc44d70fda"
+    },
+    {
+      "path": "assets/audio/movement/wood_03.wav",
+      "bytes": 12012,
+      "sha256": "4ea6cf7643081a1ec9f6dcb746447629af20884fc55f1a153a2dcde6a1d2b2b6"
+    },
+    {
       "path": "assets/audio/reload.wav",
       "bytes": 26504,
       "sha256": "573e26f4392a75a71cf1751d50c6f171c51616375198ed11ebf3041b68e684a6"
@@ -166,9 +446,39 @@
       "sha256": "d3ac793327fd43d6d545fabdb55ee495a9a9c4b8e2538dbadcbac3ad19af5bf2"
     },
     {
+      "path": "assets/characters/adrian_reference.glb",
+      "bytes": 6388716,
+      "sha256": "1a5c2c9460fdadade0a025a69f553e76b9beba4c30269c54d8d380f05d42b444"
+    },
+    {
+      "path": "assets/characters/adrian_reference_Image_0.jpg",
+      "bytes": 151894,
+      "sha256": "d3ac793327fd43d6d545fabdb55ee495a9a9c4b8e2538dbadcbac3ad19af5bf2"
+    },
+    {
+      "path": "assets/characters/adrian_reference_adrian_swept_strands.png",
+      "bytes": 5902,
+      "sha256": "b4192739273d97ef7968dbaaf59f998c1ec8b0adeb56b2bc015240a237254312"
+    },
+    {
+      "path": "assets/characters/adrian_reference_hero_leather_albedo.png",
+      "bytes": 131539,
+      "sha256": "f30507af3f5fc627800e64ec0a108d3b50733aa17a9ad5484f9351dfc2b95c9f"
+    },
+    {
+      "path": "assets/characters/adrian_reference_hero_leather_roughness.png",
+      "bytes": 302482,
+      "sha256": "03b7873ddef0a4fe1fa45899d569ebcfc8832864c6d4283cedc0dfc73de78010"
+    },
+    {
       "path": "assets/characters/adrian_signature.glb",
       "bytes": 5969560,
       "sha256": "93de875c70f38317a62b81da4e79ac4760e1b0a509292a407f7a344e6150c894"
+    },
+    {
+      "path": "assets/characters/adrian_signature_Image_0.jpg",
+      "bytes": 151894,
+      "sha256": "d3ac793327fd43d6d545fabdb55ee495a9a9c4b8e2538dbadcbac3ad19af5bf2"
     },
     {
       "path": "assets/characters/adrian_signature_hero_leather_albedo.png",
@@ -186,19 +496,9 @@
       "sha256": "ec602319ed2bf202915932808881bb0069d33aed2a352ebbfb508fb2dd66a66b"
     },
     {
-      "path": "assets/characters/adrian_signature_Image_0.jpg",
-      "bytes": 151894,
-      "sha256": "d3ac793327fd43d6d545fabdb55ee495a9a9c4b8e2538dbadcbac3ad19af5bf2"
-    },
-    {
       "path": "assets/characters/npc_dante.glb",
       "bytes": 5350356,
       "sha256": "7941ad300c7e5234ec3a9b8bef9e6fe6628af01c7ed93641e276f7b0f0bad0ae"
-    },
-    {
-      "path": "assets/characters/npc_dante_dante_outfit.png",
-      "bytes": 802480,
-      "sha256": "afeb1c9eaea9c0f13ff559122413c25585a88f098f6fdfc0f135800655449ec3"
     },
     {
       "path": "assets/characters/npc_dante_Image_0.jpg",
@@ -206,14 +506,14 @@
       "sha256": "d3ac793327fd43d6d545fabdb55ee495a9a9c4b8e2538dbadcbac3ad19af5bf2"
     },
     {
+      "path": "assets/characters/npc_dante_dante_outfit.png",
+      "bytes": 802480,
+      "sha256": "afeb1c9eaea9c0f13ff559122413c25585a88f098f6fdfc0f135800655449ec3"
+    },
+    {
       "path": "assets/characters/npc_delivery.glb",
       "bytes": 5297740,
       "sha256": "a5e2a44ad8758b7fb4556337af38746ef0d4d6920ff7f791e4baf6cf68ddb40a"
-    },
-    {
-      "path": "assets/characters/npc_delivery_delivery_outfit.png",
-      "bytes": 760622,
-      "sha256": "07f5c0bab970aa65157d03f7c2457d4b5fd90e2dd9026abce41840aa75b51e5a"
     },
     {
       "path": "assets/characters/npc_delivery_Image_0.jpg",
@@ -221,19 +521,24 @@
       "sha256": "d3ac793327fd43d6d545fabdb55ee495a9a9c4b8e2538dbadcbac3ad19af5bf2"
     },
     {
+      "path": "assets/characters/npc_delivery_delivery_outfit.png",
+      "bytes": 760622,
+      "sha256": "07f5c0bab970aa65157d03f7c2457d4b5fd90e2dd9026abce41840aa75b51e5a"
+    },
+    {
       "path": "assets/characters/npc_faction.glb",
       "bytes": 4983204,
       "sha256": "38fd7a880a2b8a1e90a35120e02f1f341519cc5aadfbfd456086bbd8e77d2388"
     },
     {
-      "path": "assets/characters/npc_faction_faction_outfit.png",
-      "bytes": 454093,
-      "sha256": "7ae48de65890edd1e64d447c6a17e03f5571681223c7cd105ccaf9c4853ca536"
-    },
-    {
       "path": "assets/characters/npc_faction_Image_0.jpg",
       "bytes": 151894,
       "sha256": "d3ac793327fd43d6d545fabdb55ee495a9a9c4b8e2538dbadcbac3ad19af5bf2"
+    },
+    {
+      "path": "assets/characters/npc_faction_faction_outfit.png",
+      "bytes": 454093,
+      "sha256": "7ae48de65890edd1e64d447c6a17e03f5571681223c7cd105ccaf9c4853ca536"
     },
     {
       "path": "assets/characters/npc_pedestrian.glb",
@@ -426,6 +731,11 @@
       "sha256": "6985e0782adb226423d81cdd080b0e06012fdfb20eb3952d2459218fdd3977e9"
     },
     {
+      "path": "assets/textures/adrian_swept_strands.png",
+      "bytes": 5902,
+      "sha256": "b4192739273d97ef7968dbaaf59f998c1ec8b0adeb56b2bc015240a237254312"
+    },
+    {
       "path": "assets/textures/asphalt_diff.jpg",
       "bytes": 3075676,
       "sha256": "28f5ba8690553f192c0e5e1a5ff40f34765b4b93f4cc7059b1a3e9c795b6c28c"
@@ -466,9 +776,24 @@
       "sha256": "ec602319ed2bf202915932808881bb0069d33aed2a352ebbfb508fb2dd66a66b"
     },
     {
+      "path": "assets/vehicles/harrier_bike.glb",
+      "bytes": 343516,
+      "sha256": "65ba324b1aa881be5214e9ebd9f5a06e12ba369cea404a1fc86abc53139a2bd1"
+    },
+    {
+      "path": "assets/vehicles/harrier_wheel.glb",
+      "bytes": 157868,
+      "sha256": "6926fd7338c97072ab0c8530500e452eb55bd9ca888440b43618f5629d9f61b3"
+    },
+    {
       "path": "assets/vehicles/sable_body.glb",
       "bytes": 481452,
       "sha256": "437fa50273ce56a2ec10d51576cdca388c2b57124fdf77765711ec0e8f6c4c87"
+    },
+    {
+      "path": "assets/vehicles/sable_interactive.glb",
+      "bytes": 585928,
+      "sha256": "0d42bd155ef7fa6a37bf8d1c77db4bf8f9c343c7e8ca5c15ed3e34d19360f16b"
     },
     {
       "path": "assets/vehicles/sable_wheel.glb",
@@ -484,61 +809,6 @@
       "path": "assets/vehicles/steering.glb",
       "bytes": 54320,
       "sha256": "bcb0e0e4126a56224b97d4ed1753ce47df71a3799ec8ee685a36984546ca33a7"
-    },
-    {
-      "path": "art/source/adrian.blend",
-      "bytes": 11731585,
-      "sha256": "768d0e174062f659589ed61f8a793b39e579aa3759c0875e4d9469107ba96e49"
-    },
-    {
-      "path": "art/source/adrian_signature.blend",
-      "bytes": 16176355,
-      "sha256": "853c84e4d3e25ad9f8cabd80f92029502d768f51be5d35eeebc241ad2301287b"
-    },
-    {
-      "path": "art/source/camper-cc0.glb",
-      "bytes": 3062188,
-      "sha256": "940444190abb1f3731675678277e9c3f27be1783966987f0a02ccd9fd1405193"
-    },
-    {
-      "path": "art/source/container.blend",
-      "bytes": 1430222,
-      "sha256": "f77e73b6d55973c5b36d1f033fec00f644e51cefb6ccc07194184a16d867e1ae"
-    },
-    {
-      "path": "art/source/crane.blend",
-      "bytes": 912280,
-      "sha256": "5edecd217be63fef33e72cec3d65ee5e5935782847f83d64025a937a6108d4ec"
-    },
-    {
-      "path": "art/source/forklift.blend",
-      "bytes": 622941,
-      "sha256": "7f81fe335b9488ed70c652bacac36ab9721cdd46fcaee6141e37bfd6cfc0da49"
-    },
-    {
-      "path": "art/source/sable_body.blend",
-      "bytes": 1157295,
-      "sha256": "a219e27be53f53f3a077ee7c6e497a74fe8c7395e6e71447aa5f064509676834"
-    },
-    {
-      "path": "art/source/warehouse.blend",
-      "bytes": 2271189,
-      "sha256": "8622d7e262232f3e4276d4ef0db5f5f43120218ee57aad281154590c0b743a6a"
-    },
-    {
-      "path": "art/source/warehouse_realism_0.blend",
-      "bytes": 2839748,
-      "sha256": "3b3950a2f1bebe2aeb3926b7d3caf007456b6ad3367199df098231159829d713"
-    },
-    {
-      "path": "art/source/warehouse_realism_1.blend",
-      "bytes": 3067619,
-      "sha256": "592ae646f8bc4c4d37ef410403bdfb6ebadc1b52a370f31cef782efd3b81c5b2"
-    },
-    {
-      "path": "art/source/warehouse_realism_2.blend",
-      "bytes": 3054704,
-      "sha256": "ce349978c64d86e6aadcc4a5d502ad2da2b65f9bb46f7699581a55ce538c2c78"
     }
   ],
   "realism_refinement": {
@@ -660,5 +930,12 @@
       "collision_complete_cloth": false
     },
     "voices": "See assets/licenses/neural-voice-provenance.json; current playable dialogue replaces earlier eSpeak draft output with offline Kokoro WAVs."
+  },
+  "reference_mobility": {
+    "hero": "Separate adrian_reference.glb and editable source; user reference inspected, image not redistributed; previous signature retained",
+    "hair": "176 swept ribbons and 14 small curved opaque locks, scalp-only underlayer; bounded compatible chains",
+    "vehicles": "Original Sable door separation and Harrier two-wheel prototype authored by art/build_sable_doors.py and art/build_motorcycle.py",
+    "audio": "40 Kenney CC0 curated movement WAVs; source/output hashes and processing in movement-audio-provenance.json. Original synthetic bike loop.",
+    "limitations": "Prototype art and assisted balance, no premium/photorealism claim. No alternate tank-top or completed Mission02 runtime."
   }
 }

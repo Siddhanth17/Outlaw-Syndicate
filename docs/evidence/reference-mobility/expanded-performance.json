@@ -1,0 +1,13 @@
+{
+	"average_fps": 241.551205190586,
+	"frames": 725,
+	"global_ambient_population": 12,
+	"max_ms": 8.411,
+	"mean_ms": 4.13990896551724,
+	"p95_ms": 6.102,
+	"phase": "west freight sidewalk traversal",
+	"quality": "Balanced",
+	"resolution": "1920x1080",
+	"scope": "Uncapped short 3-second sample in expanded west district, no capture encoding during measurement; not sustained thermal profiling",
+	"video_memory_bytes": 967090848.0
+}

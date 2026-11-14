@@ -55,6 +55,7 @@ func surface(at: Vector3, size: Vector2, kind: String, tint: Color, scale_uv: fl
 		model.material_override = road
 	add_child(model)
 	model.position = at
+	MovementAudio.region(self, at+Vector3.UP*0.012, Vector3(size.x,0.02,size.y), "asphalt" if kind == "asphalt" else "concrete")
 	return model
 
 func _ready() -> void:
@@ -164,6 +165,7 @@ func _ready() -> void:
 	add_child(skyline)
 	for at: Vector3 in [Vector3(2, 0.023, -20), Vector3(-3, 0.023, -75), Vector3(4, 0.023, -125)]:
 		asset("environment/manhole", at)
+		MovementAudio.region(self,at+Vector3.UP*0.035,Vector3(0.62,0.02,0.62),"metal")
 	for i: int in range(14):
 		asset("environment/drain", Vector3(7.75, 0.025, 30 - i * 14))
 	for at: Vector3 in [Vector3(18, 0.1, -26), Vector3(-19, 0.1, -91), Vector3(18, 0.1, -135)]:
@@ -204,6 +206,7 @@ func _ready() -> void:
 		sign.pixel_size = 0.009
 		sign.modulate = Color(0.8, 0.72, 0.48)
 		add_child(sign)
+	_expand_district()
 	var probe := ReflectionProbe.new()
 	probe.position = Vector3(0, 4, -48)
 	probe.size = Vector3(35, 16, 130)
@@ -273,6 +276,7 @@ func attached_solid(model: Node3D, center: Vector3, size: Vector3) -> StaticBody
 func movable_cargo(at: Vector3, yaw: float = 0) -> RigidBody3D:
 	var body := RigidBody3D.new()
 	body.mass = 85
+	body.set_meta("foot_surface","wood")
 	body.collision_layer = CollisionLayers.PROP
 	body.collision_mask = CollisionLayers.SOLIDS
 	body.continuous_cd = true
@@ -296,3 +300,59 @@ func movable_cargo(at: Vector3, yaw: float = 0) -> RigidBody3D:
 func pause_props(value: bool) -> void:
 	for body: RigidBody3D in physical_props:
 		if is_instance_valid(body): body.freeze = value
+
+# Reuse authored industrial meshes; visible roads are textured, collision stays simple.
+func _expand_district() -> void:
+	solid(Vector3(-35,-0.53,-80),Vector3(260,1,340))
+	surface(Vector3(-35,-0.025,-80),Vector2(260,340),"concrete",Color(0.38,0.43,0.45),3,0.85)
+	var roads: Array = [
+		[Vector3(-70,0.027,-60),Vector2(14,270)],
+		[Vector3(72,0.027,-60),Vector2(14,270)],
+		[Vector3(0,0.03,58),Vector2(158,14)],
+		[Vector3(0,0.03,-176),Vector2(158,14)],
+		[Vector3(-35,0.028,-19.5),Vector2(58,4)],
+		[Vector3(37,0.028,-106.5),Vector2(58,4)]]
+	for spec: Array in roads:
+		surface(spec[0],spec[1],"asphalt",Color(0.44,0.50,0.54),3,0.5)
+	for x: float in [-80,82]:
+		solid(Vector3(x,0.05,-60),Vector3(4,0.1,260))
+		surface(Vector3(x,0.107,-60),Vector2(4,260),"concrete",Color(0.56,0.58,0.58),2,0.8)
+	for spec: Array in [[-104.0,26.0],[-104.0,-38.0],[-104.0,-110.0],[106.0,-28.0],[106.0,-112.0]]:
+		var building:=asset("environment/warehouse_realism_%d"%(shutters.size()%3),Vector3(spec[0],0,spec[1]),PI/2 if spec[0]<0 else -PI/2)
+		_weather_building(building,shutters.size())
+		shutters.append(building)
+		solid(building.position+Vector3.UP*3.5,Vector3(16,7,24))
+	for x: float in [-70,72]:
+		for z: float in [58,8,-52,-112,-176]:
+			asset("environment/streetlamp",Vector3(x-8,0,z),PI/2)
+			var light:=OmniLight3D.new()
+			light.position=Vector3(x-7,6.9,z)
+			light.light_color=Color(1,0.56,0.30)
+			light.light_energy=5
+			light.omni_range=18
+			light.distance_fade_enabled=true
+			light.distance_fade_begin=45
+			light.distance_fade_length=15
+			add_child(light)
+			local_lights.append(light)
+	for i: int in range(12):
+		var at:=Vector3(-48+(i%3)*3.4,(i/6)*2.6,-65-(i%6)*8)
+		asset("environment/container",at)
+		solid(at+Vector3.UP*1.3,Vector3(2.45,2.6,6.1))
+	for i: int in range(8):
+		var fence:=asset("environment/fence",Vector3(-87,0,-55-i*4),PI/2)
+		attached_solid(fence,Vector3(0,1.3,0),Vector3(4.1,2.6,0.16))
+	for at: Vector3 in [Vector3(-88,0,-38),Vector3(89,0,-114)]:
+		var forklift:=asset("environment/forklift",at,PI/2)
+		attached_solid(forklift,Vector3(0,1,0),Vector3(1.45,2,2.2))
+	for spec: Array in [["WEST FREIGHT / CROSS MOTOR WORKS",Vector3(-70,4,51)],["QUAY SERVICE ROAD",Vector3(72,4,-164)],["NORTH TRANSFER / BROKEN TRUST",Vector3(-55,3,-19.5)]]:
+		var sign:=Label3D.new()
+		sign.text=spec[0]
+		sign.position=spec[1]
+		sign.font_size=48
+		sign.pixel_size=0.009
+		sign.no_depth_test=false
+		add_child(sign)
+	# Explicit acoustic surface tags at existing loading aprons, not coordinate guesses in the player.
+	MovementAudio.region(self,Vector3(17,0.055,-95),Vector3(10,0.04,12),"warehouse")
+	MovementAudio.region(self,Vector3(-103,0.055,-56),Vector3(12,0.04,8),"warehouse")

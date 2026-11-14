@@ -1,0 +1,23 @@
+{
+  "date": "2026-11-14",
+  "pass_counts": {
+    "source": 223,
+    "mobility_export": 54,
+    "city_export": 68,
+    "physics_acting_export": 50,
+    "mission_export": 14
+  },
+  "failures": 0,
+  "exit_codes": 0,
+  "files": {
+    "OutlawSyndicate.exe": {
+      "bytes": 104578048,
+      "sha256": "f9cb815a32a1ae3a73ad8699ed2b068cb76fe01636d7e8538243056fac05f37b"
+    },
+    "OutlawSyndicate.pck": {
+      "bytes": 133751616,
+      "sha256": "fefb6f31faf47b1fbc4c946e77ba86408638d8d9685b2031fa468bffde66310f"
+    }
+  },
+  "limits": "Partial prototype art/animation/balance; no M2 runtime, foot IK or articulated ragdolls; intermittent shutdown resource diagnostic, seven prior Texture RID warnings"
+}

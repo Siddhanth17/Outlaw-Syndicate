@@ -1,11 +1,14 @@
 extends Node3D
 
 const SAVE_PATH: String = "user://veyra-save.json"
+var vehicle_transition: VehicleTransition
 var events: CityEvents
 var navigation: CityNavigation
 var people: Array[CityNPC]=[]
 var memory := CityMemory.new()
 var player: ValePlayer
+var parked_vehicles: Array[VeyraCar]=[]
+var bike: HarborMotorcycle
 var car: VeyraCar
 var ui: GameHUD
 var harbor: IronHarbor
@@ -23,6 +26,7 @@ var reserve: int = 72
 var reload_time: float = 0
 var quality: int = 1
 var dialogue_volume: float=-6
+var movement_volume: float=-5
 var subtitles_enabled: bool = true
 var cinematic_active: bool = false
 var cinematic_time: float = 0
@@ -56,6 +60,16 @@ func _ready() -> void:
 	car.rotation.y = PI
 	add_child(car)
 	car.crashed.connect(_on_crash)
+	bike=HarborMotorcycle.new()
+	bike.game=self
+	bike.position=Vector3(-5,0.8,10)
+	add_child(bike)
+	for location: Vector3 in [Vector3(-87,0.9,12),Vector3(86,0.9,-72)]:
+		var parked:=VeyraCar.new()
+		parked.position=location
+		parked.rotation.y=PI/2
+		add_child(parked)
+		parked_vehicles.append(parked)
 	ui = GameHUD.new()
 	add_child(ui)
 	ui.command.connect(_menu_action)
@@ -94,6 +108,9 @@ func _ready() -> void:
 	dialogue_director = DialogueDirector.new()
 	dialogue_director.game = self
 	add_child(dialogue_director)
+	vehicle_transition=VehicleTransition.new()
+	vehicle_transition.game=self
+	add_child(vehicle_transition)
 	_load_settings()
 	call_deferred("_populate_city")
 	ambience = AudioStreamPlayer.new()
@@ -105,6 +122,11 @@ func _ready() -> void:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	else:
 		_set_pause(true, "main")
+	if OS.get_cmdline_user_args().has("--verify-mobility"):
+		var validation:=MobilityValidation.new()
+		validation.game=self
+		add_child(validation)
+		validation.call_deferred("run")
 	if OS.get_cmdline_user_args().has("--verify-city"):
 		var validation:=LivingValidation.new()
 		validation.game=self
@@ -163,6 +185,9 @@ func _menu_action(title: String) -> void:
 			reload_time = 0
 			cooldown = 0
 			_leave_car(true)
+			bike.position=Vector3(-5,0.8,10)
+			bike.linear_velocity=Vector3.ZERO
+			bike.angular_velocity=Vector3.ZERO
 			player.position = Vector3(0, 1, 12)
 			player.velocity = Vector3.ZERO
 			player.health = 100
@@ -191,10 +216,14 @@ func _menu_action(title: String) -> void:
 			get_tree().change_scene_to_file("res://scenes/driving_course.tscn")
 		"Crash Test Facility":
 			get_tree().change_scene_to_file("res://scenes/crash_facility.tscn")
+		"Movement Audio Laboratory":
+			get_tree().change_scene_to_file("res://scenes/movement_audio_lab.tscn")
 		"Living City Laboratory":
 			get_tree().change_scene_to_file("res://scenes/living_city_lab.tscn")
 		"Human Motion Laboratory":
 			get_tree().change_scene_to_file("res://scenes/human_motion_laboratory.tscn")
+		"Movement volume +": movement_volume=minf(0,movement_volume+2)
+		"Movement volume -": movement_volume=maxf(-40,movement_volume-2)
 		"Dialogue volume +": dialogue_volume=minf(0,dialogue_volume+2)
 		"Dialogue volume -": dialogue_volume=maxf(-30,dialogue_volume-2)
 		"Sensitivity +": player.sensitivity = minf(0.01, player.sensitivity + 0.0005)
@@ -207,6 +236,7 @@ func _menu_action(title: String) -> void:
 		"Exit": get_tree().quit()
 	harbor.preset(quality)
 	dialogue_director.audio.volume_db=dialogue_volume
+	player.movement_audio.volume_db=movement_volume
 	_save_settings()
 
 func _set_pause(value: bool, screen: String = "pause") -> void:
@@ -215,7 +245,12 @@ func _set_pause(value: bool, screen: String = "pause") -> void:
 	harbor.pause_props(paused or cinematic_active)
 	player.set_physics_process(not paused and not cinematic_active)
 	car.set_physics_process(not paused and not cinematic_active)
-	car.freeze = paused or cinematic_active
+	car.freeze = paused or cinematic_active or (is_instance_valid(vehicle_transition) and vehicle_transition.active)
+	for parked: VeyraCar in parked_vehicles:
+		parked.freeze=paused or cinematic_active
+		parked.set_physics_process(not paused and not cinematic_active)
+	bike.freeze=paused or cinematic_active or bike.mounting
+	bike.set_physics_process(not paused and not cinematic_active)
 	ui.show_screen(screen if paused else "")
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if paused else Input.MOUSE_MODE_CAPTURED
 
@@ -244,6 +279,8 @@ func _reload() -> void:
 		sound("reload", player.position)
 
 func _fire() -> void:
+	if player.riding_bike or bike.mounting:return
+	if is_instance_valid(vehicle_transition) and vehicle_transition.active:return
 	if cooldown > 0 or reload_time > 0 or player.driving:
 		return
 	if ammunition <= 0:
@@ -318,7 +355,7 @@ func _process(delta: float) -> void:
 			var amount: int = mini(12 - ammunition, reserve)
 			ammunition += amount
 			reserve -= amount
-	if player.driving:
+	if player.driving and not vehicle_transition.active:
 		player.global_position = car.global_position + Vector3(0, 0.4, 0)
 		player.visual.global_transform = car.global_transform * Transform3D(Basis.IDENTITY, Vector3(-0.38, -0.8, 0))
 	if player.dynamics:
@@ -358,9 +395,19 @@ func _process(delta: float) -> void:
 		ui.prompt.text = "[E] Drive Sable GT"
 	elif marker.visible and player.position.distance_to(marker.position) < 5:
 		ui.prompt.text = "[E] Interact"
-	ui.crosshair.visible = player.aiming and not player.driving
+	if vehicle_transition.active: ui.prompt.text="Vehicle interaction: "+vehicle_transition.phase
+	if player.riding_bike:
+		ui.ammo.text="HARRIER / %03d KM/H"%int(bike.linear_velocity.length()*3.6)
+		ui.prompt.text="[E] Dismount Harrier" if bike.linear_velocity.length()<2 else ""
+	elif not player.driving and player.position.distance_to(bike.position)<3:
+		ui.prompt.text="[E] Ride Harrier motorcycle"
+	ui.crosshair.visible = player.aiming and not player.driving and not player.riding_bike
 
 func _interact() -> void:
+	if vehicle_transition.active or bike.mounting:return
+	if bike.rider!=null:
+		bike.interact()
+		return
 	if memory.stage < mission.stages.size():
 		var stage: Dictionary = mission.stages[memory.stage]
 		var at := Vector3(stage.position[0], player.position.y, stage.position[2])
@@ -373,22 +420,37 @@ func _interact() -> void:
 			_advance()
 			if greeting and not test_mode: dialogue_director.start(false)
 			return
+	if not player.driving and player.position.distance_to(bike.position)<3 and player.position.distance_to(bike.position)<player.position.distance_to(car.position):
+		bike.interact()
+		return
 	if player.driving:
 		if car.linear_velocity.length() < 3:
 			_leave_car()
 	elif player.position.distance_to(car.position) < 5:
-		player.driving = true
-		player.vehicle = car
-		player.visual.show()
-		player.perform("Drive", 99999)
-		if player.dynamics: player.dynamics.reset_state()
-		player.collision_layer = 0
-		player.collision_mask = 0
-		player.arm.add_excluded_object(car.get_rid())
-		car.occupied = true
-		player.camera_manual_time = 1.5
+		if not test_mode or vehicle_transition.force_animation:
+			vehicle_transition.begin(true)
+		else: _enter_car_immediate()
+
+func _enter_car_immediate() -> void:
+	player.driving = true
+	player.vehicle = car
+	player.visual.show()
+	player.perform("Drive", 99999)
+	if player.dynamics: player.dynamics.reset_state()
+	player.collision_layer = 0
+	player.collision_mask = 0
+	player.arm.add_excluded_object(car.get_rid())
+	car.occupied = true
+	player.camera_manual_time = 1.5
 
 func _leave_car(force: bool = false) -> void:
+	if force and is_instance_valid(bike) and bike.rider!=null:bike.release()
+	if is_instance_valid(vehicle_transition):
+		if force: vehicle_transition.cancel()
+		elif vehicle_transition.active:return
+		elif player.driving and (not test_mode or vehicle_transition.force_animation):
+			vehicle_transition.begin(false)
+			return
 	if player.driving and not force:
 		var found: bool = false
 		for side: float in [2.0, -2.0, 2.8, -2.8]:
@@ -521,6 +583,7 @@ func _end_cinematic() -> void:
 
 func _save_settings() -> void:
 	var config := ConfigFile.new()
+	config.set_value("audio","movement_db",movement_volume)
 	config.set_value("audio","dialogue_db",dialogue_volume)
 	config.set_value("graphics", "preset", quality)
 	config.set_value("controls", "sensitivity", player.sensitivity)
@@ -531,6 +594,7 @@ func _save_settings() -> void:
 func _load_settings() -> void:
 	var config := ConfigFile.new()
 	if config.load("user://settings.cfg") == OK:
+		movement_volume=clampf(float(config.get_value("audio","movement_db",-5)),-40,0)
 		dialogue_volume=clampf(float(config.get_value("audio","dialogue_db",-6)),-30,0)
 		quality = clampi(int(config.get_value("graphics", "preset", 1)), 0, 2)
 		player.sensitivity = clampf(float(config.get_value("controls", "sensitivity", 0.0025)), 0.0005, 0.01)
@@ -538,14 +602,24 @@ func _load_settings() -> void:
 		player.reduced_shake = bool(config.get_value("accessibility", "reduced_shake", true))
 	harbor.preset(quality)
 	dialogue_director.audio.volume_db=dialogue_volume
+	player.movement_audio.volume_db=movement_volume
 
 func _save() -> void:
+	if vehicle_transition.active or bike.mounting:
+		_say("Checkpoint","Finish the vehicle interaction before saving.")
+		return
 	var data := memory.snapshot()
 	var outcomes: Dictionary={}
 	for citizen: CityNPC in people: outcomes[citizen.npc_id]={"health":citizen.health,"injuries":citizen.injuries.snapshot()}
 	if dante is CityNPC: outcomes[dante.npc_id]={"health":dante.health,"injuries":dante.injuries.snapshot()}
 	data["npc_outcomes"]=outcomes
 	data["player"] = [player.position.x, player.position.y, player.position.z]
+	data["bike"]=[bike.position.x,bike.position.y,bike.position.z]
+	data["bike_yaw"]=bike.rotation.y
+	if player.riding_bike:
+		var safe: Variant=bike.outside_point()
+		var point: Vector3=safe if safe!=null else bike.position+Vector3.LEFT*2
+		data["player"]=[point.x,point.y,point.z]
 	data["car"] = [car.position.x, car.position.y, car.position.z]
 	data["car_yaw"] = car.rotation.y
 	data["integrity"] = car.integrity
@@ -585,6 +659,13 @@ func _load() -> void:
 					valid = false
 		if not valid or not memory.restore(data): continue
 		_leave_car(true)
+		var bike_at: Variant=data.get("bike")
+		if bike_at is Array and bike_at.size()==3 and bike_at.all(func(v: Variant) -> bool: return (v is float or v is int) and is_finite(float(v)) and absf(float(v))<10000):
+			bike.position=Vector3(bike_at[0],bike_at[1]+0.05,bike_at[2])
+			var saved_yaw: float=float(data.get("bike_yaw",0))
+			bike.rotation.y=saved_yaw if is_finite(saved_yaw) else 0
+			bike.linear_velocity=Vector3.ZERO
+			bike.angular_velocity=Vector3.ZERO
 		var p: Array = data.player
 		var c: Array = data.car
 		car.position = Vector3(float(c[0]), float(c[1]) + 0.15, float(c[2]))
@@ -626,7 +707,7 @@ func _exit_tree() -> void:
 
 func _notification(what: int) -> void:
 	if not is_instance_valid(player): return
-	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and not test_mode and not OS.get_cmdline_user_args().has("--verify-physics") and not OS.get_cmdline_user_args().has("--verify-mission") and not OS.get_cmdline_user_args().has("--verify-city"):
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and not test_mode and not OS.get_cmdline_user_args().has("--verify-physics") and not OS.get_cmdline_user_args().has("--verify-mission") and not OS.get_cmdline_user_args().has("--verify-city") and not OS.get_cmdline_user_args().has("--verify-mobility"):
 		if not paused: _set_pause(true)
 
 func _on_crash(point: Vector3, speed: float) -> void:
@@ -648,7 +729,11 @@ func _populate_city() -> void:
 		["quay_security_01","security",Vector3(-18,0.1,-40),Vector3(-18,0.1,-55)],
 		["officer_01","police",Vector3(-10,0.2,24),Vector3(-10,0.2,38)],
 		["faction_01","faction",Vector3(-18,0.1,-125),Vector3(-18,0.1,-144)],
-		["vendor_01","shopkeeper",Vector3(-10,0.2,-34),Vector3(-10,0.2,-36)]]
+		["vendor_01","shopkeeper",Vector3(-10,0.2,-34),Vector3(-10,0.2,-36)],
+		["west_worker_01","industrial_worker",Vector3(-80,0.2,30),Vector3(-80,0.2,6)],
+		["west_supervisor_01","dock_supervisor",Vector3(-83,0.2,-50),Vector3(-83,0.2,-68)],
+		["quay_delivery_01","delivery_driver",Vector3(82,0.2,-75),Vector3(82,0.2,-100)],
+		["quay_worker_01","industrial_worker",Vector3(85,0.2,-128),Vector3(85,0.2,-145)]]
 	for spec: Array in definitions:
 		var actor:=CityNPC.new()
 		actor.game=self

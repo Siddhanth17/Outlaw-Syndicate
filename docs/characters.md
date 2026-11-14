@@ -1,3 +1,5 @@
+Separate adrian_reference.glb now follows the inspected local user reference with swept half-tied dark hair, small jaw/torso changes and retained leather outfit. Existing signature/base/NPC art is preserved. Reference-quality face/hands/groom and tank-top variant remain incomplete.
+
 Current character status: separate signature Adrian jacket/hair prototype, nine curated male NPC derivatives and fixed Dante. Coarse face/hands and groom remain below reference quality; other principal cast visual assets are not complete. Eight stock neural voice profiles exist. See living-city-signature-report.md.
 
 # Character direction — planned
