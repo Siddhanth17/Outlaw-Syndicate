@@ -222,7 +222,9 @@ func run() -> void:
 		check(path.size()>20,"expanded road network has a connected pedestrian route to "+str(endpoint))
 	check(audio.surface_at(Vector3(2,0.06,-20))=="metal","actual district manhole overrides road acoustics")
 	check(game.harbor.physical_props[0].get_meta("foot_surface","")=="wood","movable wooden cargo carries its own acoustic material")
-	check(game.people.size()==12,"expanded district adds four routed industrial actors")
+	var industrial_ids: Array[String]=[]
+	for citizen: CityNPC in game.people: industrial_ids.append(citizen.npc_id)
+	check(["west_worker_01","west_supervisor_01","quay_delivery_01","quay_worker_01"].all(func(id: String) -> bool:return industrial_ids.has(id)),"expanded district retains all four routed industrial actors")
 	game.cine_camera.current=true
 	game.cine_camera.position=Vector3(-45,42,86)
 	game.cine_camera.fov=65

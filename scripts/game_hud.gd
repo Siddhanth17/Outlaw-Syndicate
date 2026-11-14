@@ -130,7 +130,7 @@ func show_screen(screen: String) -> void:
 	match screen:
 		"main": actions = ["New game", "Continue", "Driving course", "Crash Test Facility", "Living City Laboratory", "Articulated Physics Laboratory", "Movement Audio Laboratory", "Human Motion Laboratory", "Settings", "Controls", "Credits", "Exit"]
 		"pause": actions = ["Resume", "Save checkpoint", "Load checkpoint", "Settings", "Controls", "Main menu", "Exit"]
-		"settings": actions = ["Graphics: Low", "Graphics: Balanced", "Graphics: High", "Sensitivity +", "Sensitivity -", "Phone key: Tab", "Phone key: O", "Dialogue volume +", "Dialogue volume -", "Movement volume +", "Movement volume -", "Impact effects: Off", "Impact effects: Low", "Impact effects: Normal", "Subtitles toggle", "Reduced shake toggle", "Back"]
+		"settings": actions = ["Graphics: Low", "Graphics: Balanced", "Graphics: High", "Time: Day", "Time: Night", "Sensitivity +", "Sensitivity -", "Phone key: Tab", "Phone key: O", "Dialogue volume +", "Dialogue volume -", "Movement volume +", "Movement volume -", "Impact effects: Off", "Impact effects: Low", "Impact effects: Normal", "Subtitles toggle", "Reduced shake toggle", "Back"]
 		"controls":
 			var controls := label("WASD / Left stick — walk or drive\nMouse / Right stick — look\nShift — sprint    Space / A — jump or brake\nE / Y — interact or enter / exit vehicle\nRight mouse — aim    Left mouse / RB — fire\nR / X — reload    Esc / Start — pause\nTab — phone (on foot)\nF5 — save    F9 — load\nEnter / A — skip cinematic\n\nExit a vehicle only when moving slowly.", 17)
 			modal_column.add_child(controls)

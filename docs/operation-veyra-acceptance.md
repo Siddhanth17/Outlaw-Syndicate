@@ -1,0 +1,12 @@
+# Manual acceptance route — 20–30 minute target, NOT RUN
+
+This is a repeatable checklist for a human tester, not a completed 30-minute playtest. Use a separate save profile and the versioned Operation Veyra build. Record actual duration, hardware, settings, failures and video. Automated suites supplement rather than replace it.
+
+1. (0–3 min) New Game; confirm free roam, no forced mission. **Starting safehouse absent: FAIL/NOT IMPLEMENTED**, not a pass. Open/close phone with configured Tab/O, use camera/gallery, test pause focus. Greet Dante, ask about work, earn his number, call/end.
+2. (3–9 min) Walk north beyond the harbor junction into Northline; inspect four blocks, all nine junctions, front/side facades, trees, courtyard benches and shop vestibules. Test road/curb contact, camera clearance and no floating facade parts. Change Day/Night in Settings. **Purchasing an item and working new business absent**.
+3. (9–15 min) Drive Sable through north-south streets and both new cross streets. Observe physical traffic stops/signals/turns. Park safely to observe named citizens at work/break/home times. Note lane drift, collisions and signal visibility. No requirement is passed merely because traffic nodes exist.
+4. (15–19 min) Return to Dante with a damaged Sable; pay for repair, confirm real condition/cash change, refuse repeat healthy charge and insufficient funds. Ride/dismount Harrier; inspect hands/pegs and remaining hair/grip defects. **Vehicle purchase, ATM, property purchase, police arrest/station absent**; old search/guard behavior does not substitute for these.
+5. (19–23 min) Save, move away and change time, reload; confirm cash, contact, photos, car condition, clock and optional mission state. Traverse away and back to check sector restoration without losing owned vehicles/NPC outcomes.
+6. (23–30+ min) Intentionally accept The Last Address through Messages. Complete its actual objectives with movement, vehicle and combat controls, verify reward once and save/load. Extend duration if needed; do not claim human mission time from the automated route. **Mission 02 absent**.
+
+Record average/p95/p99/max frame times during walking, traffic driving, combat and sector traversal at 1080p Balanced; report capture overhead separately. Log RAM/VRAM limits of available monitors. A short rendered driving sample does not prove sustained performance, a completed city, or a passed full route.

@@ -8,6 +8,7 @@ var shutters: Array[Node3D] = []
 var wind_strength: float = 0.8
 var wind_vector := Vector3(0.8, 0, 0.3)
 var wind_materials: Array[ShaderMaterial] = []
+var celestial: DirectionalLight3D
 
 func asset(path: String, at: Vector3, yaw: float = 0.0) -> Node3D:
 	var model: Node3D = load("res://assets/" + path + ".glb").instantiate()
@@ -86,6 +87,7 @@ func _ready() -> void:
 	environment.environment = env
 	add_child(environment)
 	var moon := DirectionalLight3D.new()
+	celestial=moon
 	moon.rotation_degrees = Vector3(-48, -22, 0)
 	moon.light_color = Color(0.34, 0.49, 0.72)
 	moon.light_energy = 0.65
@@ -160,7 +162,8 @@ func _ready() -> void:
 	for i: int in range(22):
 		var height: float = 12 + ((i * 17) % 29)
 		var basis := Basis.IDENTITY.scaled(Vector3(5 + i % 5, height, 8))
-		instances.set_instance_transform(i, Transform3D(basis, Vector3(-85 + i * 8, height / 2, -219 - (i % 3) * 12)))
+		instances.set_instance_transform(i, Transform3D(basis, Vector3(-170 + i * 16, height / 2+8, -530 - (i % 3) * 25)))
+	skyline.name="DistantBackgroundOnly"
 	skyline.multimesh = instances
 	add_child(skyline)
 	for at: Vector3 in [Vector3(2, 0.023, -20), Vector3(-3, 0.023, -75), Vector3(4, 0.023, -125)]:

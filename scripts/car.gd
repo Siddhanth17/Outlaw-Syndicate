@@ -14,6 +14,10 @@ var requested_pose: Transform3D
 var requested_velocity := Vector3.ZERO
 var reset_requested: bool = false
 var occupied: bool = false
+var autonomous: bool = false
+var ai_throttle: float = 0
+var ai_steer: float = 0
+var ai_brake: float = 35
 var integrity: float = 100
 var wheels: Array[VehicleWheel3D] = []
 var engine_audio: AudioStreamPlayer3D
@@ -133,18 +137,21 @@ func _physics_process(delta: float) -> void:
 		if get_parent().has_method("publish_city_event"): get_parent().publish_city_event("crash",to_global(hit.point),hit.speed,str(get_instance_id()))
 	pending_contacts.clear()
 	var throttle := Input.get_axis("back", "forward") if occupied and integrity > 0 else 0.0
+	if autonomous: throttle=ai_throttle if integrity>0 else 0
 	throttle_smoothed = move_toward(throttle_smoothed, throttle, delta * 2)
 	var forward_speed: float = linear_velocity.dot(global_basis.z)
 	var torque_factor: float = clampf(1 - absf(forward_speed) / 48, 0.12, 1)
 	engine_force = throttle_smoothed * 2600 * torque_factor * clampf(integrity / 100, 0, 1)
 	var target: float = Input.get_axis("right", "left") * (0.42 / (1 + linear_velocity.length() * 0.035)) if occupied else 0.0
+	if autonomous: target=ai_steer
 	var alignment: float = (float(damage.zones["front_left"]) - float(damage.zones["front_right"])) * 0.0008
 	steering = move_toward(steering, target + (alignment if occupied else 0.0), delta * 1.3)
 	steering_visual.rotation.z = -steering * 2.2
 	brake = 30 if not occupied else (55 if Input.is_action_pressed("handbrake") else 0)
+	if autonomous: brake=ai_brake
 	if occupied and throttle * forward_speed < -1:
 		brake = 40
-	brake_light.light_energy = 2.0 if brake > 0 and occupied else 0.15
+	brake_light.light_energy = 2.0 if brake > 0 and (occupied or autonomous) else 0.15
 	for wheel: VehicleWheel3D in wheels:
 		var wheel_zone: String = ("front_" if wheel.position.z > 0 else "rear_") + ("left" if wheel.position.x < 0 else "right")
 		var index: int = wheels.find(wheel)

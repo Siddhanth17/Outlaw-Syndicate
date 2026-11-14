@@ -1,14 +1,14 @@
-Latest increment: optional story acceptance from free roam, a functional first phone/contact/garage loop, and motorcycle rider contact IK. See docs/metropolis-foundation.md for scope and validation. The living-metropolis directive remains incomplete. Prior builds are preserved.
+Latest increment: Operation Veyra architecture rescue: four Northline blocks, detailed original frontages, signal-controlled two-car traffic prototype, shared lighting clock, four named scheduled citizens and initial visual-sector streaming. Full sprint status and resume instructions: docs/OPERATION_VEYRA_PROGRESS.md. The 12-block metropolis and wider campaign remain incomplete.
 
 # OUTLAW SYNDICATE
 
 Godot 4.6 / Jolt, Windows-first third-person crime game in active production.
 
-**Current build: metropolis foundation increment. Existing harbor and one short optional opening mission; the large city and campaign remain unfinished.**
+**Current build: Operation Veyra architecture increment. Existing harbor plus four urban blocks and one optional opening mission; not the completed metropolis.**
 
 ## Play the new build
 
-On this development machine run `D:/OutlawSyndicate/builds/metropolis-foundation/OutlawSyndicate.exe` with its adjacent PCK file. The previous build remains in `builds/articulated-physics`. Binaries are local artifacts, not committed downloads.
+On this development machine run `D:/OutlawSyndicate/builds/operation-veyra-architecture/OutlawSyndicate.exe` with its adjacent PCK. Previous builds remain in `builds/metropolis-foundation` and `builds/articulated-physics`. From the harbor, turn north and continue past the northern junction into Northline. Settings > Time: Day / Night controls the shared world clock. New shopfronts have walkable vestibules but do not yet sell items. Binaries are local artifacts, not committed downloads.
 
 Choose **New game** for harbor free roam. On foot, Tab > Messages > Accept intentionally starts The Last Address. E near Dante in free roam opens conversation: greet, ask about work, then request his number. Contacts supports a short voiced call. A damaged stationary Sable near the garage can be repaired for $50. Camera captures a scene PNG without HUD; Gallery browses saved captures. F5 saves the gallery index and relationship. Settings offers Tab or O for the phone. Continue restores your checkpoint.
 

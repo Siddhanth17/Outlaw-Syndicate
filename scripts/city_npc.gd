@@ -14,6 +14,20 @@ var panic_count: int = 0
 var activity: String = "routine"
 var threat := Vector3.ZERO
 var profile: Dictionary
+var daily_destinations: Dictionary={}
+var schedule_period: String=""
+var citizen_name: String=""
+
+func update_schedule() -> void:
+	if daily_destinations.is_empty():return
+	var hour: float=game.quarter.minutes/60.0
+	var period: String="break" if hour>=12 and hour<13 else ("work" if hour>=8 and hour<18 else "home")
+	if period==schedule_period:return
+	schedule_period=period
+	var at: Vector3=daily_destinations[period]
+	route=PackedVector3Array([at,at+Vector3(0,0,3)])
+	route_index=0
+	plan_time=0
 
 func _ready() -> void:
 	set_meta("protected_story",story_actor)
@@ -66,6 +80,7 @@ func _physics_process(delta: float) -> void:
 		super._physics_process(delta)
 		return
 	clock+=delta
+	update_schedule()
 	if dynamics:
 		dynamics.wind=game.harbor.wind_vector
 		dynamics.active=position.distance_to(game.player.position)<55
@@ -82,9 +97,9 @@ func _physics_process(delta: float) -> void:
 	var fleeing: bool=danger_time>0
 	if fleeing:
 		var away: Vector3=(position-threat).normalized()
-		target=Vector3(clampf(position.x+away.x*8,-115,115),position.y,clampf(position.z+away.z*8,-205,60))
+		target=Vector3(clampf(position.x+away.x*8,-115,115),position.y,clampf(position.z+away.z*8,-205,228))
 	else:
-		activity="routine"
+		activity="routine" if schedule_period.is_empty() else schedule_period
 		if position.distance_to(target)<1.0:
 			if activity_time<=0:
 				route_index=(route_index+1)%route.size()

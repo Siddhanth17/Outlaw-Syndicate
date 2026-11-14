@@ -43,6 +43,8 @@ var dialogue_director: DialogueDirector
 var dante_dynamics: HumanDynamics
 var story_active: bool = true # Legacy checkpoints keep their mission progression.
 var phone: HarborPhone
+var quarter: VeyraQuarter
+var traffic: StreetTraffic
 
 func start_story() -> void:
 	if story_active: return
@@ -75,6 +77,12 @@ func _ready() -> void:
 	bike.game=self
 	bike.position=Vector3(-5,0.8,10)
 	add_child(bike)
+	quarter=VeyraQuarter.new()
+	quarter.game=self
+	add_child(quarter)
+	traffic=StreetTraffic.new()
+	traffic.game=self
+	add_child(traffic)
 	for location: Vector3 in [Vector3(-87,0.9,12),Vector3(86,0.9,-72)]:
 		var parked:=VeyraCar.new()
 		parked.position=location
@@ -146,6 +154,11 @@ func _ready() -> void:
 		validation.game=self
 		add_child(validation)
 		validation.call_deferred("run")
+	if OS.get_cmdline_user_args().has("--verify-urban"):
+		var validation:=UrbanValidation.new()
+		validation.game=self
+		add_child(validation)
+		validation.call_deferred("run")
 	if OS.get_cmdline_user_args().has("--verify-mobility"):
 		var validation:=MobilityValidation.new()
 		validation.game=self
@@ -202,6 +215,8 @@ func _menu_action(title: String) -> void:
 		"New game":
 			phone.close()
 			story_active=false
+			quarter.minutes=1080
+			quarter.apply_clock()
 			phone.photos.clear()
 			phone.reset_social()
 			if dialogue_director.active: dialogue_director.stop()
@@ -271,6 +286,8 @@ func _menu_action(title: String) -> void:
 		"Reduced shake toggle": player.reduced_shake = not player.reduced_shake
 		"Phone key: Tab": phone.bind_key(KEY_TAB)
 		"Phone key: O": phone.bind_key(KEY_O)
+		"Time: Day": quarter.minutes=720; quarter.apply_clock()
+		"Time: Night": quarter.minutes=60; quarter.apply_clock()
 		"Exit": get_tree().quit()
 	harbor.preset(quality)
 	dialogue_director.audio.volume_db=dialogue_volume
@@ -424,9 +441,10 @@ func _process(delta: float) -> void:
 			observed = true
 	if not observed:
 		memory.heat = maxf(0, memory.heat - delta * 5)
+	var district: String="NORTHLINE" if player.position.z>65 else "IRON HARBOR"
 	if not story_active:
 		marker.hide()
-		ui.objective_title.text="IRON HARBOR / FREE ROAM"
+		ui.objective_title.text=district+" / FREE ROAM"
 		ui.objective.text="Explore at your own pace.\n[%s] Phone • choose your story"%phone.key_label()
 	elif memory.stage < mission.stages.size():
 		ui.objective_title.text="THE LAST ADDRESS"
@@ -441,7 +459,7 @@ func _process(delta: float) -> void:
 	else:
 		marker.hide()
 		ui.objective.text = "Evidence secured.\nThe Last Address complete."
-	ui.status.text = "IRON HARBOR\n$%d  /  SEARCH %d%%" % [memory.money, int(memory.heat)]
+	ui.status.text = "%s / %02d:%02d\n$%d  /  SEARCH %d%%" % [district,int(quarter.minutes)/60,int(quarter.minutes)%60,memory.money, int(memory.heat)]
 	ui.health.value = player.health
 	ui.ammo.text = ("%03d KM/H  /  %s" % [int(car.linear_velocity.length() * 3.6), car.damage_stage()]) if player.driving else ("RELOADING" if reload_time > 0 else "SIDEARM  %02d / %02d" % [ammunition, reserve])
 	ui.prompt.text = ""
@@ -675,6 +693,7 @@ func _save() -> void:
 		return
 	var data := memory.snapshot()
 	data["open_world"]={"story_active":story_active,"photos":phone.photos,"dante_social":phone.social_snapshot()}
+	data["city_minutes"]=quarter.minutes
 	var outcomes: Dictionary={}
 	for citizen: CityNPC in people: outcomes[citizen.npc_id]={"health":citizen.health,"injuries":citizen.injuries.snapshot()}
 	if dante is CityNPC: outcomes[dante.npc_id]={"health":dante.health,"injuries":dante.injuries.snapshot()}
@@ -730,6 +749,9 @@ func _load() -> void:
 		story_active=bool(world.get("story_active",true))
 		phone.restore(world.get("photos",[]))
 		phone.restore_social(world.get("dante_social",{}))
+		var saved_minutes: float=float(data.get("city_minutes",1080))
+		quarter.minutes=fposmod(saved_minutes,1440) if is_finite(saved_minutes) else 1080
+		quarter.apply_clock()
 		_leave_car(true)
 		var bike_at: Variant=data.get("bike")
 		if bike_at is Array and bike_at.size()==3 and bike_at.all(func(v: Variant) -> bool: return (v is float or v is int) and is_finite(float(v)) and absf(float(v))<10000):
@@ -814,6 +836,19 @@ func _populate_city() -> void:
 		actor.appearance_id=spec[1]
 		actor.position=spec[2]
 		actor.route=PackedVector3Array([spec[2],spec[3]])
+		add_child(actor)
+		people.append(actor)
+	for i: int in range(4):
+		var actor:=CityNPC.new()
+		actor.game=self
+		actor.npc_id="northline_citizen_%d"%i
+		actor.citizen_name=["Iris Morrow","Jonah Lin","Nadia Voss","Theo Mercer"][i]
+		actor.appearance_id=["shopkeeper","delivery_driver","pedestrian","dock_supervisor"][i]
+		var x: float=-10 if i%2==0 else 10
+		var z: float=83 if i<2 else 163
+		actor.position=Vector3(x,.2,z)
+		actor.daily_destinations={"home":Vector3(x,.2,z),"work":Vector3(x,.2,z+30),"break":Vector3(x,.2,z+15)}
+		actor.route=PackedVector3Array([actor.position,actor.position+Vector3(0,0,3)])
 		add_child(actor)
 		people.append(actor)
 
