@@ -1,6 +1,7 @@
 class_name ValePlayer
 extends CharacterBody3D
 
+var camera_input_enabled: bool = true
 var yaw: float = 0.0
 var pitch: float = -0.12
 var sensitivity: float = 0.0025
@@ -28,6 +29,8 @@ var camera_manual_time: float = 0
 var dynamics: HumanDynamics
 
 func _ready() -> void:
+	collision_layer = CollisionLayers.PLAYER
+	collision_mask = CollisionLayers.SOLIDS
 	floor_snap_length = 0.25
 	var shape := CollisionShape3D.new()
 	var capsule := CapsuleShape3D.new()
@@ -53,6 +56,7 @@ func _ready() -> void:
 	sphere.radius = 0.18
 	arm.shape = sphere
 	arm.margin = 0.15
+	arm.collision_mask = CollisionLayers.STATIC | CollisionLayers.VEHICLE | CollisionLayers.PROP
 	arm.add_excluded_object(get_rid())
 	pivot.add_child(arm)
 	camera = Camera3D.new()
@@ -124,11 +128,11 @@ func perform(action: String, duration: float) -> void:
 		playback.travel(action)
 	current_animation = action
 
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion and camera_input_enabled and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		camera_manual_time = 1.5
-		yaw -= event.relative.x * sensitivity
-		pitch = clampf(pitch - event.relative.y * sensitivity, -0.85, 0.45)
+		yaw -= event.screen_relative.x * sensitivity
+		pitch = clampf(pitch - event.screen_relative.y * sensitivity, -0.85, 0.45)
 
 func _physics_process(delta: float) -> void:
 	var rx: float = Input.get_joy_axis(0, JOY_AXIS_RIGHT_X)
@@ -141,7 +145,7 @@ func _physics_process(delta: float) -> void:
 	aiming = Input.is_action_pressed("aim") and not driving
 	var offset := Basis(Vector3.UP, yaw) * Vector3(0.55 if not driving else 0.0, 1.45 if not driving else 1.6, 0)
 	pivot.position = pivot.position.lerp(offset, 1 - exp(-delta * 9))
-	pivot.rotation = Vector3(pitch, yaw, 0)
+	pivot.rotation = Vector3(pitch, yaw + (PI if driving and Input.is_action_pressed("rear_view") else 0.0), 0)
 	arm.spring_length = lerpf(arm.spring_length, 6.8 if driving else (2.3 if aiming else 3.6), 1 - exp(-delta * 6))
 	camera.fov = lerpf(camera.fov, 74 if driving else (52 if aiming else 66), delta * 6)
 	if driving:
@@ -161,6 +165,12 @@ func _physics_process(delta: float) -> void:
 	if is_on_floor() and direction.length() > 0.1:
 		_step_up(direction.normalized())
 	move_and_slide()
+	for i: int in range(get_slide_collision_count()):
+		var contact := get_slide_collision(i)
+		if contact.get_collider() is RigidBody3D:
+			var rigid: RigidBody3D = contact.get_collider()
+			if rigid.collision_layer & CollisionLayers.PROP:
+				rigid.apply_central_impulse(-contact.get_normal() * minf(rigid.mass * 0.6, 25))
 	if is_on_floor() and not was_grounded:
 		perform("Land", 0.25)
 	was_grounded = is_on_floor()

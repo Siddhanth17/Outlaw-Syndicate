@@ -3,6 +3,10 @@ extends SkeletonModifier3D
 
 # Scale-aware angular springs. Runs after AnimationMixer via SkeletonModifier3D.
 # Hair/hem bones deform the actual weighted surface; no detached proxy meshes.
+var conversation_active: bool = false
+var gesture_tag: String = ""
+var gesture_amount: float = 0
+var conversation_clock: float = 0
 var actor: Node3D
 var wind := Vector3(0.8, 0, 0.3)
 var hair_angle := Vector2.ZERO
@@ -74,6 +78,16 @@ func _process_modification_with_delta(delta: float) -> void:
 		var breath: float = sin(clock * (1.5 + exertion * 2.5)) * (0.003 + exertion * 0.007)
 		var lateral: float = clampf(local_force.x * 0.002, -0.05, 0.05)
 		skeleton.set_bone_pose_rotation(spine, skeleton.get_bone_pose_rotation(spine) * Quaternion(Vector3.RIGHT, lean + breath) * Quaternion(Vector3.FORWARD, lateral))
+	if conversation_active:
+		var arm: int = skeleton.find_bone("RightArm")
+		var forearm: int = skeleton.find_bone("RightForeArm")
+		if arm >= 0 and gesture_tag != "listen":
+			skeleton.set_bone_pose_rotation(arm, skeleton.get_bone_pose_rotation(arm) * Quaternion(Vector3.FORWARD, -gesture_amount*0.24))
+		if forearm >= 0 and gesture_tag != "listen":
+			skeleton.set_bone_pose_rotation(forearm, skeleton.get_bone_pose_rotation(forearm) * Quaternion(Vector3.RIGHT, gesture_amount*(0.45 if gesture_tag=="point" else 0.25)))
+		var neck: int = skeleton.find_bone("Neck")
+		if neck >= 0:
+			skeleton.set_bone_pose_rotation(neck, skeleton.get_bone_pose_rotation(neck) * Quaternion(Vector3.RIGHT, sin(conversation_clock*2.2)*gesture_amount*0.06))
 	var head: int = skeleton.find_bone("Head")
 	if head >= 0 and has_head_target:
 		var offset: Vector3 = visual_root.global_basis.orthonormalized().inverse() * (head_target - actor.global_position)

@@ -16,14 +16,54 @@
   },
   "original": {
     "models": "Sable sedan/wheel/sidearm and modular harbor kit, authored by art/build_assets.py",
-    "audio": "Synthesized by art/build_audio.py; no external samples",
+    "audio": "Original synthesis: art/build_audio.py and art/build_crash_audio.py. Six draft original-text formant speech clips: art/build_dialogue.py; upstream tool provenance in assets/licenses/draft-dialogue-provenance.txt.",
     "license": "Project-owned; no general third-party reuse license assigned"
   },
   "files": [
     {
+      "path": "assets/audio/crash.wav",
+      "bytes": 28708,
+      "sha256": "ab357716450a78f32c5542424eb417944d5249c32d7ee93435282a82642c57fc"
+    },
+    {
+      "path": "assets/audio/dialogue/closing_adrian.wav",
+      "bytes": 149234,
+      "sha256": "f3db321a66437140c24c0e7db12ab64a9723f1e1ba7f713b24816fd7354996db"
+    },
+    {
+      "path": "assets/audio/dialogue/closing_dante.wav",
+      "bytes": 264414,
+      "sha256": "c9208f0d80eec562de6ebeff0d1a52104e108292a792e95c531473fcd9d602b8"
+    },
+    {
+      "path": "assets/audio/dialogue/greeting_adrian.wav",
+      "bytes": 196264,
+      "sha256": "6b2f2b99836a570f30835195ad86243f759cb9b8c13532094e5442890138547e"
+    },
+    {
+      "path": "assets/audio/dialogue/greeting_dante.wav",
+      "bytes": 164148,
+      "sha256": "9a86f05acbd827202f9fa45c87956bfb023b9c629e79f57478e12be647dc38e2"
+    },
+    {
+      "path": "assets/audio/dialogue/question_adrian.wav",
+      "bytes": 75966,
+      "sha256": "6c36fc374009a7b55f8fd4e8d49e0b61a00348f9b1cfc8d57e2872c09e773215"
+    },
+    {
+      "path": "assets/audio/dialogue/warning_dante.wav",
+      "bytes": 185022,
+      "sha256": "ea5151e885657f59bebd8fcb94cb7dd336d4e9255de7b33b87e2a0d13f41224b"
+    },
+    {
       "path": "assets/audio/engine.wav",
       "bytes": 88244,
       "sha256": "fafd98f1027d8dfff45172d100886468ceda01c23acb8760a61df15136e569a0"
+    },
+    {
+      "path": "assets/audio/glass_break.wav",
+      "bytes": 28708,
+      "sha256": "5c6db9cfbacbaea4d960516c077bfa8526bb6e9d76a45fc61e9373742d8a98b2"
     },
     {
       "path": "assets/audio/harbor.wav",
@@ -52,8 +92,8 @@
     },
     {
       "path": "assets/characters/adrian.glb",
-      "bytes": 2579704,
-      "sha256": "ce5b15b6a1bd9173a4e0b0481a668aace56a36b699dc043cb5ee62f8676f9399"
+      "bytes": 5051672,
+      "sha256": "37925fedeb4fcd646dda67eb26fa49edf1e0491b6c741d135b3b018750077eb9"
     },
     {
       "path": "assets/characters/adrian_Image_0.jpg",
@@ -187,13 +227,13 @@
     },
     {
       "path": "assets/vehicles/sable_body.glb",
-      "bytes": 468904,
-      "sha256": "0d4b7ebdc6abe349d7a2da315c7c028ccbf59a7f759761eb616551a1eff94bea"
+      "bytes": 481452,
+      "sha256": "437fa50273ce56a2ec10d51576cdca388c2b57124fdf77765711ec0e8f6c4c87"
     },
     {
       "path": "assets/vehicles/sable_wheel.glb",
       "bytes": 532420,
-      "sha256": "690e852e3398b28aeed9e0d429cb9e3e43d886ac9a8aeb9562f79ed7ea9e86b7"
+      "sha256": "691f1025a9ea2185100babe4944bfab583d0dd5935d073183512ead718f36c6c"
     },
     {
       "path": "assets/vehicles/sidearm.glb",
@@ -207,8 +247,8 @@
     },
     {
       "path": "art/source/adrian.blend",
-      "bytes": 9460333,
-      "sha256": "da45adfab4cf948fafd220a444e0bef3bd48b22d2474f26757956f97367ed2ce"
+      "bytes": 11731585,
+      "sha256": "768d0e174062f659589ed61f8a793b39e579aa3759c0875e4d9469107ba96e49"
     },
     {
       "path": "art/source/camper-cc0.glb",
@@ -232,8 +272,8 @@
     },
     {
       "path": "art/source/sable_body.blend",
-      "bytes": 1102890,
-      "sha256": "1e44517a4f208e82602343e6e6238baf7574c4605fb62cbb169668c57fca5832"
+      "bytes": 1157295,
+      "sha256": "a219e27be53f53f3a077ee7c6e497a74fe8c7395e6e71447aa5f064509676834"
     },
     {
       "path": "art/source/warehouse.blend",
@@ -263,5 +303,17 @@
     ],
     "modifications": "Eight weighted hair/hem bones, seated Drive clip, separate roughness regions; curved sedan profiles, cabin cavity and steering wheel; original warehouse service variants, forklift, drains/manholes; existing CC0 maps upgraded to 2K. User reference images are not game assets.",
     "runtime": "Scale-aware post-animation SkeletonModifier3D; procedural original surface/sky/wind shaders."
+  },
+  "physics_acting": {
+    "changes": "Separate six-pane vehicle glazing, bumpers and lamps; original procedural damage shaders and crash/glass synthesis; authored jaw/lid/brow morphs on existing CC0 surface; six original-text draft formant voices. eSpeak build tool is GPL-3.0-or-later, not distributed. See assets/licenses/draft-dialogue-provenance.txt.",
+    "facial_controls": {
+      "method": "limited geometric facial morphs; no oral cavity, eyeball rotation or visemes",
+      "affected_vertices": {
+        "JawOpen": 129,
+        "BlinkLeft": 52,
+        "BlinkRight": 54,
+        "BrowConcern": 58
+      }
+    }
   }
 }

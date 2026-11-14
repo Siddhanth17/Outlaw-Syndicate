@@ -1,3 +1,7 @@
+# Current physics / acting continuation
+
+Recovered interrupted work and fixed the kinematic exit-velocity damage regression. The short opening mission completes again. Contact-local dents, independent glass, bumper detachment, physical cargo and a draft amplitude-driven facial/gesture conversation are implemented. Full production acting, detailed destruction and the campaign remain incomplete; see physics-acting-report.md and interaction-validation.md for exact scope and results.
+
 # Production state — 14 November 2026
 
 Latest increment: reference-directed realism refinement, documented in realism-reference-report.md. New package: builds/realism-refinement. Added 32-joint weighted hair/hem motion, post-animation body/breathing/gaze layers, visible seated Drive pose, rotating steering wheel/brake light, cockpit/seat correction, warehouse service variants, 2K road/concrete maps, original surface/weathering shaders, drains/manholes/forklifts, distant instanced skyline and Human Motion Laboratory. Previous builds remain preserved. Reference-quality realism is NOT achieved; full milestone incomplete.

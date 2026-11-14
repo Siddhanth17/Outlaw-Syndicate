@@ -1,0 +1,9 @@
+{
+  "method": "limited geometric facial morphs; no oral cavity, eyeball rotation or visemes",
+  "affected_vertices": {
+    "JawOpen": 129,
+    "BlinkLeft": 52,
+    "BlinkRight": 54,
+    "BrowConcern": 58
+  }
+}

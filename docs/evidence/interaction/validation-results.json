@@ -1,0 +1,23 @@
+{
+  "source_regression_pass": 100,
+  "exported_physics_acting_pass": 48,
+  "exported_physics_exit": 0,
+  "performance": {
+    "average_fps": 134.381347868916,
+    "headless": false,
+    "mean_ms": 7.44150892857143,
+    "p95_ms": 8.795,
+    "samples": 672,
+    "scope": "short rendered crash scene; not full mission or isolated GPU",
+    "video_memory_bytes": 856261968.0
+  },
+  "manual_ui": "Computer Use launched the exported game and opened Crash Test Facility. Concurrent physical user input prevents claiming controlled key-by-key checks or an agent-controlled manual mission playthrough.",
+  "warnings": [
+    "Seven Texture RID shutdown warnings remain",
+    "Restricted editor settings safe-save warning during import/export"
+  ],
+  "scope": "Validated increment; complete realism/destruction/cinematic/full-campaign gate remains incomplete",
+  "exported_mission_pass": 14,
+  "exported_mission_exit": 0,
+  "exported_mission_simulated_seconds": 50.6833333333333
+}

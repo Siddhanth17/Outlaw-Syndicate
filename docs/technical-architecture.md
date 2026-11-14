@@ -1,3 +1,5 @@
+Latest interaction increment: see [interaction validation](interaction-validation.md) and [implementation/limits](physics-acting-report.md). Older counts and architecture statements below describe earlier builds.
+
 # Architecture — production increment
 
 Godot 4.6 stable / typed GDScript / built-in Jolt; Forward+ is now the desktop renderer, verified on RTX 3050 Laptop Vulkan. GL Compatibility graybox export is preserved separately. No Unreal migration.

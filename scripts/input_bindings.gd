@@ -4,12 +4,15 @@ extends RefCounted
 static func install() -> void:
 	if InputMap.has_action("aim"): return
 	InputMap.add_action("aim")
-	var keys: Dictionary = {"forward": KEY_W, "back": KEY_S, "left": KEY_A, "right": KEY_D, "sprint": KEY_SHIFT, "crouch": KEY_CTRL, "jump": KEY_SPACE, "interact": KEY_E, "handbrake": KEY_SPACE, "save": KEY_F5, "load": KEY_F9, "pause": KEY_ESCAPE, "fire": KEY_F, "reload": KEY_R, "skip": KEY_ENTER}
+	var keys: Dictionary = {"rear_view": KEY_C, "forward": KEY_W, "back": KEY_S, "left": KEY_A, "right": KEY_D, "sprint": KEY_SHIFT, "crouch": KEY_CTRL, "jump": KEY_SPACE, "interact": KEY_E, "handbrake": KEY_SPACE, "save": KEY_F5, "load": KEY_F9, "pause": KEY_ESCAPE, "fire": KEY_F, "reload": KEY_R, "skip": KEY_ENTER}
 	for action: String in keys:
 		if not InputMap.has_action(action): InputMap.add_action(action)
 		var event := InputEventKey.new()
 		event.physical_keycode = keys[action]
 		InputMap.action_add_event(action, event)
+	var pause_key := InputEventKey.new()
+	pause_key.physical_keycode = KEY_P
+	InputMap.action_add_event("pause", pause_key)
 	for spec: Array in [["left", JOY_AXIS_LEFT_X, -1.0], ["right", JOY_AXIS_LEFT_X, 1.0], ["forward", JOY_AXIS_LEFT_Y, -1.0], ["back", JOY_AXIS_LEFT_Y, 1.0]]:
 		var axis := InputEventJoypadMotion.new()
 		axis.axis = spec[1]

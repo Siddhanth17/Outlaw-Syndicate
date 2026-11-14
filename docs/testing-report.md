@@ -1,3 +1,5 @@
+Latest interaction increment: see [interaction validation](interaction-validation.md) and [implementation/limits](physics-acting-report.md). Older counts and architecture statements below describe earlier builds.
+
 # Verification — production history, 14 November 2026
 
 Latest realism increment: 92 PASS assertions (existing 72 + 20 new). New tests cover secondary chains, observed post-animation bone motion, settling, wind, bounds, teleport reset, visible seating, pelvis bounds, steering reach/rotation and exit restoration. Human Motion Laboratory launches. The exported realism-refinement EXE now has a successful opt-in capture route: six actual PNG captures returned OK and the process exited 0. The earlier external --script attempt below belongs to the previous increment. See realism-reference-report.md for current evidence/performance and unmet acceptance criteria.

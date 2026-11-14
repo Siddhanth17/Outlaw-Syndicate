@@ -3,6 +3,7 @@ extends Node3D
 
 var environment: WorldEnvironment
 var local_lights: Array[Light3D] = []
+var physical_props: Array[RigidBody3D] = []
 var shutters: Array[Node3D] = []
 var wind_strength: float = 0.8
 var wind_vector := Vector3(0.8, 0, 0.3)
@@ -15,7 +16,7 @@ func asset(path: String, at: Vector3, yaw: float = 0.0) -> Node3D:
 	model.rotation.y = yaw
 	return model
 
-func solid(at: Vector3, size: Vector3) -> void:
+func solid(at: Vector3, size: Vector3) -> StaticBody3D:
 	var body := StaticBody3D.new()
 	add_child(body)
 	body.position = at
@@ -24,6 +25,9 @@ func solid(at: Vector3, size: Vector3) -> void:
 	box.size = size
 	collider.shape = box
 	body.add_child(collider)
+	body.collision_layer = CollisionLayers.STATIC
+	body.collision_mask = CollisionLayers.SOLIDS
+	return body
 
 func surface(at: Vector3, size: Vector2, kind: String, tint: Color, scale_uv: float, roughness: float) -> MeshInstance3D:
 	var model := MeshInstance3D.new()
@@ -99,10 +103,15 @@ func _ready() -> void:
 			var building := asset("environment/warehouse_realism_%d" % (i % 3), Vector3(side * 32, 0, z), PI / 2 if side < 0 else -PI / 2)
 			_weather_building(building, i)
 			shutters.append(building)
+			for dock_x: float in [-7.0, 0.0, 7.0]:
+				attached_solid(building, Vector3(dock_x, 0.38, 8.7), Vector3(5.6, 0.4, 0.75))
+				for dx: float in [-2.8, 2.8]:
+					attached_solid(building, Vector3(dock_x + dx, 0.65, 8.9), Vector3(0.24, 1.3, 0.24))
 			solid(Vector3(side * 32, 3.5, z), Vector3(16, 7, 24))
 		for i: int in range(9):
 			var z: float = 34 - i * 24
-			asset("environment/streetlamp", Vector3(side * 11, 0.14, z), -side * PI / 2)
+			var mast := asset("environment/streetlamp", Vector3(side * 11, 0.14, z), -side * PI / 2)
+			attached_solid(mast, Vector3(0, 3.5, 0), Vector3(0.20, 7, 0.20))
 			var lamp := OmniLight3D.new()
 			add_child(lamp)
 			lamp.position = Vector3(side * 9.5, 6.9, z)
@@ -120,11 +129,15 @@ func _ready() -> void:
 		asset("environment/container", at)
 		solid(at + Vector3(0, 1.3, 0), Vector3(2.45, 2.6, 6.1))
 	for i: int in range(10):
-		asset("environment/fence", Vector3(-15, 0, 22 - i * 4), PI / 2)
+		var fence := asset("environment/fence", Vector3(-15, 0, 22 - i * 4), PI / 2)
+		attached_solid(fence, Vector3(0, 1.3, 0), Vector3(4.1, 2.6, 0.16))
 	for i: int in range(16):
-		asset("environment/cargo", Vector3(13 + (i % 2) * 2, 0.15, 24 - i * 9), i * 0.7)
-	asset("environment/crane", Vector3(54, 0, -60), 0.0)
-	asset("environment/crane", Vector3(54, 0, -126), 0.0)
+		movable_cargo(Vector3(13 + (i % 2) * 2, 0.15, 24 - i * 9), i * 0.7)
+	for crane_z: float in [-60.0, -126.0]:
+		asset("environment/crane", Vector3(54, 0, crane_z), 0.0)
+		for dx: float in [-6.0, 6.0]:
+			for dz: float in [-4.0, 4.0]:
+				solid(Vector3(54 + dx, 3, crane_z + dz), Vector3(0.8, 6, 0.8))
 	for z: float in [-26.0, -84.0, -140.0]:
 		var flood := SpotLight3D.new()
 		flood.position = Vector3(22, 6, z)
@@ -154,7 +167,9 @@ func _ready() -> void:
 	for i: int in range(14):
 		asset("environment/drain", Vector3(7.75, 0.025, 30 - i * 14))
 	for at: Vector3 in [Vector3(18, 0.1, -26), Vector3(-19, 0.1, -91), Vector3(18, 0.1, -135)]:
-		asset("environment/forklift", at, 0.8)
+		var forklift := asset("environment/forklift", at, 0.8)
+		attached_solid(forklift, Vector3(0, 1.1, 0), Vector3(1.45, 2.2, 2.2))
+		attached_solid(forklift, Vector3(0, 0.16, 1.75), Vector3(0.9, 0.12, 1.4))
 	for i: int in range(3):
 		var flag := MeshInstance3D.new()
 		var fabric := PlaneMesh.new()
@@ -241,3 +256,43 @@ func consequence(exposed: bool) -> void:
 	for i: int in range(local_lights.size()):
 		if i > 8:
 			local_lights[i].light_color = Color(0.9, 0.12, 0.07) if exposed else Color(1, 0.53, 0.23)
+
+func attached_solid(model: Node3D, center: Vector3, size: Vector3) -> StaticBody3D:
+	var body := StaticBody3D.new()
+	body.collision_layer = CollisionLayers.STATIC
+	body.collision_mask = CollisionLayers.SOLIDS
+	model.add_child(body)
+	body.position = center
+	var shape := CollisionShape3D.new()
+	var box := BoxShape3D.new()
+	box.size = size
+	shape.shape = box
+	body.add_child(shape)
+	return body
+
+func movable_cargo(at: Vector3, yaw: float = 0) -> RigidBody3D:
+	var body := RigidBody3D.new()
+	body.mass = 85
+	body.collision_layer = CollisionLayers.PROP
+	body.collision_mask = CollisionLayers.SOLIDS
+	body.continuous_cd = true
+	var mat := PhysicsMaterial.new()
+	mat.friction = 0.7
+	mat.bounce = 0.05
+	body.physics_material_override = mat
+	add_child(body)
+	body.position = at
+	body.rotation.y = yaw
+	body.add_child(load("res://assets/environment/cargo.glb").instantiate())
+	var collider := CollisionShape3D.new()
+	var shape := BoxShape3D.new()
+	shape.size = Vector3(1.2, 1.28, 1.05)
+	collider.position.y = 0.64
+	collider.shape = shape
+	body.add_child(collider)
+	physical_props.append(body)
+	return body
+
+func pause_props(value: bool) -> void:
+	for body: RigidBody3D in physical_props:
+		if is_instance_valid(body): body.freeze = value

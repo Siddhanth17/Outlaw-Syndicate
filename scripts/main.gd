@@ -28,6 +28,9 @@ var dante: Node3D
 var faction_rep: int = 0
 var return_screen: String = "pause"
 var ambience: AudioStreamPlayer
+var crash_interest: Vector3
+var crash_interest_time: float = 0
+var dialogue_director: DialogueDirector
 var dante_dynamics: HumanDynamics
 
 func _ready() -> void:
@@ -40,9 +43,10 @@ func _ready() -> void:
 	add_child(player)
 	player.position = Vector3(0, 1, 12)
 	car = VeyraCar.new()
-	add_child(car)
 	car.position = Vector3(4, 1.2, 4)
 	car.rotation.y = PI
+	add_child(car)
+	car.crashed.connect(_on_crash)
 	ui = GameHUD.new()
 	add_child(ui)
 	ui.command.connect(_menu_action)
@@ -62,6 +66,17 @@ func _ready() -> void:
 	dante.position = Vector3(-1.4, 0.05, -1)
 	dante.rotation.y = 0.7
 	add_child(dante)
+	var dante_body := StaticBody3D.new()
+	dante_body.collision_layer = CollisionLayers.NPC
+	dante_body.collision_mask = CollisionLayers.SOLIDS
+	dante.add_child(dante_body)
+	var dante_shape := CollisionShape3D.new()
+	var dante_capsule := CapsuleShape3D.new()
+	dante_capsule.radius = 0.32
+	dante_capsule.height = 1.8
+	dante_shape.shape = dante_capsule
+	dante_shape.position.y = 0.9
+	dante_body.add_child(dante_shape)
 	var dante_skeletons := dante.find_children("*", "Skeleton3D", true, false)
 	if not dante_skeletons.is_empty():
 		dante_dynamics = HumanDynamics.new()
@@ -78,6 +93,9 @@ func _ready() -> void:
 	cine_camera = Camera3D.new()
 	add_child(cine_camera)
 	cine_camera.fov = 48
+	dialogue_director = DialogueDirector.new()
+	dialogue_director.game = self
+	add_child(dialogue_director)
 	_load_settings()
 	ambience = AudioStreamPlayer.new()
 	ambience.stream = _loop("harbor")
@@ -88,6 +106,16 @@ func _ready() -> void:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	else:
 		_set_pause(true, "main")
+	if OS.get_cmdline_user_args().has("--verify-mission"):
+		var route := MissionRouteValidation.new()
+		route.game = self
+		add_child(route)
+		route.call_deferred("run")
+	if OS.get_cmdline_user_args().has("--verify-physics"):
+		var verifier := PhysicsValidation.new()
+		verifier.game = self
+		add_child(verifier)
+		verifier.call_deferred("run")
 	if OS.get_cmdline_user_args().has("--verify-realism"):
 		var verifier := RuntimeVerification.new()
 		verifier.game = self
@@ -122,23 +150,25 @@ func _menu_action(title: String) -> void:
 			_load()
 			_set_pause(false)
 		"New game":
+			if dialogue_director.active: dialogue_director.stop()
 			memory = CityMemory.new()
 			faction_rep = 0
 			reload_time = 0
 			cooldown = 0
-			_leave_car()
+			_leave_car(true)
 			player.position = Vector3(0, 1, 12)
 			player.velocity = Vector3.ZERO
 			player.health = 100
 			ammunition = 12
 			reserve = 72
-			car.integrity = 100
+			car.repair()
 			car.position = Vector3(4, 1.2, 4)
 			car.rotation = Vector3(0, PI, 0)
 			car.linear_velocity = Vector3.ZERO
 			car.angular_velocity = Vector3.ZERO
 			car.last_velocity = Vector3.ZERO
 			car.throttle_smoothed = 0
+			car.reset_pose(Transform3D(Basis(Vector3.UP,PI),Vector3(4,1.2,4)))
 			_clear_guards()
 			harbor.consequence(false)
 			marker.show()
@@ -151,6 +181,8 @@ func _menu_action(title: String) -> void:
 		"Driving course":
 			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 			get_tree().change_scene_to_file("res://scenes/driving_course.tscn")
+		"Crash Test Facility":
+			get_tree().change_scene_to_file("res://scenes/crash_facility.tscn")
 		"Human Motion Laboratory":
 			get_tree().change_scene_to_file("res://scenes/human_motion_laboratory.tscn")
 		"Sensitivity +": player.sensitivity = minf(0.01, player.sensitivity + 0.0005)
@@ -166,6 +198,8 @@ func _menu_action(title: String) -> void:
 
 func _set_pause(value: bool, screen: String = "pause") -> void:
 	paused = value
+	player.camera_input_enabled = not paused and not cinematic_active
+	harbor.pause_props(paused or cinematic_active)
 	player.set_physics_process(not paused and not cinematic_active)
 	car.set_physics_process(not paused and not cinematic_active)
 	car.freeze = paused or cinematic_active
@@ -177,7 +211,8 @@ func _pause() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("skip") and cinematic_active:
-		_end_cinematic()
+		if dialogue_director.active: dialogue_director.stop()
+		else: _end_cinematic()
 		return
 	if event.is_action_pressed("pause"):
 		_pause()
@@ -246,7 +281,9 @@ func _process(delta: float) -> void:
 	if paused:
 		return
 	elapsed += delta
+	crash_interest_time = maxf(0, crash_interest_time-delta)
 	if cinematic_active:
+		if dialogue_director.active: return
 		_update_cinematic(delta)
 		return
 	cooldown -= delta
@@ -268,8 +305,8 @@ func _process(delta: float) -> void:
 	if dante_dynamics:
 		dante_dynamics.active = player.position.distance_to(dante.position) < 30
 		dante_dynamics.wind = harbor.wind_vector
-		dante_dynamics.has_head_target = player.position.distance_to(dante.position) < 6
-		dante_dynamics.head_target = player.position + Vector3.UP * 1.5
+		dante_dynamics.has_head_target = crash_interest_time>0 or player.position.distance_to(dante.position) < 6
+		dante_dynamics.head_target = crash_interest if crash_interest_time>0 else player.position + Vector3.UP * 1.5
 	var observed: bool = player.position.distance_to(Vector3(12, 0, -95)) < 32
 	for guard: HarborGuard in guards:
 		if is_instance_valid(guard) and guard.state == HarborGuard.State.ENGAGE:
@@ -306,7 +343,9 @@ func _interact() -> void:
 		var at := Vector3(stage.position[0], player.position.y, stage.position[2])
 		if stage.kind == "interact" and player.position.distance_to(at) < 5 and not player.driving:
 			player.perform("Interact", 0.9)
+			var greeting: bool = memory.stage == 0
 			_advance()
+			if greeting and not test_mode: dialogue_director.start(false)
 			return
 	if player.driving:
 		if car.linear_velocity.length() < 3:
@@ -321,22 +360,55 @@ func _interact() -> void:
 		player.collision_mask = 0
 		player.arm.add_excluded_object(car.get_rid())
 		car.occupied = true
-		player.yaw = car.rotation.y + PI
-		player.pitch = -0.16
+		player.camera_manual_time = 1.5
 
-func _leave_car() -> void:
-	if player.driving:
+func _leave_car(force: bool = false) -> void:
+	if player.driving and not force:
+		var found: bool = false
+		for side: float in [2.0, -2.0, 2.8, -2.8]:
+			var candidate: Vector3 = car.position + car.global_basis.x * side + Vector3.UP * 0.2
+			var ray := PhysicsRayQueryParameters3D.create(candidate + Vector3.UP * 2, candidate - Vector3.UP * 4)
+			ray.exclude = [car.get_rid(), player.get_rid()]
+			var ground := get_world_3d().direct_space_state.intersect_ray(ray)
+			if ground.is_empty() or ground.normal.y < 0.7: continue
+			candidate.y = ground.position.y + 0.06
+			var shape := PhysicsShapeQueryParameters3D.new()
+			var capsule := CapsuleShape3D.new()
+			capsule.radius = 0.31
+			capsule.height = 1.8
+			shape.shape = capsule
+			shape.transform = Transform3D(Basis.IDENTITY, candidate + Vector3.UP * 0.9)
+			shape.collision_mask = CollisionLayers.SOLIDS
+			shape.exclude = [car.get_rid(), player.get_rid()]
+			if get_world_3d().direct_space_state.intersect_shape(shape).is_empty():
+				player.position = candidate
+				found = true
+				break
+		if not found:
+			_say("Adrian", "The door is blocked. Move the car to a clear space.")
+			return
+	elif player.driving:
 		player.position = car.position + car.global_basis.x * 2 + Vector3.UP * 0.2
 		var query := PhysicsRayQueryParameters3D.create(player.position + Vector3.UP * 2, player.position - Vector3.UP * 4)
 		query.exclude = [car.get_rid(), player.get_rid()]
 		var ground := get_world_3d().direct_space_state.intersect_ray(query)
 		if not ground.is_empty(): player.position.y = ground.position.y + 0.05
+	if player.driving:
+		car.add_collision_exception_with(player)
+		player.add_collision_exception_with(car)
+		get_tree().create_timer(0.25).timeout.connect(func() -> void:
+			if is_instance_valid(player) and is_instance_valid(car) and not player.driving:
+				car.remove_collision_exception_with(player)
+				player.remove_collision_exception_with(car))
+	player.velocity = Vector3.ZERO
+	player.reset_physics_interpolation()
 	player.driving = false
+	player.camera_manual_time = 1.5
 	player.visual.transform = Transform3D.IDENTITY
 	if player.dynamics: player.dynamics.reset_state()
 	player.visual.show()
-	player.collision_layer = 1
-	player.collision_mask = 1
+	player.collision_layer = CollisionLayers.PLAYER
+	player.collision_mask = CollisionLayers.SOLIDS
 	car.occupied = false
 	player.arm.remove_excluded_object(car.get_rid())
 	player.perform("Exit", 0.6)
@@ -371,8 +443,8 @@ func _advance() -> void:
 	if memory.stage == 5:
 		memory.remember("mara_ledger_preserved", {"reward": int(mission.reward), "relationship_dante": 1})
 		if memory.remember("dante_garage_repair", {"relationship": "dante", "repair": 25}):
-			car.integrity = minf(100, car.integrity + 25)
-		if not test_mode: _start_cinematic(true)
+			car.repair()
+		if not test_mode: dialogue_director.start(true)
 	_save()
 
 func _say(speaker: String, line: String) -> void:
@@ -383,6 +455,8 @@ func _say(speaker: String, line: String) -> void:
 func _start_cinematic(is_closing: bool) -> void:
 	closing = is_closing
 	cinematic_active = true
+	player.camera_input_enabled = false
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	cinematic_time = 0
 	player.set_physics_process(false)
 	car.set_physics_process(false)
@@ -406,7 +480,12 @@ func _update_cinematic(delta: float) -> void:
 	if cinematic_time > 8: _end_cinematic()
 
 func _end_cinematic() -> void:
+	if is_instance_valid(dialogue_director) and dialogue_director.active:
+		dialogue_director.stop()
+		return
 	cinematic_active = false
+	player.camera_input_enabled = not paused
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if paused else Input.MOUSE_MODE_CAPTURED
 	player.camera.current = true
 	player.set_physics_process(not paused)
 	car.set_physics_process(not paused)
@@ -436,6 +515,7 @@ func _save() -> void:
 	data["car"] = [car.position.x, car.position.y, car.position.z]
 	data["car_yaw"] = car.rotation.y
 	data["integrity"] = car.integrity
+	data["vehicle_damage"] = car.damage_snapshot()
 	data["health"] = player.health
 	data["ammunition"] = ammunition
 	data["reserve"] = reserve
@@ -452,6 +532,7 @@ func _save() -> void:
 		_say("Save", "Checkpoint replacement failed; previous save retained.")
 
 func _load() -> void:
+	if dialogue_director.active: dialogue_director.stop()
 	for path: String in [SAVE_PATH, SAVE_PATH + ".bak"]:
 		if not FileAccess.file_exists(path): continue
 		var parser := JSON.new()
@@ -468,7 +549,7 @@ func _load() -> void:
 				if not (component is float or component is int) or not is_finite(float(component)) or absf(float(component)) > 10000:
 					valid = false
 		if not valid or not memory.restore(data): continue
-		_leave_car()
+		_leave_car(true)
 		var p: Array = data.player
 		var c: Array = data.car
 		car.position = Vector3(float(c[0]), float(c[1]) + 0.15, float(c[2]))
@@ -477,8 +558,10 @@ func _load() -> void:
 		if data.get("driving", false): player.position = car.position + car.global_basis.x * 2 + Vector3.UP
 		car.linear_velocity = Vector3.ZERO
 		car.angular_velocity = Vector3.ZERO
+		car.reset_pose(Transform3D(Basis(Vector3.UP,car.rotation.y),car.position))
 		player.velocity = Vector3.ZERO
 		if player.dynamics: player.dynamics.reset_state()
+		car.restore_damage(data.get("vehicle_damage", {}) if data.get("vehicle_damage", {}) is Dictionary else {})
 		car.integrity = clampf(float(data.get("integrity", 100)), 0, 100)
 		player.health = clampf(float(data.get("health", 100)), 1, 100)
 		ammunition = clampi(int(data.get("ammunition", 12)), 0, 12)
@@ -495,3 +578,17 @@ func _load() -> void:
 
 func _exit_tree() -> void:
 	if is_instance_valid(ambience): ambience.stop()
+
+func _notification(what: int) -> void:
+	if not is_instance_valid(player): return
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and not test_mode and not OS.get_cmdline_user_args().has("--verify-physics") and not OS.get_cmdline_user_args().has("--verify-mission"):
+		if not paused: _set_pause(true)
+
+func _on_crash(point: Vector3, speed: float) -> void:
+	if point.distance_to(dante.position)<24:
+		crash_interest=point+Vector3.UP
+		crash_interest_time=2.5
+	for guard: HarborGuard in guards:
+		if is_instance_valid(guard): guard.hear_crash(point,speed)
+	if player.driving and player.dynamics:
+		player.dynamics.impact += (car.linear_velocity-car.last_velocity).limit_length(5)

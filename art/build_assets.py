@@ -62,7 +62,7 @@ def export(name,source=False):
         # One draw surface per material instead of one draw call per modeled rib.
         groups={}
         for o in list(bpy.context.scene.objects):
-            if o.type=='MESH':groups.setdefault(o.active_material.name if o.active_material else 'none',[]).append(o)
+            if o.type=='MESH':groups.setdefault((o.name if name == 'vehicles/sable_body.glb' and any(tag in o.name for tag in ['Windshield','Rear screen','Side glass','bumper','Headlamp','Tail lamp','Side mirror']) else o.active_material.name if o.active_material else 'none'),[]).append(o)
         for objects in groups.values():
             bpy.ops.object.select_all(action='DESELECT')
             for o in objects:o.select_set(True)
@@ -120,7 +120,12 @@ def car():
     # Tapered greenhouse with separate glass panels and pillars.
     v=[(-.79,-.85,.82),(.79,-.85,.82),(-.66,-.35,1.45),(.66,-.35,1.45),(-.65,.69,1.43),(.65,.69,1.43),(-.8,1.18,.82),(.8,1.18,.82)]
     mesh('Windshield',v,[(0,1,3,2)],glass);mesh('Rear screen',v,[(4,5,7,6)],glass)
-    mesh('Side glazing',v,[(0,2,4,6),(1,7,5,3)],glass)
+
+    for side in [-1,1]:
+        a=0 if side<0 else 1; b=2 if side<0 else 3; c=4 if side<0 else 5; d=6 if side<0 else 7
+        low=Vector(v[a]).lerp(Vector(v[d]),.53); high=Vector(v[b]).lerp(Vector(v[c]),.53)
+        mesh('Side glass '+('left' if side<0 else 'right')+' front',[v[a],v[b],high,low],[(0,1,2,3)],glass)
+        mesh('Side glass '+('left' if side<0 else 'right')+' rear',[low,high,v[c],v[d]],[(0,1,2,3)],glass)
     roof=mesh('Roof panel',v,[(2,3,5,4)],paint);sol=roof.modifiers.new('Roof thickness','SOLIDIFY');sol.thickness=.055;bpy.context.view_layer.objects.active=roof;bpy.ops.object.modifier_apply(modifier=sol.name)
     for a,b in [(0,2),(1,3),(4,6),(5,7),(2,4),(3,5),(0,6),(1,7)]:beam('Window surround',v[a],v[b],.025,trim)
     for side in [-1,1]:
@@ -138,6 +143,7 @@ def car():
         box('Headlamp lens',(x,-2.04,.67),(.37,.08,.16),lamp,.04)
         box('Tail lamp',(x,2.02,.62),(.38,.08,.13),red,.03)
     for x in [-.5,-.25,0,.25,.5]:box('Grille fin',(x,-2.165,.46),(.025,.015,.13),chrome,.003)
+    box('Front bumper',(0,-2.10,.34),(1.5,.12,.16),trim,.035)
     box('Rear bumper',(0,2.07,.36),(1.45,.08,.1),trim,.025)
     box('Dashboard',(0,-.64,.93),(1.4,.22,.18),trim,.04)
     box('Carpet floor',(0,.18,.27),(1.45,1.75,.03),trim,.015)

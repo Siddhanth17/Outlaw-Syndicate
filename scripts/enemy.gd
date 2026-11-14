@@ -2,6 +2,7 @@ class_name HarborGuard
 extends CharacterBody3D
 
 enum State { PATROL, SUSPICION, INVESTIGATE, ENGAGE, DEFEATED }
+var crash_reactions: int = 0
 var state: State = State.PATROL
 var health: float = 70
 var suspicion: float = 0
@@ -18,6 +19,8 @@ var weapon: Node3D
 var dynamics: HumanDynamics
 
 func _ready() -> void:
+	collision_layer = CollisionLayers.NPC
+	collision_mask = CollisionLayers.SOLIDS
 	origin = position
 	destination = origin + Vector3(3, 0, 4)
 	var collider := CollisionShape3D.new()
@@ -133,3 +136,14 @@ func take_damage(amount: float) -> void:
 		var tween := create_tween()
 		tween.tween_property(visual, "rotation:z", PI / 2, 0.35)
 		game.memory.remember("guard_defeated_" + name, {"district": "iron_harbor"})
+
+func hear_crash(at: Vector3, speed: float) -> void:
+	if state==State.DEFEATED or position.distance_to(at)>24 or speed<3: return
+	crash_reactions+=1
+	last_seen=at
+	destination=at
+	reaction=0.5
+	if state!=State.ENGAGE: state=State.INVESTIGATE
+	if dynamics:
+		dynamics.has_head_target=true
+		dynamics.head_target=at+Vector3.UP

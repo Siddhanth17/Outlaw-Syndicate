@@ -1,3 +1,5 @@
+Latest validated gameplay increment: collision coverage, mouse capture/orbit, contact-local dents/glass/bumper damage, dynamic cargo and draft audio-driven facial/gesture dialogue. See [physics and acting report](docs/physics-acting-report.md). Visual reference parity and the full campaign remain incomplete. The previous realism build is preserved.
+
 # OUTLAW SYNDICATE
 
 Godot 4.6 / Jolt, Windows-first third-person crime game in active production.
@@ -6,7 +8,7 @@ Godot 4.6 / Jolt, Windows-first third-person crime game in active production.
 
 ## Play the new build
 
-On this development machine run `D:/OutlawSyndicate/builds/realism-refinement/OutlawSyndicate.exe` with its adjacent PCK file. The original graybox package remains under `builds/windows` and `builds/preserved-11aedc2`. Binaries are local artifacts, not committed downloads.
+On this development machine run `D:/OutlawSyndicate/builds/physics-acting-validated/OutlawSyndicate.exe` with its adjacent PCK file. The original graybox package remains under `builds/windows` and `builds/preserved-11aedc2`. Binaries are local artifacts, not committed downloads.
 
 Choose **New game** for the introduction, or **Continue** for your checkpoint. Enter / controller A skips the introduction. Pause → Controls lists bindings. The separate **Driving course** menu entry opens a handling test scene.
 

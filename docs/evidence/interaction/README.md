@@ -1,0 +1,3 @@
+# Actual exported game evidence
+
+See ../../interaction-validation.md for provenance and limits. JPEGs and dialogue sequences come from the final exported EXE. The physical crash sequence is from the earlier interaction EXE, before the facility readout/inspection-camera polish. Both are automated in-game physics scenarios. GIF/MP4 are sampled viewport frames, silent, with approximate cadence; they are not a human driving session or real-time screen/audio capture. The visible pole is hidden only in the post-impact front-left inspection to expose the dent; its collider remains. No reference images or generated replacement scenes are included.

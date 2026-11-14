@@ -14,7 +14,7 @@ func _ready() -> void:
 	panel.offset_top = 130
 	layer.add_child(panel)
 	var text := Label.new()
-	text.text = "HUMAN MOTION LABORATORY\n1 Walk  2 Run  3 Sprint  4 Stop\n5 Jump  6 Seat / exit  7 Wind\nF2 Face inspection  Esc Pause\nUses the real Iron Harbor character.\nFacial blend shapes / full foot IK: absent."
+	text.text = "HUMAN MOTION LABORATORY\n1 Walk  2 Run  3 Sprint  4 Stop\n5 Jump  6 Seat / exit  7 Wind\nF2 Face inspection  Esc Pause\nUses the real Iron Harbor character.\nDraft facial morphs in dialogue; full foot IK absent."
 	text.add_theme_font_size_override("font_size", 16)
 	panel.add_child(text)
 

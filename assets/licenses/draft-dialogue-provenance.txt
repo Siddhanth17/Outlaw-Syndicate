@@ -1,0 +1,9 @@
+Draft dialogue audio provenance
+
+Original OUTLAW SYNDICATE dialogue text synthesized offline with eSpeak NG 1.52.0, official upstream Windows release. Uses built-in formant voices en-us+m3 and en-gb+m1; no MBROLA or recorded/cloned voice. These are conspicuously synthetic draft voices, not production performances.
+
+Tool source/release: https://github.com/espeak-ng/espeak-ng/releases/tag/1.52.0
+Tool license: GPL-3.0-or-later; see espeak-ng-COPYING.txt. GPL section 2 limits output coverage to output which itself constitutes a covered work. These shipped WAVs contain generated speech of original project text, not the tool executable/library or source. The tool is not redistributed with the game. Preserve this provenance and consult upstream terms before changing voice backends.
+
+Official MSI SHA256: 7f673c709ea5dd579d3b5ebb98688cc575328a6ab7438d2bc405b88cedaeafb9
+The upstream MSI has no Authenticode signature; provenance is the official repository release URL. Extracted build tool stays ignored under tools/voice-tools.

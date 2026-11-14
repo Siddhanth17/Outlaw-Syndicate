@@ -1,3 +1,7 @@
+# Current collision and damage implementation
+
+See [physics and acting report](physics-acting-report.md) for the implemented contact-local deformation, glass, detachment, handling and save behavior. Earlier descriptions below are historical; the statement that there is no deformation/glass applies to that older build.
+
 # Sable GT handling increment
 
 Original Blender-authored lofted sedan body, real wheel-arch cuts, separate glazing/window frames, cabin seats/dashboard, wheel/tire/rim assemblies, lights, mirrors, handles and grille replace the box car. Vehicle remains angular early-production art. Wheel meshes attach under four VehicleWheel3D nodes; front wheels steer and rear wheels drive. Model local front is +Z; initial vehicle yaw PI points down the harbor road.

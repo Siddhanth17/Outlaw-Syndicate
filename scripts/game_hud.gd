@@ -110,6 +110,7 @@ func _ready() -> void:
 	modal_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	modal_column.add_theme_constant_override("separation", 12)
 	scroll.add_child(modal_column)
+	_pass_gameplay_mouse(gameplay)
 	modal.hide()
 
 func show_screen(screen: String) -> void:
@@ -125,7 +126,7 @@ func show_screen(screen: String) -> void:
 	modal_column.add_child(label("THE CITY THAT SOLD ITS SOUL", 13, Color(0.8, 0.57, 0.32)))
 	var actions: Array[String] = []
 	match screen:
-		"main": actions = ["New game", "Continue", "Driving course", "Human Motion Laboratory", "Settings", "Controls", "Credits", "Exit"]
+		"main": actions = ["New game", "Continue", "Driving course", "Crash Test Facility", "Human Motion Laboratory", "Settings", "Controls", "Credits", "Exit"]
 		"pause": actions = ["Resume", "Save checkpoint", "Load checkpoint", "Settings", "Controls", "Main menu", "Exit"]
 		"settings": actions = ["Graphics: Low", "Graphics: Balanced", "Graphics: High", "Sensitivity +", "Sensitivity -", "Subtitles toggle", "Reduced shake toggle", "Back"]
 		"controls":
@@ -150,3 +151,7 @@ func _focus_button(reference: WeakRef) -> void:
 	var button: Button = reference.get_ref()
 	if is_instance_valid(button) and button.is_inside_tree():
 		button.grab_focus()
+
+func _pass_gameplay_mouse(node: Node) -> void:
+	if node is Control: node.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	for child: Node in node.get_children(): _pass_gameplay_mouse(child)

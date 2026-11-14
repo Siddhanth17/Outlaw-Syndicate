@@ -67,6 +67,6 @@
   ],
   "reward": 500,
   "failure": "Player health depleted; restore last checkpoint.",
-  "assets": "Clothed CC0 human with rig and source walk/run; project-authored modeled GLB harbor and sedan; CC0 asphalt/concrete PBR maps; original synthesized audio. Dialogue text only, no voice.",
+  "assets": "Clothed CC0 human with rig and source walk/run; project-authored modeled GLB harbor and sedan; CC0 asphalt/concrete PBR maps; original synthesized audio. Greeting/closing dialogue uses draft eSpeak NG formant-synthesized voices and amplitude jaw fallback. Other mission/radio lines remain text.",
   "playtest": "Automated state-transition and encounter tests; manual end-to-end playtime not measured."
 }

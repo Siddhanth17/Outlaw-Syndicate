@@ -1,0 +1,9 @@
+{
+	"average_fps": 134.381347868916,
+	"headless": false,
+	"mean_ms": 7.44150892857143,
+	"p95_ms": 8.795,
+	"samples": 672,
+	"scope": "short rendered crash scene; not full mission or isolated GPU",
+	"video_memory_bytes": 856261968.0
+}
