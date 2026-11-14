@@ -44,7 +44,7 @@ def main():
     import imageio_ffmpeg
     with Image.open(frames[0]) as first:size=first.size
     video=BUILD/'evidence/automated-traffic-sampled-silent.mp4'
-    writer=imageio_ffmpeg.write_frames(str(video),size,fps=5,codec='libx264',pix_fmt_in='rgb24',pix_fmt_out='yuv420p',quality=7,ffmpeg_log_level='error')
+    writer=imageio_ffmpeg.write_frames(str(video),size,fps=5,codec='libx264',pix_fmt_in='rgb24',pix_fmt_out='yuv420p',quality=7,macro_block_size=1,ffmpeg_log_level='error')
     writer.send(None)
     for path in frames:
         with Image.open(path) as image:writer.send(image.convert('RGB').tobytes())

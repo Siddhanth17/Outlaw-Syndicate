@@ -174,4 +174,3 @@ func _process(delta: float) -> void:
 	if clock_time<=0:
 		apply_clock()
 		clock_time=1
-

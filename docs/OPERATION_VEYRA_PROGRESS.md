@@ -87,4 +87,4 @@ Human 20–30-minute acceptance route: **NOT RUN**. The [acceptance checklist](o
 
 Do not claim execution continues outside an active session. No automation or unattended month-long process has been created.
 
-Asset kit commit: `a31b0cc`. Integration commit and exact package provenance are recorded by `build-manifest.json` and normal Git history after final review. Push only to the verified `main` branch on the authorized Siddhanth17/Outlaw-Syndicate remote; no history rewriting.
+Asset kit commit: `a31b0cc`. Validated integration commit: `78751f6`. Final package provenance is stamped in `build-manifest.json`; packaging-only follow-ups appear in normal Git history. Video encoding retains the original 1920×1080 viewport dimensions. Push only to the verified `main` branch on the authorized Siddhanth17/Outlaw-Syndicate remote; no history rewriting.
