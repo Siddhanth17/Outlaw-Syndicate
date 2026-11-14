@@ -1,5 +1,7 @@
-# AI state
+# Current AI
 
-Current pedestrians move along simple fixed sidewalk paths, accelerate during search and wrap at bounds. This is a placeholder, without navigation, schedules, obstacle avoidance or actual NPC memory. Search increases on gunfire/ledger recovery and decays outside warehouse proximity. It is not police AI.
+HarborGuard uses PATROL, SUSPICION, INVESTIGATE, ENGAGE and DEFEATED states. Local movement is CharacterBody3D steering with collision, not NavigationServer pathfinding. Perception uses distance plus raycast LOS; it currently has no authored vision cone. Engagement produces actual damage; defeat changes collision/visual state and persistent records. Faction reputation changes sensing/response thresholds.
 
-Planned: civilians idle/walk/react/flee/recover; police report/search/pursue/lose-contact; factions patrol/suspicion/investigation/combat/retreat; traffic lane graph/intersections/signals/avoidance. Near actors use navigation and perception budgets, medium actors update less often, distant state remains abstract and persistent. Measure budgets before scaling counts.
+The ledger security alert also changes warehouse-side lights to red, and restoration replays this visual state. Dante relationship reward produces a once-only 25-point garage repair on mission completion. These are gameplay-linked authored consequences, not only text. City-wide faction simulation, NPC schedules, police actors/pursuit, traffic and scheduled city repair rules remain absent. Search is still an abstract proximity/visibility heat system.
+
+Dante and the two guards reuse the human model temporarily. Former box pedestrians were removed rather than misrepresented as finished civilians. Next priority: proper navigation and cover routes, distinct security/civilian art, believable routine recovery and budgeted nearby populations.

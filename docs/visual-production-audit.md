@@ -1,5 +1,7 @@
 # Visual production audit — 14 November 2026
 
+Historical baseline: Option A was subsequently approved. See production-session-report.md for the implemented production increment and current limitations; findings below describe the earlier graybox.
+
 Recommendation: retain Godot 4.6/Jolt and establish a real asset pipeline. Evaluate Forward+ in a separate rendering experiment after engine approval. No engine or renderer migration was performed in this audit. Current delivery is a technical graybox, not realistic, cinematic or finished gameplay art.
 
 ## Evidence and preservation

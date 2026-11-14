@@ -1,7 +1,11 @@
-# Mission manifest
+# Opening mission manifest
 
-ACT1_01 — The Last Address. State: implemented blockout; manual playtest NOT RUN. Canonical definition: data/homecoming.json. Start: new game at Cross Motor Works, Iron Harbor. Participants: Adrian, Dante, Elena, Mara's note. Objectives: garage interaction, drive to warehouse, collect ledger on foot, evade proximity search, return to garage on foot. Auto-checkpoint after each objective; manual save available. Reward $500 once. Persistent event mara_ledger_preserved records Dante relationship +1 as data; no relationship gameplay yet.
+ACT1_01 — The Last Address. Implemented as one short playable opening mission, early production quality. Canonical definition: data/homecoming.json. No later story missions exist.
 
-Current cutscenes: none; timed text dialogue only. Failure/retry: not implemented; health system and enemies pending. JSON failure field specifies intended behavior, not delivered functionality. Automated tests cover all stage transitions and reload. Final required assets: animated cast, garage/warehouse interiors, original car, voice, ambient/music/SFX, skippable camera timelines.
+Five stages are preserved: meet Dante, drive to bonded storage, recover Mara's ledger on foot, escape the search, return to Dante on foot. Ledger recovery spawns two guards and changes district alert lighting. Guards can be fought or escaped. Magazine/reserve ammo, health, damage, checkpoint failure/retry and skippable presentation are integrated. The ending rewards $500 once and Dante repairs 25 integrity once.
 
-Remaining 27–34 mission slots are not implemented or falsely listed as playable. Author each after district gameplay and narrative pacing are validated. Capture actual playtime, checkpoint failures and branch coverage for every mission before marking complete.
+Automatic checkpoint after each stage; manual F5/F9 and pause save/load. Defeated guard events and selected district/faction/vehicle state restore. File replacement keeps a backup. Actual interrupted-write and full malformed-schema recovery remain untested.
+
+Presentation: simple skippable opening/closing camera move with text subtitles and a shared human stand-in for cast. No voice, facial performance or production cinematic animation. Main mission can be completed in automated movement/driving/combat tests; no manual human duration measured. Playtest result: 14 automated physical-route checkpoints PASS, manual quality/playtime NOT RUN.
+
+Remaining work: artist-reviewed action/cinematic animation, distinct Dante/security identity, navigation/cover, authored investigation prop/interior, richer dialogue choice, polished sound/encounter balance, additional missions only after this route passes human QA.

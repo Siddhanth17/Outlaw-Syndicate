@@ -1,19 +1,29 @@
 # OUTLAW SYNDICATE
 
-The City That Sold Its Soul — an in-development Godot 4.6/Jolt third-person crime game for Windows.
+Godot 4.6 / Jolt, Windows-first third-person crime game in active production.
 
-**Current delivery: early gameplay blockout. The complete game and ten-hour campaign do not exist yet.**
+**Current build: Iron Harbor production increment. One short opening mission, not the complete game or a ten-hour campaign.**
 
-## Play
+## Play the new build
 
-Open `project.godot` in Godot **4.6 stable** and press F6 on `scenes/main.tscn`, or F5. The local engine is excluded from Git; on this development machine run `./tools/play.ps1`. A locally exported executable, when present, is `builds/windows/OutlawSyndicate.exe`; keep its adjacent PCK file beside it.
+On this development machine run `D:/OutlawSyndicate/builds/iron-harbor-production/OutlawSyndicate.exe` with its adjacent PCK file. The original graybox package remains under `builds/windows` and `builds/preserved-11aedc2`. Binaries are local artifacts, not committed downloads.
 
-WASD moves or drives; mouse looks; Shift sprints; Ctrl slows movement; Space jumps or brakes. E interacts or enters/exits the car (exit requires low speed). Click shoots targets. F5 saves, F9 loads, Esc opens the pause menu. Controller left/right sticks, A, Y, right shoulder and Start have basic mappings; full controller menu navigation is pending.
+Choose **New game** for the introduction, or **Continue** for your checkpoint. Enter / controller A skips the introduction. Pause → Controls lists bindings. The separate **Driving course** menu entry opens a handling test scene.
 
-Follow amber markers through The Last Address: meet Dante, take the red car to the warehouse, leave the car and collect the ledger, escape the search area, return to the garage on foot. Dialogue appears as subtitles. Search is currently a proximity-and-timer mechanic, not police AI.
+WASD / left stick: move or drive. Mouse / right stick: look. Shift / B: sprint. Space / A: jump or brake. E / Y: interact or enter/exit at low speed. Right mouse / LB: aim. Left mouse / RB: shoot. R / X: reload. Esc / Start: pause. F5/F9: save/load. Mouse aim is required to align shots; combat is fictional and gameplay-tuned.
 
-## Validation
+The Last Address: meet Dante at the ring, enter the orange Sable GT, drive to bonded storage, leave the car and recover the ledger. Fight or escape the two security guards, get outside the warehouse search area until search reaches zero, then return to Dante on foot. Low curbs can be stepped over. The opening is short and its human playtime has not been measured.
 
-`./tools/test.ps1` runs engine-backed smoke checks. It uses isolated development save data under ignored `tools/runtime-data`. Tests overwrite this test save. Use a separate APPDATA when running your own saves. Export using the Windows Desktop preset after obtaining matching official templates; its custom template paths point to ignored `tools/templates`.
+## Implemented production increment
 
-See `docs/development-progress.md` for truthful scope and continuation tasks, `docs/testing-report.md` for evidence, and `docs/asset-licenses.md` for provenance. No third-party art or commercial brands are bundled.
+Clothed skinned human with AnimationTree locomotion; additional basic keyframed actions; original Blender-modeled sedan and industrial kit; CC0 asphalt/concrete maps; Forward+ nighttime lighting, shadows and fog; Low/Balanced/High presets; responsive HUD and main/pause/settings/controls menus; shoulder/aim/drive cameras; vehicle damage and synthesized engine/tire audio; enemy patrol/perception/engagement/defeat, health/ammo/reload, checkpoint retry and persistent selected consequences.
+
+This remains early production art. Repeated buildings/cast, angular vehicle body, simple action clips, synthetic sounds, lack of voice/facial animation and limited AI are documented in `docs/production-session-report.md`. No photorealism or professional simulation claim.
+
+## Develop and test
+
+Open `project.godot` with Godot **4.6 stable** and press F5, or use `./tools/play.ps1` with the local ignored engine. `./tools/test.ps1` runs original and production suites against isolated development save data; tests overwrite that test profile. Run `tests/mission_playthrough.gd` with Godot headless for the input-driven mission route. Rendered evidence/performance harness: `tests/production_capture.gd`.
+
+Portable Blender **4.5.3 LTS** is local under ignored tools/blender. Rebuild meshes using `blender --background --python art/build_assets.py`; input human GLB and editable .blend sources are under art/source. Rebuild original synthesized WAV files with `python art/build_audio.py`. Asset import settings and licenses are committed. Clone with Git LFS installed (`git lfs pull`) before opening the project. Install Godot and its matching Windows export templates to the custom paths in export_presets.cfg, then use `./tools/build.ps1`. This exports to a separate production folder.
+
+See `docs/production-checklist.md`, `docs/testing-report.md`, `docs/asset-licenses.md`, and `docs/development-progress.md`. No additional districts or later campaign acts have been implemented.

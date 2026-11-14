@@ -1,16 +1,16 @@
-# Remaining production gates
+# Production gates
 
-0 Foundation: source/engine/Jolt/Git set up; reproducible CI still pending.
-1 Core gameplay: movement/car/targets exist; real combat, navigation and physics courses pending.
-2 Vertical slice: complete Iron Harbor art, mission encounter, cinematic, audio, failure recovery and manual QA.
-3 Living world: navigation, population budgets, traffic, police/factions, deterministic consequences, weather/time.
-4 Expanded systems: vehicle/weapon categories, garage economy, side activities, progression.
-5 World: build and connect all six districts with streaming and authored content.
-6 Story: author and implement approximately 28–35 missions, all five acts, choices and three finales.
-7 Integration: cross-system save/migration and ending/world/relationship coverage.
-8 Polish: animation/art/audio, settings/accessibility, measured performance and control feel.
-9 Campaign QA: actual full playthroughs, timing, every branch, regression and corruption/recovery tests.
-10 PC release: signed if available, attributed, verified Windows package, installation/controls/known issues.
-11 Android: evaluate only after stable PC, touch UI, rendering and physical-device tests.
+0 Foundation: Godot/Jolt/Git/LFS and portable Blender pipeline delivered; reproducible CI pending.
+1 Core gameplay: movement, low steps, modeled car, basic combat encounter, health/ammo/reload and camera integration delivered; advanced traversal/navigation pending.
+2 Vertical slice: current Iron Harbor production increment is substantial but NOT a finished polished slice. Complete the partial items in production-checklist.md and human QA first.
+3 Living world: selected authored consequences work; full navigation/traffic/police/factions/weather pending.
+4 Expanded systems: multiple vehicle/weapon classes, economy, activities and upgrades pending.
+5 World: six connected regions with streaming pending; current region remains a compact corridor.
+6 Story: five acts, approximately 28–35 missions and three finales pending.
+7 Integration: broad relationship/economy/ending/save migration coverage pending.
+8 Polish: production animation/art/audio, controller/remapping/accessibility and sustained performance pending.
+9 Campaign QA: complete human playthroughs, branch coverage and measured ten-hour duration pending.
+10 PC release: current local Windows package is a development increment, not full-game release.
+11 Android: evaluate only after stable PC, with physical-device testing.
 
-Performance goals are provisional: establish 1080p/60fps target on RTX 3050 6GB after profiling representative gameplay, plus lower hardware tier. No measured frame-time/memory/loading budget claim yet.
+Short measured scene performance is recorded in production-session-report.md, not extrapolated to the full city. Complete playable content before geographic expansion.

@@ -1,0 +1,53 @@
+{
+	"results": [
+		{
+			"draw_calls": 305.0,
+			"fps": 199.476374516893,
+			"mean_ms": 5.013125,
+			"p95_ms": 6.06,
+			"renderer": "forward_plus",
+			"resolution": "(1920, 1080)",
+			"samples": 600,
+			"scenario": "1080p on-foot district, Low",
+			"static_memory_bytes": 105295133.0,
+			"video_memory_estimate_bytes": 798173152.0
+		},
+		{
+			"draw_calls": 305.0,
+			"fps": 143.026254376007,
+			"mean_ms": 6.99172333333334,
+			"p95_ms": 8.138,
+			"renderer": "forward_plus",
+			"resolution": "(1920, 1080)",
+			"samples": 600,
+			"scenario": "1080p on-foot district, Balanced",
+			"static_memory_bytes": 105296653.0,
+			"video_memory_estimate_bytes": 798173152.0
+		},
+		{
+			"draw_calls": 305.0,
+			"fps": 121.717507055051,
+			"mean_ms": 8.21574499999999,
+			"p95_ms": 9.341,
+			"renderer": "forward_plus",
+			"resolution": "(1920, 1080)",
+			"samples": 600,
+			"scenario": "1080p on-foot district, High",
+			"static_memory_bytes": 105376685.0,
+			"video_memory_estimate_bytes": 846123936.0
+		},
+		{
+			"draw_calls": 576.0,
+			"fps": 232.519746739492,
+			"mean_ms": 4.30071,
+			"p95_ms": 5.32,
+			"renderer": "forward_plus",
+			"resolution": "(1280, 720)",
+			"samples": 600,
+			"scenario": "720p vehicle accelerating, Balanced",
+			"static_memory_bytes": 105168717.0,
+			"video_memory_estimate_bytes": 688189856.0
+		}
+	],
+	"scope": "Rendered source game, short fixed scenarios after 120-frame warmup. Wall-clock frame intervals include presentation/scheduling; memory is Godot-reported. Not isolated GPU timing, sustained thermal testing, or a full playthrough."
+}

@@ -1,7 +1,7 @@
-# Veyra
+# Iron Harbor production increment
 
-Iron Harbor currently has a finite collision-enabled road, warehouses, container-like forms, lane markings, simple walkers and a garage sign. This is a single blockout area with no waterfront gameplay, interiors or streaming.
+A compact harbor corridor replaces the previous visible graybox. Blender-modeled gabled warehouses have loading shutters, clerestory glazing, corrugated facade ribs, dock bumpers/bollards, roof seams, gutters, drains and vents. Containers have corrugation, frames, doors, locking bars and stencil IDs. Streetlights, lattice port cranes, fences, pallet/drum cargo and signs establish the industrial setting.
 
-Planned connected regions: Veyra Central (financial glass/corporate security), Iron Harbor (cargo/industry), Old Veyra (markets/dense historic housing), The Heights (hills/private compounds), Ashwood County (rural highways/forest/mine), Blackwater Island (restricted coast/underground facilities).
+Textured asphalt/concrete surfaces, raised sidewalks and simple collision support traversal. Forward+ provides local sodium-orange lights, cool fill, shadows, distance fog, probe-based reflections and wet roughness. SSAO/glow are preset-dependent; SSR/volumetric fog are High-only. Asset repetition and lack of unique storefront/interior/harbor-water set dressing remain obvious. No claim of a completed district or photorealism.
 
-Each district requires actual mission sites, landmarks, ambient audio, population/traffic routines, discoveries and persistent state variants. Build compact authored routes before scaling terrain. Budget resident chunks and collision/navigation resources based on measured traversal and frame time.
+The region remains finite with no streaming. Other five districts have not been built. Complete this authored route, distinct mission sites, interactive interiors and artist-reviewed set dressing before expanding geographical scale.

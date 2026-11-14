@@ -4,4 +4,4 @@ Adrian Vale: former getaway driver, motivated by Mara's disappearance; his flaw 
 
 Victor Kane: Syndicate leader who justifies control as stability. Marcus Rell: private-security director who converts fear into contracts. Nadia Serrano: faction leader whose alliance requires credible protection of her community. Detective Elias Ward: investigator torn between institutional loyalty and evidence.
 
-Current representation: text lines for Adrian, Dante, Elena and Mara's note. All character art, relationship branches and performances pending.
+Current representation: text dialogue plus a shared clothed CC0 human used for Adrian, Dante and security. Locomotion and basic action clips are integrated. Distinct cast art/identity, relationship branches, voice and facial performance remain pending.
