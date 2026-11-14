@@ -3,6 +3,11 @@ extends Node
 
 # Gameplay deformation of original/rest meshes. Not a crash simulation.
 const ZONES: Array[String] = ["front_left", "front_center", "front_right", "left_front", "left_rear", "right_front", "right_rear", "rear_left", "rear_center", "rear_right", "roof", "underbody"]
+var tires: Array[float]=[0.0,0.0,0.0,0.0]
+var light_damage: Array[float]=[0.0,0.0,0.0,0.0]
+var bullet_marks: Array[Dictionary]=[]
+var mark_pool: Array[Decal]=[]
+var bullet_count: int=0
 var car: RigidBody3D
 var zones: Dictionary = {}
 var hits: Array[Dictionary] = []
@@ -64,7 +69,9 @@ func impact(point: Vector3, inward: Vector3, speed: float, effects: bool = true)
 			if previous==0: pane.origin=_pane_uv(pane.node,car.to_global(point))
 			pane.damage = minf(100, float(pane.damage) + amount * 1.5)
 			pane.state = 3 if pane.damage >= 70 else (2 if pane.damage >= 35 else 1)
-			if effects and pane.state == 3 and previous < 3: burst(car.to_global(pane.center), true)
+			if effects and pane.state == 3 and previous < 3:
+				burst(car.to_global(pane.center), true)
+				_glass_event(car.to_global(pane.center))
 	_rebuild(effects)
 	if effects: burst(car.to_global(point), false)
 
@@ -120,11 +127,14 @@ func _rebuild(effects: bool) -> void:
 				part.detached = true
 			node.visible = not part.detached
 		elif node.name.contains("Headlamp") or node.name.contains("Tail lamp"):
-			node.visible = condition < 55
+			var light: int=(0 if center.z>0 else 2)+(0 if center.x<0 else 1)
+			node.visible = condition < 55 and light_damage[light]<60
+		if part.has("hit_region"): part.hit_region.collision_layer=CollisionLayers.PROJECTILE if node.visible else 0
 	for pane: Dictionary in glass:
 		pane.node.visible = pane.state < 3
 		pane.material.set_shader_parameter("stage", float(pane.state))
 		pane.material.set_shader_parameter("origin",pane.origin)
+		if pane.has("hit_region"): pane.hit_region.collision_layer=CollisionLayers.PROJECTILE if pane.state<3 else 0
 
 func detach(node: MeshInstance3D) -> void:
 	if debris.size() >= 8: return
@@ -194,7 +204,7 @@ func snapshot() -> Dictionary:
 	for pane: Dictionary in glass: windows.append(float(pane.damage))
 	var origins: Array=[]
 	for pane: Dictionary in glass: origins.append([pane.origin.x,pane.origin.y])
-	return {"version": 1, "zones": zones.duplicate(), "hits": hits.duplicate(true), "windows": windows, "window_origins": origins}
+	return {"version": 1, "zones": zones.duplicate(), "hits": hits.duplicate(true), "windows": windows, "window_origins": origins, "tires":tires.duplicate(), "lights":light_damage.duplicate(), "bullet_marks":bullet_marks.duplicate(true)}
 
 func restore(data: Dictionary) -> void:
 	for body: RigidBody3D in debris:
@@ -219,7 +229,20 @@ func restore(data: Dictionary) -> void:
 		glass[i].origin=Vector2(_number(origins[i][0],1),_number(origins[i][1],1)) if i<origins.size() and origins[i] is Array and origins[i].size()==2 else Vector2(0.5,0.5)
 		glass[i].damage = _number(windows[i],100) if i < windows.size() else 0.0
 		glass[i].state = 3 if glass[i].damage >= 70 else (2 if glass[i].damage >= 35 else (1 if glass[i].damage > 0 else 0))
+	for i: int in range(4):
+		tires[i]=_number(data.get("tires",[])[i],100) if data.get("tires",[]) is Array and data.get("tires",[]).size()>i else 0
+		light_damage[i]=_number(data.get("lights",[])[i],100) if data.get("lights",[]) is Array and data.get("lights",[]).size()>i else 0
+	bullet_marks.clear()
+	if data.get("bullet_marks",[]) is Array:
+		for mark: Variant in data.get("bullet_marks",[]):
+			if bullet_marks.size()>=24: break
+			if mark is Dictionary and mark.get("p") is Array and mark.get("n") is Array and mark.p.size()==3 and mark.n.size()==3:
+				var valid: bool=true
+				for value: Variant in mark.p+mark.n:
+					if not (value is float or value is int) or not is_finite(float(value)) or absf(float(value))>10: valid=false
+				if valid: bullet_marks.append(mark)
 	_rebuild(false)
+	_render_marks()
 
 func _pane_uv(mesh: MeshInstance3D, world_point: Vector3) -> Vector2:
 	var point: Vector3=mesh.to_local(world_point)
@@ -251,3 +274,68 @@ func _pane_uv(mesh: MeshInstance3D, world_point: Vector3) -> Vector2:
 func _number(value: Variant, maximum: float) -> float:
 	if not (value is int or value is float): return 0
 	return clampf(float(value),0,maximum) if is_finite(float(value)) else 0
+
+func bullet(point: Vector3, incoming: Vector3, power: float, kind: String, index: int) -> void:
+	if not point.is_finite() or not incoming.is_finite() or not is_finite(power) or power<=0: return
+	power=clampf(power,0,100)
+	bullet_count+=1
+	if kind=="glass" and index>=0 and index<glass.size():
+		var pane: Dictionary=glass[index]
+		var previous: int=pane.state
+		if previous==3: return
+		if previous==0: pane.origin=_pane_uv(pane.node,car.to_global(point))
+		pane.damage=minf(100,float(pane.damage)+power*0.7)
+		pane.state=3 if pane.damage>=70 else (2 if pane.damage>=35 else 1)
+		pane.node.visible=pane.state<3
+		pane.material.set_shader_parameter("stage",float(pane.state))
+		pane.material.set_shader_parameter("origin",pane.origin)
+		if pane.has("hit_region"): pane.hit_region.collision_layer=CollisionLayers.PROJECTILE if pane.state<3 else 0
+		if pane.state==3 and previous<3:
+			burst(car.to_global(point),true)
+			_glass_event(car.to_global(point))
+	elif kind=="tire" and index>=0 and index<4:
+		tires[index]=minf(100,tires[index]+power*1.2)
+	elif kind=="light" and index>=0 and index<4:
+		light_damage[index]=minf(100,light_damage[index]+power)
+		for part: Dictionary in parts:
+			if part.has("hit_region") and part.hit_region.kind=="light" and part.hit_region.index==index:
+				part.node.visible=light_damage[index]<60
+				part.hit_region.collision_layer=CollisionLayers.PROJECTILE if part.node.visible else 0
+	else:
+		var zone: String=zone_at(point,-incoming)
+		zones[zone]=minf(100,float(zones[zone])+power*0.18)
+		var normal: Vector3=-incoming.normalized()
+		bullet_marks.append({"p":[point.x,point.y,point.z],"n":[normal.x,normal.y,normal.z]})
+		if bullet_marks.size()>24: bullet_marks.pop_front()
+		_render_marks()
+	burst(car.to_global(point),false)
+
+func _render_marks() -> void:
+	if DisplayServer.get_name()=="headless": return
+	if mark_pool.is_empty():
+		var image:=Image.create(64,64,false,Image.FORMAT_RGBA8)
+		for x: int in range(64):
+			for y: int in range(64):
+				var radius: float=Vector2(x-31.5,y-31.5).length()/32
+				image.set_pixel(x,y,Color(0.035,0.035,0.038,maxf(0,1-radius)*0.95))
+		var texture:=ImageTexture.create_from_image(image)
+		for i: int in range(24):
+			var mark:=Decal.new()
+			mark.texture_albedo=texture
+			mark.size=Vector3(0.11,0.08,0.11)
+			mark.cull_mask=1
+			mark.visible=false
+			car.add_child(mark)
+			mark_pool.append(mark)
+	for i: int in range(mark_pool.size()):
+		mark_pool[i].visible=i<bullet_marks.size()
+		if i<bullet_marks.size():
+			var hit: Dictionary=bullet_marks[i]
+			var point:=Vector3(hit.p[0],hit.p[1],hit.p[2])
+			var normal:=Vector3(hit.n[0],hit.n[1],hit.n[2]).normalized()
+			if normal.length()<0.1: normal=Vector3.FORWARD
+			mark_pool[i].position=point+normal*0.015
+			mark_pool[i].quaternion=Quaternion(Vector3.UP,normal)
+
+func _glass_event(at: Vector3) -> void:
+	if car.get_parent().has_method("publish_city_event"): car.get_parent().publish_city_event("glass",at,8,str(car.get_instance_id()))

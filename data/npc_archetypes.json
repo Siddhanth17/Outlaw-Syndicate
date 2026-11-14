@@ -1,0 +1,92 @@
+{
+  "industrial_worker": {
+    "model": "res://assets/characters/npc_worker.glb",
+    "role": "work",
+    "pace": 1.25,
+    "animation_rate": 0.88,
+    "posture": -0.015,
+    "voice": "Adrian",
+    "story_fixed": false
+  },
+  "dock_supervisor": {
+    "model": "res://assets/characters/npc_supervisor.glb",
+    "role": "inspect",
+    "pace": 1.1,
+    "animation_rate": 0.8,
+    "posture": 0.015,
+    "voice": "Adrian",
+    "story_fixed": false
+  },
+  "security": {
+    "model": "res://assets/characters/npc_security.glb",
+    "role": "security",
+    "pace": 1.6,
+    "animation_rate": 1.0,
+    "posture": 0,
+    "voice": "Marcus",
+    "story_fixed": false
+  },
+  "pedestrian": {
+    "model": "res://assets/characters/npc_pedestrian.glb",
+    "role": "walk",
+    "pace": 1.35,
+    "animation_rate": 0.94,
+    "posture": -0.02,
+    "voice": "Adrian",
+    "story_fixed": false
+  },
+  "delivery_driver": {
+    "model": "res://assets/characters/npc_delivery.glb",
+    "role": "deliver",
+    "pace": 1.65,
+    "animation_rate": 1.12,
+    "posture": -0.03,
+    "voice": "Adrian",
+    "story_fixed": false
+  },
+  "mechanic": {
+    "model": "res://assets/characters/npc_dante.glb",
+    "role": "repair",
+    "pace": 1.1,
+    "animation_rate": 0.86,
+    "posture": 0.025,
+    "voice": "Dante",
+    "story_fixed": false
+  },
+  "police": {
+    "model": "res://assets/characters/npc_police.glb",
+    "role": "police",
+    "pace": 1.45,
+    "animation_rate": 0.95,
+    "posture": 0,
+    "voice": "Elias",
+    "story_fixed": false
+  },
+  "faction": {
+    "model": "res://assets/characters/npc_faction.glb",
+    "role": "faction",
+    "pace": 1.55,
+    "animation_rate": 1.08,
+    "posture": -0.04,
+    "voice": "Adrian",
+    "story_fixed": false
+  },
+  "shopkeeper": {
+    "model": "res://assets/characters/npc_shopkeeper.glb",
+    "role": "trade",
+    "pace": 1.0,
+    "animation_rate": 0.78,
+    "posture": 0.02,
+    "voice": "Adrian",
+    "story_fixed": false
+  },
+  "dante": {
+    "model": "res://assets/characters/npc_dante.glb",
+    "role": "story",
+    "pace": 1.0,
+    "animation_rate": 0.85,
+    "posture": 0.025,
+    "voice": "Dante",
+    "story_fixed": true
+  }
+}

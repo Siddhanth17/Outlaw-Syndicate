@@ -1,3 +1,5 @@
+Latest validation is in living-city-validation.md. Earlier reports below are historical; do not use their counts as current release results.
+
 Latest interaction increment: see [interaction validation](interaction-validation.md) and [implementation/limits](physics-acting-report.md). Older counts and architecture statements below describe earlier builds.
 
 # Verification — production history, 14 November 2026

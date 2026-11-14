@@ -1,0 +1,19 @@
+{
+  "tool": "kokoro-onnx 0.6.1 (MIT), ONNX Runtime 1.32.0; build-time only",
+  "model": "Kokoro-82M v1.0 int8, Apache-2.0",
+  "release": "https://github.com/thewh1teagle/kokoro-onnx/releases/tag/model-files-v1.1",
+  "upstream": "https://huggingface.co/hexgrad/Kokoro-82M",
+  "files": {
+    "kokoro-v1.0.int8.onnx": {
+      "bytes": 114119327,
+      "sha256": "ae315a79b623f244700e4afb9246c46a26066782e049ba174bf3ba433970ee9c"
+    },
+    "voices-v1.0.bin": {
+      "bytes": 28214398,
+      "sha256": "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d"
+    }
+  },
+  "outputs": "Original project dialogue synthesized using generic model voice presets; no actor/celebrity impersonation requested. Only offline WAVs ship. No model, inference DLL or paid API is required in gameplay.",
+  "limitations": "Stock neural voices, not human performances or full emotional direction. Mouth animation remains amplitude-driven, not visemes. Five Broken Trust lines are preparatory audio, not a playable second mission.",
+  "reproduction": "Use isolated tools/voice-tools environment and art/voice-tool-requirements.txt. art/build_neural_dialogue.py preserves existing WAVs by default; --regenerate explicitly replaces output. Do not regenerate needlessly."
+}

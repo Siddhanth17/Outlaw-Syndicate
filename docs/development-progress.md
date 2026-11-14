@@ -1,3 +1,11 @@
+# Latest continuation — living city and signature hero
+
+Preserved the interrupted local assets and original Windows build. Implemented nine role variants, eight stock neural voice profiles and current dialogue, shared incidents/navigation, actual vehicle/person contacts, component gunfire damage/persistence, separate partial Adrian jacket/hair, moving-leg aiming, bounded recoil, directional knockdown and injury masks. See living-city-signature-report.md and living-city-validation.md for scope/evidence.
+
+COMPLETE for this systems increment: live integration, actual contact/ray dispatch, bounded history and save/load. PARTIAL: visual quality, gait/acting, hair/garment collision, driver motion and injuries. NOT STARTED: articulated ragdolls, terrain foot IK, authored door sequence, Mission 02 runtime and full campaign. No background work continues after the session. Exact next work: genuine bounded PhysicalBone joints and ground tests; terrain feet/driver hands and hinged doors; improved groom/face/hands/jacket; arbitrary dialogue partner binding and Broken Trust objectives/checkpoints.
+
+The following sections describe earlier historical milestones and may contain superseded limitations.
+
 # Current physics / acting continuation
 
 Recovered interrupted work and fixed the kinematic exit-velocity damage regression. The short opening mission completes again. Contact-local dents, independent glass, bumper detachment, physical cargo and a draft amplitude-driven facial/gesture conversation are implemented. Full production acting, detailed destruction and the campaign remain incomplete; see physics-acting-report.md and interaction-validation.md for exact scope and results.

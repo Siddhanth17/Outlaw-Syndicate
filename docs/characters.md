@@ -1,3 +1,5 @@
+Current character status: separate signature Adrian jacket/hair prototype, nine curated male NPC derivatives and fixed Dante. Coarse face/hands and groom remain below reference quality; other principal cast visual assets are not complete. Eight stock neural voice profiles exist. See living-city-signature-report.md.
+
 # Character direction — planned
 
 Adrian Vale: former getaway driver, motivated by Mara's disappearance; his flaw is treating escape as a solution to every conflict. Dante Cross: mechanic and childhood friend, values Adrian's safety over public victory. Mara Vale: investigator whose evidence must retain her agency rather than merely motivate Adrian. Elena Voss: journalist who values corroboration over sensational disclosure.

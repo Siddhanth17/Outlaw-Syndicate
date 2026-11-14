@@ -1,0 +1,83 @@
+[
+  {
+    "id": "worker",
+    "style": "hardhat",
+    "face_width_factor": 1.07,
+    "nose_sculpt_m": 0.01,
+    "hair_gray": 0.55,
+    "source": "existing CC0 rigged human; original curated sculpt/outfit additions",
+    "bounds": "same skeleton/rest height; no random body stretching"
+  },
+  {
+    "id": "supervisor",
+    "style": "whitehat",
+    "face_width_factor": 0.94,
+    "nose_sculpt_m": -0.004,
+    "hair_gray": 0.35,
+    "source": "existing CC0 rigged human; original curated sculpt/outfit additions",
+    "bounds": "same skeleton/rest height; no random body stretching"
+  },
+  {
+    "id": "security",
+    "style": "helmet",
+    "face_width_factor": 1.08,
+    "nose_sculpt_m": 0.008,
+    "hair_gray": 0.05,
+    "source": "existing CC0 rigged human; original curated sculpt/outfit additions",
+    "bounds": "same skeleton/rest height; no random body stretching"
+  },
+  {
+    "id": "pedestrian",
+    "style": "beanie",
+    "face_width_factor": 0.93,
+    "nose_sculpt_m": -0.008,
+    "hair_gray": 0.2,
+    "source": "existing CC0 rigged human; original curated sculpt/outfit additions",
+    "bounds": "same skeleton/rest height; no random body stretching"
+  },
+  {
+    "id": "delivery",
+    "style": "cap",
+    "face_width_factor": 0.97,
+    "nose_sculpt_m": 0.004,
+    "hair_gray": 0.15,
+    "source": "existing CC0 rigged human; original curated sculpt/outfit additions",
+    "bounds": "same skeleton/rest height; no random body stretching"
+  },
+  {
+    "id": "dante",
+    "style": "mechanic",
+    "face_width_factor": 1.09,
+    "nose_sculpt_m": 0.012,
+    "hair_gray": 0.7,
+    "source": "existing CC0 rigged human; original curated sculpt/outfit additions",
+    "bounds": "same skeleton/rest height; no random body stretching"
+  },
+  {
+    "id": "police",
+    "style": "policecap",
+    "face_width_factor": 1.03,
+    "nose_sculpt_m": -0.003,
+    "hair_gray": 0.05,
+    "source": "existing CC0 rigged human; original curated sculpt/outfit additions",
+    "bounds": "same skeleton/rest height; no random body stretching"
+  },
+  {
+    "id": "faction",
+    "style": "hood",
+    "face_width_factor": 0.94,
+    "nose_sculpt_m": 0.009,
+    "hair_gray": 0.15,
+    "source": "existing CC0 rigged human; original curated sculpt/outfit additions",
+    "bounds": "same skeleton/rest height; no random body stretching"
+  },
+  {
+    "id": "shopkeeper",
+    "style": "apron",
+    "face_width_factor": 1.02,
+    "nose_sculpt_m": -0.006,
+    "hair_gray": 0.8,
+    "source": "existing CC0 rigged human; original curated sculpt/outfit additions",
+    "bounds": "same skeleton/rest height; no random body stretching"
+  }
+]

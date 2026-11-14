@@ -1,0 +1,14 @@
+{
+  "source": "existing CC0 hero derivative; original jacket, maps, ribbons and hardware",
+  "hair_cards": 36,
+  "long_hair_chains": [
+    "LongHairBackL",
+    "LongHairSideL",
+    "LongHairBackR",
+    "LongHairSideR"
+  ],
+  "max_torso_width_change": 0.055,
+  "oral_cavity": false,
+  "fingers": "existing coarse topology/rig retained",
+  "collision_complete_cloth": false
+}

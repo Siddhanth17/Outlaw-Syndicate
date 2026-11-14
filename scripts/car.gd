@@ -3,6 +3,8 @@ extends VehicleBody3D
 
 signal crashed(point: Vector3, speed: float)
 var damage: VehicleDamage
+var pending_npc_contacts: Array[Dictionary]=[]
+var npc_contact_times: Dictionary={}
 var pending_contacts: Array[Dictionary] = []
 var recent_contacts: Dictionary = {}
 var contact_clock: float = 0
@@ -108,9 +110,14 @@ func _ready() -> void:
 	tire_audio.unit_size = 5
 	add_child(tire_audio)
 	if DisplayServer.get_name() != "headless": tire_audio.play()
+	_setup_bullet_regions()
 
 func _physics_process(delta: float) -> void:
 	contact_clock += delta
+	for contact: Dictionary in pending_npc_contacts:
+		var actor: Object=contact.actor.get_ref()
+		if is_instance_valid(actor): actor.receive_vehicle_contact(contact.speed,contact.direction,contact.point)
+	pending_npc_contacts.clear()
 	for hit: Dictionary in pending_contacts:
 		if OS.get_cmdline_user_args().has("--trace-physics"): print("CRASH_EVENT ",hit," at ",position," prior ",last_velocity)
 		damage.impact(hit.point, hit.normal, hit.speed)
@@ -120,6 +127,7 @@ func _physics_process(delta: float) -> void:
 			impact_audio.volume_db = clampf(-20 + hit.speed, -15, 0)
 			impact_audio.play()
 		crashed.emit(to_global(hit.point), hit.speed)
+		if get_parent().has_method("publish_city_event"): get_parent().publish_city_event("crash",to_global(hit.point),hit.speed,str(get_instance_id()))
 	pending_contacts.clear()
 	var throttle := Input.get_axis("back", "forward") if occupied and integrity > 0 else 0.0
 	throttle_smoothed = move_toward(throttle_smoothed, throttle, delta * 2)
@@ -136,14 +144,18 @@ func _physics_process(delta: float) -> void:
 	brake_light.light_energy = 2.0 if brake > 0 and occupied else 0.15
 	for wheel: VehicleWheel3D in wheels:
 		var wheel_zone: String = ("front_" if wheel.position.z > 0 else "rear_") + ("left" if wheel.position.x < 0 else "right")
+		var index: int = wheels.find(wheel)
+		var flat: bool = damage.tires[index]>=60
+		wheel.wheel_radius=0.30 if flat else 0.38
+		wheel.get_child(0).scale=Vector3(1,0.78,0.78) if flat else Vector3.ONE
 		wheel.suspension_stiffness = 45 - float(damage.zones[wheel_zone]) * 0.12
-		wheel.wheel_friction_slip = (1.0 - float(damage.zones[wheel_zone]) * 0.004) * (2.0 if absf(position.x) > 8 else (1.8 if Input.is_action_pressed("handbrake") and occupied else 3.2))
+		wheel.wheel_friction_slip = (0.42 if flat else 1.0) * (1.0 - float(damage.zones[wheel_zone]) * 0.004) * (2.0 if absf(position.x) > 8 else (1.8 if Input.is_action_pressed("handbrake") and occupied else 3.2))
 	last_velocity = linear_velocity
 	engine_audio.pitch_scale = 0.7 + minf(absf(forward_speed) * 0.055 + absf(throttle_smoothed) * 0.3, 1.8)
 	engine_audio.volume_db = -16 if occupied else -28
 	tire_audio.volume_db = -24 if occupied and linear_velocity.length() > 5 else -60
 	for i: int in range(lamps.size()):
-		lamps[i].visible = integrity > 20 and float(damage.zones["front_left" if i == 0 else "front_right"]) < 55
+		lamps[i].visible = damage.light_damage[i]<60 and integrity > 20 and float(damage.zones["front_left" if i == 0 else "front_right"]) < 55
 
 func damage_stage() -> String:
 	if integrity <= 0: return "DISABLED"
@@ -172,6 +184,11 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 		# Kinematic transform changes may report teleport-derived velocities.
 		if collider is CharacterBody3D: other = collider.velocity
 		var approach: float = maxf(-(last_velocity - other).dot(normal), -(state.get_contact_local_velocity_at_position(i) - other).dot(normal))
+		if collider is CharacterBody3D and collider.has_method("receive_vehicle_contact"):
+			var id: int=collider.get_instance_id()
+			if approach>=1.5 and maxf(-last_velocity.dot(normal),-state.linear_velocity.dot(normal))>1.2 and contact_clock-float(npc_contact_times.get(id,-10))>0.9:
+				pending_npc_contacts.append({"actor":weakref(collider),"speed":approach,"direction":-normal,"point":state.get_contact_local_position(i)})
+				npc_contact_times[id]=contact_clock
 		if collider is CharacterBody3D: approach *= 0.1
 		var point: Vector3 = state.transform.affine_inverse() * state.get_contact_local_position(i)
 		if absf(normal.y) > 0.7 and point.y < -0.35: continue
@@ -193,6 +210,8 @@ func damage_snapshot() -> Dictionary:
 func restore_damage(data: Dictionary) -> void:
 	damage.restore(data)
 	pending_contacts.clear()
+	pending_npc_contacts.clear()
+	npc_contact_times.clear()
 	recent_contacts.clear()
 	last_velocity = Vector3.ZERO
 
@@ -201,6 +220,56 @@ func reset_pose(at: Transform3D, speed: Vector3 = Vector3.ZERO) -> void:
 	requested_velocity = speed
 	reset_requested = true
 	pending_contacts.clear()
+	pending_npc_contacts.clear()
+	npc_contact_times.clear()
 	recent_contacts.clear()
 	throttle_smoothed = 0
 	sleeping = false
+
+func _setup_bullet_regions() -> void:
+	for i: int in range(damage.glass.size()):
+		var pane: Dictionary=damage.glass[i]
+		var region:=VehicleHitRegion.new()
+		region.vehicle=self
+		region.kind="glass"
+		region.index=i
+		region.collision_layer=CollisionLayers.PROJECTILE
+		region.collision_mask=0
+		pane.node.add_child(region)
+		var shape:=CollisionShape3D.new()
+		shape.shape=pane.node.mesh.create_trimesh_shape()
+		region.add_child(shape)
+		pane["hit_region"]=region
+	for i: int in range(wheels.size()):
+		var region:=VehicleHitRegion.new()
+		region.vehicle=self
+		region.kind="tire"
+		region.index=i
+		region.collision_layer=CollisionLayers.PROJECTILE
+		region.collision_mask=0
+		wheels[i].add_child(region)
+		var collider:=CollisionShape3D.new()
+		var sphere:=SphereShape3D.new()
+		sphere.radius=0.38
+		collider.shape=sphere
+		region.add_child(collider)
+	for part: Dictionary in damage.parts:
+		var mesh: MeshInstance3D=part.node
+		var region:=VehicleHitRegion.new()
+		region.vehicle=self
+		region.collision_layer=CollisionLayers.PROJECTILE
+		region.collision_mask=0
+		if mesh.name.contains("Headlamp") or mesh.name.contains("Tail lamp"):
+			region.kind="light"
+			var center: Vector3=to_local(mesh.to_global(mesh.mesh.get_aabb().get_center()))
+			region.index=(0 if center.z>0 else 2)+(0 if center.x<0 else 1)
+		mesh.add_child(region)
+		var collider:=CollisionShape3D.new()
+		collider.shape=mesh.mesh.create_trimesh_shape()
+		region.add_child(collider)
+		part["hit_region"]=region
+
+func receive_bullet(at: Vector3, direction: Vector3, power: float, kind: String="body", index: int=-1) -> void:
+	damage.bullet(to_local(at),global_basis.inverse()*direction,power,kind,index)
+	integrity=maxf(0,integrity-power*(0.08 if to_local(at).z>1.15 else 0.02))
+	sleeping=false

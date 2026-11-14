@@ -1,6 +1,9 @@
 class_name ValePlayer
 extends CharacterBody3D
 
+var injuries: InjuryVisuals
+var recoil_offset:=Vector2.ZERO
+var recoil_impulses: int=0
 var camera_input_enabled: bool = true
 var yaw: float = 0.0
 var pitch: float = -0.12
@@ -39,10 +42,13 @@ func _ready() -> void:
 	shape.shape = capsule
 	shape.position.y = 0.9
 	add_child(shape)
-	visual = load("res://assets/characters/adrian.glb").instantiate()
+	visual = load("res://assets/characters/adrian_signature.glb").instantiate()
 	visual.name = "AdrianVisual"
 	add_child(visual)
 	visual.rotation.y = PI
+	injuries=InjuryVisuals.new()
+	add_child(injuries)
+	injuries.setup(visual)
 	var players := visual.find_children("*", "AnimationPlayer", true, false)
 	if not players.is_empty():
 		animator = players[0]
@@ -109,6 +115,33 @@ func _setup_animation() -> void:
 				else:
 					states.add_node(key, node)
 				names.append(key)
+	var walk_name: String=""
+	var aim_name: String=""
+	for animation: String in animator.get_animation_list():
+		if animation.ends_with("Walk"): walk_name=animation
+		if animation.ends_with("Aim"): aim_name=animation
+	if not walk_name.is_empty() and not aim_name.is_empty():
+		var blended:=AnimationNodeBlendTree.new()
+		var walk_node:=AnimationNodeAnimation.new()
+		walk_node.animation=walk_name
+		var aim_node:=AnimationNodeAnimation.new()
+		aim_node.animation=aim_name
+		var mix:=AnimationNodeBlend2.new()
+		mix.filter_enabled=true
+		var clip:=animator.get_animation(aim_name)
+		for index: int in range(clip.get_track_count()):
+			var path: NodePath=clip.track_get_path(index)
+			if path.get_subname_count()>0 and str(path.get_subname(0)) in ["Spine","Spine1","Spine2","Neck","Head","LeftShoulder","LeftArm","LeftForeArm","LeftHand","RightShoulder","RightArm","RightForeArm","RightHand"]: mix.set_filter_path(path,true)
+		blended.add_node("Walk",walk_node)
+		blended.add_node("Rate",AnimationNodeTimeScale.new())
+		blended.add_node("UpperAim",aim_node)
+		blended.add_node("Mix",mix)
+		blended.connect_node("Rate",0,"Walk")
+		blended.connect_node("Mix",0,"Rate")
+		blended.connect_node("Mix",1,"UpperAim")
+		blended.connect_node("output",0,"Mix")
+		states.add_node("AimWalk",blended)
+		names.append("AimWalk")
 	for a: String in names:
 		for b: String in names:
 			if a != b:
@@ -117,6 +150,7 @@ func _setup_animation() -> void:
 				states.add_transition(a, b, transition)
 	tree.tree_root = states
 	tree.active = true
+	tree.set("parameters/AimWalk/Mix/blend_amount",1.0)
 	playback = tree.get("parameters/playback")
 	if names.has("Idle"):
 		playback.start("Idle")
@@ -139,13 +173,14 @@ func _physics_process(delta: float) -> void:
 	var ry: float = Input.get_joy_axis(0, JOY_AXIS_RIGHT_Y)
 	yaw -= (rx if absf(rx) > 0.15 else 0.0) * delta * 2
 	pitch = clampf(pitch - (ry if absf(ry) > 0.15 else 0.0) * delta * 2, -0.85, 0.45)
+	recoil_offset=recoil_offset.move_toward(Vector2.ZERO,delta*0.12)
 	camera_manual_time -= delta
 	if driving and is_instance_valid(vehicle) and absf(rx) < 0.15 and camera_manual_time <= 0:
 		yaw = lerp_angle(yaw, vehicle.rotation.y + PI, 1 - exp(-delta * 1.3))
 	aiming = Input.is_action_pressed("aim") and not driving
 	var offset := Basis(Vector3.UP, yaw) * Vector3(0.55 if not driving else 0.0, 1.45 if not driving else 1.6, 0)
 	pivot.position = pivot.position.lerp(offset, 1 - exp(-delta * 9))
-	pivot.rotation = Vector3(pitch, yaw + (PI if driving and Input.is_action_pressed("rear_view") else 0.0), 0)
+	pivot.rotation = Vector3(pitch+recoil_offset.x, yaw+recoil_offset.y + (PI if driving and Input.is_action_pressed("rear_view") else 0.0), 0)
 	arm.spring_length = lerpf(arm.spring_length, 6.8 if driving else (2.3 if aiming else 3.6), 1 - exp(-delta * 6))
 	camera.fov = lerpf(camera.fov, 74 if driving else (52 if aiming else 66), delta * 6)
 	if driving:
@@ -182,8 +217,9 @@ func _physics_process(delta: float) -> void:
 	if tree:
 		var nominal: float = 6.5 if locomotion == "Sprint" else (3.4 if locomotion == "Run" else 1.8)
 		tree.set("parameters/" + locomotion + "/Rate/scale", clampf(Vector2(velocity.x, velocity.z).length() / nominal, 0.15, 1.3))
+	if tree: tree.set("parameters/AimWalk/Rate/scale",clampf(Vector2(velocity.x,velocity.z).length()/1.8,0.15,1.3))
 	var turning: bool = absf(angle_difference(last_yaw, yaw)) > 0.01 and axis.length() < 0.1
-	var state: String = action_name if action_time > 0 else ("Jump" if not is_on_floor() else ("Aim" if aiming else (locomotion if axis.length() > 0.1 else ("Turn" if turning else "Idle"))))
+	var state: String = action_name if action_time > 0 else ("Jump" if not is_on_floor() else (("AimWalk" if axis.length()>0.1 else "Aim") if aiming else (locomotion if axis.length() > 0.1 else ("Turn" if turning else "Idle"))))
 	if turning:
 		visual.rotation.y = lerp_angle(visual.rotation.y, yaw + PI, delta * 7)
 	last_yaw = yaw
@@ -212,3 +248,10 @@ func _step_up(direction: Vector3) -> void:
 		raised.origin.y += rise + 0.01
 		if not test_move(global_transform, Vector3.UP * (rise + 0.01)) and not test_move(raised, direction * 0.10):
 			position.y += rise + 0.01
+
+func apply_recoil() -> void:
+	recoil_impulses+=1
+	var amount: float=0.007 if reduced_shake else 0.024
+	recoil_offset.x=maxf(-0.055,recoil_offset.x-amount)
+	recoil_offset.y=clampf(recoil_offset.y+sin(recoil_impulses*2.4)*amount*0.2,-0.012,0.012)
+	if dynamics: dynamics.impact-=visual.global_basis.z*1.5

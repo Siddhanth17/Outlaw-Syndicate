@@ -1,0 +1,15 @@
+{
+  "date": "2026-11-14",
+  "pass_counts": {
+    "source": 170,
+    "city": 68,
+    "physics_acting": 50,
+    "mission": 14
+  },
+  "failures": 0,
+  "hashes": {
+    "OutlawSyndicate.exe": "f9cb815a32a1ae3a73ad8699ed2b068cb76fe01636d7e8538243056fac05f37b",
+    "OutlawSyndicate.pck": "0352892e1351505f960b15e6317fd29f22ceecabce6a6e36aca564b3577908ef"
+  },
+  "limitations": "Partial prototype art; capsule knockdowns, no articulated ragdoll/foot IK/door sequence/Mission02; no full human playthrough"
+}

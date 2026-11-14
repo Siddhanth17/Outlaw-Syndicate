@@ -69,7 +69,7 @@ func _input(event: InputEvent) -> void:
 func _process(delta: float) -> void:
 	super._process(delta)
 	if not is_instance_valid(lab_label): return
-	lab_label.visible = not paused
+	lab_label.visible = not paused and not cinematic_active
 	var regions: PackedStringArray=[]
 	for key: String in car.damage.zones:
 		if float(car.damage.zones[key])>0: regions.append("%s %.0f%%"%[key,float(car.damage.zones[key])])

@@ -4,7 +4,7 @@
     "source": "https://vibeassets.io/a/zpepqtthci",
     "license": "CC0-1.0",
     "origin": "Meshy-generated clothed human and auto-rig; publisher-generated Meshy walk/run clips. See source metadata JSON snapshots.",
-    "changes": "Blender normalization/export, gait-average neutral pose, additional project-keyframed action clips; same human temporarily reused for Dante/security."
+    "changes": "Base preserved; nine role derivatives and separate signature hero, conservative face sculpts/outfit geometry and compatible rig/actions. See art/source/npc-variants.json and hero-signature.json."
   },
   "textures": {
     "author": "Rob Tuytel / Poly Haven",
@@ -16,7 +16,7 @@
   },
   "original": {
     "models": "Sable sedan/wheel/sidearm and modular harbor kit, authored by art/build_assets.py",
-    "audio": "Original synthesis: art/build_audio.py and art/build_crash_audio.py. Six draft original-text formant speech clips: art/build_dialogue.py; upstream tool provenance in assets/licenses/draft-dialogue-provenance.txt.",
+    "audio": "Original synthesized non-dialogue audio; current original-text neural dialogue/profile WAVs generated offline with Kokoro. See assets/licenses/neural-voice-provenance.json; historical eSpeak provenance retained.",
     "license": "Project-owned; no general third-party reuse license assigned"
   },
   "files": [
@@ -26,34 +26,59 @@
       "sha256": "ab357716450a78f32c5542424eb417944d5249c32d7ee93435282a82642c57fc"
     },
     {
+      "path": "assets/audio/dialogue/bt_close_adrian.wav",
+      "bytes": 334892,
+      "sha256": "b83682f476607b3d535f7211600c8535c4c5a6944808fd6c6e51ff08c03daa6f"
+    },
+    {
+      "path": "assets/audio/dialogue/bt_close_dante.wav",
+      "bytes": 222636,
+      "sha256": "b2c0762e54ccc717f0ee460c7e585680810f646e46e026d3789b18e4210b566b"
+    },
+    {
+      "path": "assets/audio/dialogue/bt_driver.wav",
+      "bytes": 472908,
+      "sha256": "b4846f7835953b91f5c5c211ffcb812d144b7157a5d20fd07a5c8d9a85493b27"
+    },
+    {
+      "path": "assets/audio/dialogue/bt_start.wav",
+      "bytes": 422316,
+      "sha256": "d9a3936c9c3fc7eda3e324d0c2ab635e1c727ff453462e03004aae98a2f9e59c"
+    },
+    {
+      "path": "assets/audio/dialogue/bt_supervisor.wav",
+      "bytes": 377196,
+      "sha256": "f9bee2cc912b7a88aa321ac035f72b638320210cf89cc34af2a776d37598718d"
+    },
+    {
       "path": "assets/audio/dialogue/closing_adrian.wav",
-      "bytes": 149234,
-      "sha256": "f3db321a66437140c24c0e7db12ab64a9723f1e1ba7f713b24816fd7354996db"
+      "bytes": 164908,
+      "sha256": "5e60c8d40eaa7abb14ca1f46cfde60b59a5b3499748675de727ac99761aae7a7"
     },
     {
       "path": "assets/audio/dialogue/closing_dante.wav",
-      "bytes": 264414,
-      "sha256": "c9208f0d80eec562de6ebeff0d1a52104e108292a792e95c531473fcd9d602b8"
+      "bytes": 273642,
+      "sha256": "6ebc5f50403b597b282a25a0d98b7e69f404e04234cb1efe6b0982c79fccaa37"
     },
     {
       "path": "assets/audio/dialogue/greeting_adrian.wav",
-      "bytes": 196264,
-      "sha256": "6b2f2b99836a570f30835195ad86243f759cb9b8c13532094e5442890138547e"
+      "bytes": 217452,
+      "sha256": "6c09d0d2e17fca01f3cd9b268c8c1e57e01825c219c1fc4c3cdf2d9c303c26e3"
     },
     {
       "path": "assets/audio/dialogue/greeting_dante.wav",
-      "bytes": 164148,
-      "sha256": "9a86f05acbd827202f9fa45c87956bfb023b9c629e79f57478e12be647dc38e2"
+      "bytes": 193964,
+      "sha256": "9b45e38c45c7ae857a802d930fd66b8fc064406e984908a0c86147c3beb19346"
     },
     {
       "path": "assets/audio/dialogue/question_adrian.wav",
-      "bytes": 75966,
-      "sha256": "6c36fc374009a7b55f8fd4e8d49e0b61a00348f9b1cfc8d57e2872c09e773215"
+      "bytes": 86060,
+      "sha256": "5ca164f2f4fcd0ffee02bfcbf83b4d81d8c5311e1bbcfd9841fdad4178258049"
     },
     {
       "path": "assets/audio/dialogue/warning_dante.wav",
-      "bytes": 185022,
-      "sha256": "ea5151e885657f59bebd8fcb94cb7dd336d4e9255de7b33b87e2a0d13f41224b"
+      "bytes": 193516,
+      "sha256": "24f3ca89f4f7d44afb63c3abedcf0b44a38cdae6aae6827d246cb2ba33811319"
     },
     {
       "path": "assets/audio/engine.wav",
@@ -91,6 +116,46 @@
       "sha256": "7b04feb6cd6f28ca687d731130b7c1a0e67cd8cd7528324f38ba435bb9dfba72"
     },
     {
+      "path": "assets/audio/voice_profiles/adrian.wav",
+      "bytes": 206892,
+      "sha256": "6ad1cc98903f844d09fbba82f2724fc7ed0b8016e353bf2e92c48991905f1f6a"
+    },
+    {
+      "path": "assets/audio/voice_profiles/dante.wav",
+      "bytes": 186796,
+      "sha256": "62a2bcd33cd86ae19f13ef93fc30aca111d53ad85929d8115c3635749f988fa5"
+    },
+    {
+      "path": "assets/audio/voice_profiles/elena.wav",
+      "bytes": 161228,
+      "sha256": "0bc0d34f3acc700b108f8b233f17267a8133004455ae1c6c7c3ee1efa2c6f03a"
+    },
+    {
+      "path": "assets/audio/voice_profiles/elias.wav",
+      "bytes": 160652,
+      "sha256": "ff66394aaeabe70db96448d4ead9db3e79967235c833700dfb37dcd0a4a1594f"
+    },
+    {
+      "path": "assets/audio/voice_profiles/mara.wav",
+      "bytes": 187276,
+      "sha256": "d7ce8f0412f49c51f7e43289cd8aca2df9b556bc7381a48280e4dd9442d889d5"
+    },
+    {
+      "path": "assets/audio/voice_profiles/marcus.wav",
+      "bytes": 237772,
+      "sha256": "1a1b06e3e8162c038208a36ccb63ebe8784643b3fa3a7033a07c1d0f6ace86eb"
+    },
+    {
+      "path": "assets/audio/voice_profiles/nadia.wav",
+      "bytes": 212396,
+      "sha256": "50310ee4382674ac981d7d07ad3c49bc83dd6ea38f2f134a8d2d0b697be92a46"
+    },
+    {
+      "path": "assets/audio/voice_profiles/victor.wav",
+      "bytes": 223788,
+      "sha256": "6a47f440d15ac78bf4ca7ab6ef3294b63c7c1858a46809267442ba640864d7ba"
+    },
+    {
       "path": "assets/characters/adrian.glb",
       "bytes": 5051672,
       "sha256": "37925fedeb4fcd646dda67eb26fa49edf1e0491b6c741d135b3b018750077eb9"
@@ -99,6 +164,166 @@
       "path": "assets/characters/adrian_Image_0.jpg",
       "bytes": 151894,
       "sha256": "d3ac793327fd43d6d545fabdb55ee495a9a9c4b8e2538dbadcbac3ad19af5bf2"
+    },
+    {
+      "path": "assets/characters/adrian_signature.glb",
+      "bytes": 5969560,
+      "sha256": "93de875c70f38317a62b81da4e79ac4760e1b0a509292a407f7a344e6150c894"
+    },
+    {
+      "path": "assets/characters/adrian_signature_hero_leather_albedo.png",
+      "bytes": 131539,
+      "sha256": "f30507af3f5fc627800e64ec0a108d3b50733aa17a9ad5484f9351dfc2b95c9f"
+    },
+    {
+      "path": "assets/characters/adrian_signature_hero_leather_roughness.png",
+      "bytes": 302482,
+      "sha256": "03b7873ddef0a4fe1fa45899d569ebcfc8832864c6d4283cedc0dfc73de78010"
+    },
+    {
+      "path": "assets/characters/adrian_signature_hero_long_hair_strands.png",
+      "bytes": 11051,
+      "sha256": "ec602319ed2bf202915932808881bb0069d33aed2a352ebbfb508fb2dd66a66b"
+    },
+    {
+      "path": "assets/characters/adrian_signature_Image_0.jpg",
+      "bytes": 151894,
+      "sha256": "d3ac793327fd43d6d545fabdb55ee495a9a9c4b8e2538dbadcbac3ad19af5bf2"
+    },
+    {
+      "path": "assets/characters/npc_dante.glb",
+      "bytes": 5350356,
+      "sha256": "7941ad300c7e5234ec3a9b8bef9e6fe6628af01c7ed93641e276f7b0f0bad0ae"
+    },
+    {
+      "path": "assets/characters/npc_dante_dante_outfit.png",
+      "bytes": 802480,
+      "sha256": "afeb1c9eaea9c0f13ff559122413c25585a88f098f6fdfc0f135800655449ec3"
+    },
+    {
+      "path": "assets/characters/npc_dante_Image_0.jpg",
+      "bytes": 151894,
+      "sha256": "d3ac793327fd43d6d545fabdb55ee495a9a9c4b8e2538dbadcbac3ad19af5bf2"
+    },
+    {
+      "path": "assets/characters/npc_delivery.glb",
+      "bytes": 5297740,
+      "sha256": "a5e2a44ad8758b7fb4556337af38746ef0d4d6920ff7f791e4baf6cf68ddb40a"
+    },
+    {
+      "path": "assets/characters/npc_delivery_delivery_outfit.png",
+      "bytes": 760622,
+      "sha256": "07f5c0bab970aa65157d03f7c2457d4b5fd90e2dd9026abce41840aa75b51e5a"
+    },
+    {
+      "path": "assets/characters/npc_delivery_Image_0.jpg",
+      "bytes": 151894,
+      "sha256": "d3ac793327fd43d6d545fabdb55ee495a9a9c4b8e2538dbadcbac3ad19af5bf2"
+    },
+    {
+      "path": "assets/characters/npc_faction.glb",
+      "bytes": 4983204,
+      "sha256": "38fd7a880a2b8a1e90a35120e02f1f341519cc5aadfbfd456086bbd8e77d2388"
+    },
+    {
+      "path": "assets/characters/npc_faction_faction_outfit.png",
+      "bytes": 454093,
+      "sha256": "7ae48de65890edd1e64d447c6a17e03f5571681223c7cd105ccaf9c4853ca536"
+    },
+    {
+      "path": "assets/characters/npc_faction_Image_0.jpg",
+      "bytes": 151894,
+      "sha256": "d3ac793327fd43d6d545fabdb55ee495a9a9c4b8e2538dbadcbac3ad19af5bf2"
+    },
+    {
+      "path": "assets/characters/npc_pedestrian.glb",
+      "bytes": 5315096,
+      "sha256": "1f9e39f6e9a13b6c4addb6472c2ceb90996bb9c2a0597a8d702c5b8ec7bf30a5"
+    },
+    {
+      "path": "assets/characters/npc_pedestrian_Image_0.jpg",
+      "bytes": 151894,
+      "sha256": "d3ac793327fd43d6d545fabdb55ee495a9a9c4b8e2538dbadcbac3ad19af5bf2"
+    },
+    {
+      "path": "assets/characters/npc_pedestrian_pedestrian_outfit.png",
+      "bytes": 790817,
+      "sha256": "a150af0fa4621f159795cf6c14f95bb09543a665aafcd1c585957b3042723f75"
+    },
+    {
+      "path": "assets/characters/npc_police.glb",
+      "bytes": 5118400,
+      "sha256": "e25e27cf808d23a688654dce85ef14f3d14c33c6dc52f211e38a9288938427d5"
+    },
+    {
+      "path": "assets/characters/npc_police_Image_0.jpg",
+      "bytes": 151894,
+      "sha256": "d3ac793327fd43d6d545fabdb55ee495a9a9c4b8e2538dbadcbac3ad19af5bf2"
+    },
+    {
+      "path": "assets/characters/npc_police_police_outfit.png",
+      "bytes": 585021,
+      "sha256": "065d9f7d087c347f3e6e267c7dbdb383feedce8db1a4197f535df2da2155c0df"
+    },
+    {
+      "path": "assets/characters/npc_security.glb",
+      "bytes": 5188392,
+      "sha256": "1bab4cb7453dcda410e107c9312d666577c3eb830e831316a6ef2d9ecc3126fd"
+    },
+    {
+      "path": "assets/characters/npc_security_Image_0.jpg",
+      "bytes": 151894,
+      "sha256": "d3ac793327fd43d6d545fabdb55ee495a9a9c4b8e2538dbadcbac3ad19af5bf2"
+    },
+    {
+      "path": "assets/characters/npc_security_security_outfit.png",
+      "bytes": 591016,
+      "sha256": "848fd9ccb1546ad2abae616f68743a79aad1c5114c471f386366369834752d06"
+    },
+    {
+      "path": "assets/characters/npc_shopkeeper.glb",
+      "bytes": 5395600,
+      "sha256": "1a3bd199e24ef0ea94b172299ed1d667e18be72e5e527951ff8f369db93578c9"
+    },
+    {
+      "path": "assets/characters/npc_shopkeeper_Image_0.jpg",
+      "bytes": 151894,
+      "sha256": "d3ac793327fd43d6d545fabdb55ee495a9a9c4b8e2538dbadcbac3ad19af5bf2"
+    },
+    {
+      "path": "assets/characters/npc_shopkeeper_shopkeeper_outfit.png",
+      "bytes": 848746,
+      "sha256": "db8fdc767d1fa7d047fb3518d9a5a57e8db08d2a8818babbd3e50ed2c008ed67"
+    },
+    {
+      "path": "assets/characters/npc_supervisor.glb",
+      "bytes": 5507840,
+      "sha256": "4c0b2c795edbbf96e0791183df75320b2989c0a40f0bf8b597ae9a3127f24bdf"
+    },
+    {
+      "path": "assets/characters/npc_supervisor_Image_0.jpg",
+      "bytes": 151894,
+      "sha256": "d3ac793327fd43d6d545fabdb55ee495a9a9c4b8e2538dbadcbac3ad19af5bf2"
+    },
+    {
+      "path": "assets/characters/npc_supervisor_supervisor_outfit.png",
+      "bytes": 817750,
+      "sha256": "1d1cc8cc3e4cf0c4b32bbe9b505fd71e82e5873c4dc65bb79428012af42cc287"
+    },
+    {
+      "path": "assets/characters/npc_worker.glb",
+      "bytes": 5634704,
+      "sha256": "27c2960eecdf44c74356f9ba3ee6fc3464a998a0a7a5acfef93e335aa4bbe8ef"
+    },
+    {
+      "path": "assets/characters/npc_worker_Image_0.jpg",
+      "bytes": 151894,
+      "sha256": "d3ac793327fd43d6d545fabdb55ee495a9a9c4b8e2538dbadcbac3ad19af5bf2"
+    },
+    {
+      "path": "assets/characters/npc_worker_worker_outfit.png",
+      "bytes": 980011,
+      "sha256": "78d80cfd79629defe19a64e4560560e46ee852987633a348bbb30aed6a25b32c"
     },
     {
       "path": "assets/environment/cargo.glb",
@@ -226,6 +451,21 @@
       "sha256": "6985e0782adb226423d81cdd080b0e06012fdfb20eb3952d2459218fdd3977e9"
     },
     {
+      "path": "assets/textures/hero_leather_albedo.png",
+      "bytes": 131539,
+      "sha256": "f30507af3f5fc627800e64ec0a108d3b50733aa17a9ad5484f9351dfc2b95c9f"
+    },
+    {
+      "path": "assets/textures/hero_leather_roughness.png",
+      "bytes": 307398,
+      "sha256": "1c01dfc9bae7863408265b1a767629dd06654ff16dfa8af4b8ec27b31810ea3f"
+    },
+    {
+      "path": "assets/textures/hero_long_hair_strands.png",
+      "bytes": 11051,
+      "sha256": "ec602319ed2bf202915932808881bb0069d33aed2a352ebbfb508fb2dd66a66b"
+    },
+    {
       "path": "assets/vehicles/sable_body.glb",
       "bytes": 481452,
       "sha256": "437fa50273ce56a2ec10d51576cdca388c2b57124fdf77765711ec0e8f6c4c87"
@@ -249,6 +489,11 @@
       "path": "art/source/adrian.blend",
       "bytes": 11731585,
       "sha256": "768d0e174062f659589ed61f8a793b39e579aa3759c0875e4d9469107ba96e49"
+    },
+    {
+      "path": "art/source/adrian_signature.blend",
+      "bytes": 16176355,
+      "sha256": "853c84e4d3e25ad9f8cabd80f92029502d768f51be5d35eeebc241ad2301287b"
     },
     {
       "path": "art/source/camper-cc0.glb",
@@ -315,5 +560,105 @@
         "BrowConcern": 58
       }
     }
+  },
+  "living_city_signature": {
+    "npc_variants": [
+      {
+        "id": "worker",
+        "style": "hardhat",
+        "face_width_factor": 1.07,
+        "nose_sculpt_m": 0.01,
+        "hair_gray": 0.55,
+        "source": "existing CC0 rigged human; original curated sculpt/outfit additions",
+        "bounds": "same skeleton/rest height; no random body stretching"
+      },
+      {
+        "id": "supervisor",
+        "style": "whitehat",
+        "face_width_factor": 0.94,
+        "nose_sculpt_m": -0.004,
+        "hair_gray": 0.35,
+        "source": "existing CC0 rigged human; original curated sculpt/outfit additions",
+        "bounds": "same skeleton/rest height; no random body stretching"
+      },
+      {
+        "id": "security",
+        "style": "helmet",
+        "face_width_factor": 1.08,
+        "nose_sculpt_m": 0.008,
+        "hair_gray": 0.05,
+        "source": "existing CC0 rigged human; original curated sculpt/outfit additions",
+        "bounds": "same skeleton/rest height; no random body stretching"
+      },
+      {
+        "id": "pedestrian",
+        "style": "beanie",
+        "face_width_factor": 0.93,
+        "nose_sculpt_m": -0.008,
+        "hair_gray": 0.2,
+        "source": "existing CC0 rigged human; original curated sculpt/outfit additions",
+        "bounds": "same skeleton/rest height; no random body stretching"
+      },
+      {
+        "id": "delivery",
+        "style": "cap",
+        "face_width_factor": 0.97,
+        "nose_sculpt_m": 0.004,
+        "hair_gray": 0.15,
+        "source": "existing CC0 rigged human; original curated sculpt/outfit additions",
+        "bounds": "same skeleton/rest height; no random body stretching"
+      },
+      {
+        "id": "dante",
+        "style": "mechanic",
+        "face_width_factor": 1.09,
+        "nose_sculpt_m": 0.012,
+        "hair_gray": 0.7,
+        "source": "existing CC0 rigged human; original curated sculpt/outfit additions",
+        "bounds": "same skeleton/rest height; no random body stretching"
+      },
+      {
+        "id": "police",
+        "style": "policecap",
+        "face_width_factor": 1.03,
+        "nose_sculpt_m": -0.003,
+        "hair_gray": 0.05,
+        "source": "existing CC0 rigged human; original curated sculpt/outfit additions",
+        "bounds": "same skeleton/rest height; no random body stretching"
+      },
+      {
+        "id": "faction",
+        "style": "hood",
+        "face_width_factor": 0.94,
+        "nose_sculpt_m": 0.009,
+        "hair_gray": 0.15,
+        "source": "existing CC0 rigged human; original curated sculpt/outfit additions",
+        "bounds": "same skeleton/rest height; no random body stretching"
+      },
+      {
+        "id": "shopkeeper",
+        "style": "apron",
+        "face_width_factor": 1.02,
+        "nose_sculpt_m": -0.006,
+        "hair_gray": 0.8,
+        "source": "existing CC0 rigged human; original curated sculpt/outfit additions",
+        "bounds": "same skeleton/rest height; no random body stretching"
+      }
+    ],
+    "hero": {
+      "source": "existing CC0 hero derivative; original jacket, maps, ribbons and hardware",
+      "hair_cards": 36,
+      "long_hair_chains": [
+        "LongHairBackL",
+        "LongHairSideL",
+        "LongHairBackR",
+        "LongHairSideR"
+      ],
+      "max_torso_width_change": 0.055,
+      "oral_cavity": false,
+      "fingers": "existing coarse topology/rig retained",
+      "collision_complete_cloth": false
+    },
+    "voices": "See assets/licenses/neural-voice-provenance.json; current playable dialogue replaces earlier eSpeak draft output with offline Kokoro WAVs."
   }
 }

@@ -4,7 +4,7 @@ Re-run Godot --editor --import --quit afterwards. No runtime/source images edite
 from pathlib import Path
 root=Path(__file__).resolve().parents[1]
 count=0
-for path in (root/'assets').rglob('*.jpg.import'):
+for path in [p for p in (root/'assets').rglob('*.import') if p.name.endswith(('.jpg.import','.png.import'))]:
     text=path.read_text(encoding='utf-8')
     text=text.replace('compress/mode=0','compress/mode=2')
     text=text.replace('mipmaps/generate=false','mipmaps/generate=true')

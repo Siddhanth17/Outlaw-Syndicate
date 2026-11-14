@@ -3,6 +3,7 @@ extends SkeletonModifier3D
 
 # Scale-aware angular springs. Runs after AnimationMixer via SkeletonModifier3D.
 # Hair/hem bones deform the actual weighted surface; no detached proxy meshes.
+var posture_bias: float=0
 var conversation_active: bool = false
 var gesture_tag: String = ""
 var gesture_amount: float = 0
@@ -68,11 +69,14 @@ func _process_modification_with_delta(delta: float) -> void:
 		hem_angle = (hem_angle + hem_velocity * h).limit_length(0.25)
 	for name: String in ["HairCrown", "HairFringe", "HairCrownTip", "HairFringeTip"]:
 		_set_secondary(skeleton, name, hair_angle * (0.7 if name.ends_with("Tip") else 1.0))
+	for name: String in ["LongHairBackL","LongHairBackR","LongHairSideL","LongHairSideR"]:
+		_set_secondary(skeleton,name,hair_angle*0.55)
+		_set_secondary(skeleton,name+"Tip",hair_angle*0.7)
 	for name: String in ["HemLeft", "HemRight", "HemLeftTip", "HemRightTip"]:
 		_set_secondary(skeleton, name, hem_angle * (0.6 if name.ends_with("Tip") else 1.0))
 	var spine: int = skeleton.find_bone("Spine")
 	if spine >= 0:
-		var lean: float = -clampf(speed.length() * 0.009, 0, 0.065) + clampf(local_force.z * 0.001, -0.035, 0.035)
+		var lean: float = posture_bias-clampf(speed.length() * 0.009, 0, 0.065) + clampf(local_force.z * 0.001, -0.035, 0.035)
 		if driving:
 			lean = clampf(local_force.z * 0.003, -0.06, 0.06)
 		var breath: float = sin(clock * (1.5 + exertion * 2.5)) * (0.003 + exertion * 0.007)

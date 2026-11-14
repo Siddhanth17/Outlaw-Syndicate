@@ -1,6 +1,9 @@
 extends Node3D
 
 const SAVE_PATH: String = "user://veyra-save.json"
+var events: CityEvents
+var navigation: CityNavigation
+var people: Array[CityNPC]=[]
 var memory := CityMemory.new()
 var player: ValePlayer
 var car: VeyraCar
@@ -19,6 +22,7 @@ var ammunition: int = 12
 var reserve: int = 72
 var reload_time: float = 0
 var quality: int = 1
+var dialogue_volume: float=-6
 var subtitles_enabled: bool = true
 var cinematic_active: bool = false
 var cinematic_time: float = 0
@@ -37,6 +41,11 @@ func _ready() -> void:
 	test_mode = OS.get_cmdline_args().has("--script") or OS.get_cmdline_args().has("--headless")
 	_setup_input()
 	mission = JSON.parse_string(FileAccess.get_file_as_string("res://data/homecoming.json"))
+	events=CityEvents.new()
+	events.game=self
+	add_child(events)
+	navigation=CityNavigation.new()
+	add_child(navigation)
 	harbor = IronHarbor.new()
 	add_child(harbor)
 	player = ValePlayer.new()
@@ -62,27 +71,16 @@ func _ready() -> void:
 	mat.emission_energy_multiplier = 2
 	marker.material_override = mat
 	add_child(marker)
-	dante = load("res://assets/characters/adrian.glb").instantiate()
-	dante.position = Vector3(-1.4, 0.05, -1)
-	dante.rotation.y = 0.7
+	var named:=CityNPC.new()
+	named.game=self
+	named.appearance_id="dante"
+	named.npc_id="dante_cross"
+	named.story_actor=true
+	named.name="DanteCross"
+	named.position=Vector3(-1.4,0.05,-1)
+	dante=named
 	add_child(dante)
-	var dante_body := StaticBody3D.new()
-	dante_body.collision_layer = CollisionLayers.NPC
-	dante_body.collision_mask = CollisionLayers.SOLIDS
-	dante.add_child(dante_body)
-	var dante_shape := CollisionShape3D.new()
-	var dante_capsule := CapsuleShape3D.new()
-	dante_capsule.radius = 0.32
-	dante_capsule.height = 1.8
-	dante_shape.shape = dante_capsule
-	dante_shape.position.y = 0.9
-	dante_body.add_child(dante_shape)
-	var dante_skeletons := dante.find_children("*", "Skeleton3D", true, false)
-	if not dante_skeletons.is_empty():
-		dante_dynamics = HumanDynamics.new()
-		dante_dynamics.actor = dante
-		dante_skeletons[0].add_child(dante_dynamics)
-		dante_dynamics.reset_state()
+	dante_dynamics=named.dynamics
 	var players := dante.find_children("*", "AnimationPlayer", true, false)
 	if not players.is_empty():
 		var animation: AnimationPlayer = players[0]
@@ -97,6 +95,7 @@ func _ready() -> void:
 	dialogue_director.game = self
 	add_child(dialogue_director)
 	_load_settings()
+	call_deferred("_populate_city")
 	ambience = AudioStreamPlayer.new()
 	ambience.stream = _loop("harbor")
 	ambience.volume_db = -20
@@ -106,6 +105,11 @@ func _ready() -> void:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	else:
 		_set_pause(true, "main")
+	if OS.get_cmdline_user_args().has("--verify-city"):
+		var validation:=LivingValidation.new()
+		validation.game=self
+		add_child(validation)
+		validation.call_deferred("run")
 	if OS.get_cmdline_user_args().has("--verify-mission"):
 		var route := MissionRouteValidation.new()
 		route.game = self
@@ -152,6 +156,9 @@ func _menu_action(title: String) -> void:
 		"New game":
 			if dialogue_director.active: dialogue_director.stop()
 			memory = CityMemory.new()
+			events.recent.clear()
+			for citizen: CityNPC in people: citizen.restore_outcome(70)
+			if dante is CityNPC: dante.restore_outcome(70)
 			faction_rep = 0
 			reload_time = 0
 			cooldown = 0
@@ -159,6 +166,7 @@ func _menu_action(title: String) -> void:
 			player.position = Vector3(0, 1, 12)
 			player.velocity = Vector3.ZERO
 			player.health = 100
+			player.injuries.restore([])
 			ammunition = 12
 			reserve = 72
 			car.repair()
@@ -183,8 +191,12 @@ func _menu_action(title: String) -> void:
 			get_tree().change_scene_to_file("res://scenes/driving_course.tscn")
 		"Crash Test Facility":
 			get_tree().change_scene_to_file("res://scenes/crash_facility.tscn")
+		"Living City Laboratory":
+			get_tree().change_scene_to_file("res://scenes/living_city_lab.tscn")
 		"Human Motion Laboratory":
 			get_tree().change_scene_to_file("res://scenes/human_motion_laboratory.tscn")
+		"Dialogue volume +": dialogue_volume=minf(0,dialogue_volume+2)
+		"Dialogue volume -": dialogue_volume=maxf(-30,dialogue_volume-2)
 		"Sensitivity +": player.sensitivity = minf(0.01, player.sensitivity + 0.0005)
 		"Sensitivity -": player.sensitivity = maxf(0.0005, player.sensitivity - 0.0005)
 		"Graphics: Low": quality = 0
@@ -194,6 +206,7 @@ func _menu_action(title: String) -> void:
 		"Reduced shake toggle": player.reduced_shake = not player.reduced_shake
 		"Exit": get_tree().quit()
 	harbor.preset(quality)
+	dialogue_director.audio.volume_db=dialogue_volume
 	_save_settings()
 
 func _set_pause(value: bool, screen: String = "pause") -> void:
@@ -239,16 +252,25 @@ func _fire() -> void:
 	ammunition -= 1
 	cooldown = 0.28
 	player.perform("Shoot", 0.25)
+	player.apply_recoil()
 	memory.heat = minf(100, memory.heat + 15)
 	sound("shot", player.position)
+	events.publish("gunshot",player.position,35,"player")
 	var camera := player.camera
 	var query := PhysicsRayQueryParameters3D.create(camera.global_position, camera.global_position - camera.global_basis.z * 100)
 	query.exclude = [player.get_rid()]
+	query.collision_mask=CollisionLayers.STATIC|CollisionLayers.NPC|CollisionLayers.PROP|CollisionLayers.PROJECTILE
+	query.collide_with_areas=true
 	var hit := get_world_3d().direct_space_state.intersect_ray(query)
 	if not hit.is_empty():
 		if hit.collider is HarborGuard:
-			hit.collider.take_damage(35)
-			faction_rep -= 1
+			hit.collider.take_damage(35, -camera.global_basis.z, hit.position)
+			if hit.collider.get_meta("civilian",false): memory.heat=minf(100,memory.heat+8)
+			else: faction_rep -= 1
+		elif hit.collider is VehicleHitRegion:
+			hit.collider.receive_hit(hit.position,-camera.global_basis.z,35)
+		elif hit.collider is VeyraCar:
+			hit.collider.receive_bullet(hit.position, -camera.global_basis.z, 35)
 		var flash := OmniLight3D.new()
 		flash.position = hit.position
 		flash.light_color = Color(1, 0.55, 0.2)
@@ -273,6 +295,7 @@ func damage_player(amount: float, direction: Vector3 = Vector3.ZERO) -> void:
 		car.integrity = maxf(0, car.integrity - amount * 0.4)
 	else:
 		player.health = maxf(0, player.health - amount)
+		if player.injuries: player.injuries.hit(player.global_position+Vector3.UP*1.3,amount)
 		if player.dynamics: player.dynamics.impact += direction * minf(amount * 0.3, 6)
 	if player.health <= 0:
 		_set_pause(true, "defeat")
@@ -342,6 +365,9 @@ func _interact() -> void:
 		var stage: Dictionary = mission.stages[memory.stage]
 		var at := Vector3(stage.position[0], player.position.y, stage.position[2])
 		if stage.kind == "interact" and player.position.distance_to(at) < 5 and not player.driving:
+			if stage.speaker=="Dante" and dante is HarborGuard and dante.state in [HarborGuard.State.STAGGER,HarborGuard.State.KNOCKED_DOWN,HarborGuard.State.RECOVER]:
+				_say("Adrian","Give him a moment to recover.")
+				return
 			player.perform("Interact", 0.9)
 			var greeting: bool = memory.stage == 0
 			_advance()
@@ -426,6 +452,7 @@ func _spawn_guards() -> void:
 		var guard := HarborGuard.new()
 		guard.name = id
 		guard.game = self
+		guard.appearance_id="security" if i==0 else "faction"
 		guard.position = Vector3(9 + i * 4, 0.3, -105 - i * 5)
 		add_child(guard)
 		guards.append(guard)
@@ -494,6 +521,7 @@ func _end_cinematic() -> void:
 
 func _save_settings() -> void:
 	var config := ConfigFile.new()
+	config.set_value("audio","dialogue_db",dialogue_volume)
 	config.set_value("graphics", "preset", quality)
 	config.set_value("controls", "sensitivity", player.sensitivity)
 	config.set_value("accessibility", "subtitles", subtitles_enabled)
@@ -503,20 +531,27 @@ func _save_settings() -> void:
 func _load_settings() -> void:
 	var config := ConfigFile.new()
 	if config.load("user://settings.cfg") == OK:
+		dialogue_volume=clampf(float(config.get_value("audio","dialogue_db",-6)),-30,0)
 		quality = clampi(int(config.get_value("graphics", "preset", 1)), 0, 2)
 		player.sensitivity = clampf(float(config.get_value("controls", "sensitivity", 0.0025)), 0.0005, 0.01)
 		subtitles_enabled = bool(config.get_value("accessibility", "subtitles", true))
 		player.reduced_shake = bool(config.get_value("accessibility", "reduced_shake", true))
 	harbor.preset(quality)
+	dialogue_director.audio.volume_db=dialogue_volume
 
 func _save() -> void:
 	var data := memory.snapshot()
+	var outcomes: Dictionary={}
+	for citizen: CityNPC in people: outcomes[citizen.npc_id]={"health":citizen.health,"injuries":citizen.injuries.snapshot()}
+	if dante is CityNPC: outcomes[dante.npc_id]={"health":dante.health,"injuries":dante.injuries.snapshot()}
+	data["npc_outcomes"]=outcomes
 	data["player"] = [player.position.x, player.position.y, player.position.z]
 	data["car"] = [car.position.x, car.position.y, car.position.z]
 	data["car_yaw"] = car.rotation.y
 	data["integrity"] = car.integrity
 	data["vehicle_damage"] = car.damage_snapshot()
 	data["health"] = player.health
+	data["player_injuries"]=player.injuries.snapshot()
 	data["ammunition"] = ammunition
 	data["reserve"] = reserve
 	data["faction_rep"] = faction_rep
@@ -564,9 +599,19 @@ func _load() -> void:
 		car.restore_damage(data.get("vehicle_damage", {}) if data.get("vehicle_damage", {}) is Dictionary else {})
 		car.integrity = clampf(float(data.get("integrity", 100)), 0, 100)
 		player.health = clampf(float(data.get("health", 100)), 1, 100)
+		player.injuries.restore(data.get("player_injuries",[]) if data.get("player_injuries",[]) is Array else [])
 		ammunition = clampi(int(data.get("ammunition", 12)), 0, 12)
 		reserve = maxi(0, int(data.get("reserve", 72)))
 		faction_rep = int(data.get("faction_rep", 0))
+		var outcomes: Dictionary=data.get("npc_outcomes",{}) if data.get("npc_outcomes",{}) is Dictionary else {}
+		for citizen: CityNPC in people:
+			var value: Variant=outcomes.get(citizen.npc_id,70)
+			citizen.restore_outcome(float(value.get("health",70)) if value is Dictionary else float(value))
+			if value is Dictionary: citizen.injuries.restore(value.get("injuries",[]) if value.get("injuries",[]) is Array else [])
+		if dante is CityNPC:
+			var value: Variant=outcomes.get(dante.npc_id,70)
+			dante.restore_outcome(float(value.get("health",70)) if value is Dictionary else float(value))
+			if value is Dictionary: dante.injuries.restore(value.get("injuries",[]) if value.get("injuries",[]) is Array else [])
 		reload_time = 0
 		harbor.consequence(memory.stage >= 3)
 		_clear_guards()
@@ -581,14 +626,39 @@ func _exit_tree() -> void:
 
 func _notification(what: int) -> void:
 	if not is_instance_valid(player): return
-	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and not test_mode and not OS.get_cmdline_user_args().has("--verify-physics") and not OS.get_cmdline_user_args().has("--verify-mission"):
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and not test_mode and not OS.get_cmdline_user_args().has("--verify-physics") and not OS.get_cmdline_user_args().has("--verify-mission") and not OS.get_cmdline_user_args().has("--verify-city"):
 		if not paused: _set_pause(true)
 
 func _on_crash(point: Vector3, speed: float) -> void:
+	if is_instance_valid(events): events.publish("crash",point,speed,str(car.get_instance_id()))
 	if point.distance_to(dante.position)<24:
 		crash_interest=point+Vector3.UP
 		crash_interest_time=2.5
-	for guard: HarborGuard in guards:
-		if is_instance_valid(guard): guard.hear_crash(point,speed)
 	if player.driving and player.dynamics:
 		player.dynamics.impact += (car.linear_velocity-car.last_velocity).limit_length(5)
+
+func _populate_city() -> void:
+	await get_tree().physics_frame
+	navigation.rebuild()
+	var definitions: Array=[
+		["worker_01","industrial_worker",Vector3(18,0.1,-16),Vector3(18,0.1,-35)],
+		["foreman_01","dock_supervisor",Vector3(13,0.1,-40),Vector3(20,0.1,-40)],
+		["walker_01","pedestrian",Vector3(-10,0.2,20),Vector3(-10,0.2,-18)],
+		["driver_01","delivery_driver",Vector3(10,0.2,4),Vector3(10,0.2,-14)],
+		["quay_security_01","security",Vector3(-18,0.1,-40),Vector3(-18,0.1,-55)],
+		["officer_01","police",Vector3(-10,0.2,24),Vector3(-10,0.2,38)],
+		["faction_01","faction",Vector3(-18,0.1,-125),Vector3(-18,0.1,-144)],
+		["vendor_01","shopkeeper",Vector3(-10,0.2,-34),Vector3(-10,0.2,-36)]]
+	for spec: Array in definitions:
+		var actor:=CityNPC.new()
+		actor.game=self
+		actor.npc_id=spec[0]
+		actor.name=spec[0]
+		actor.appearance_id=spec[1]
+		actor.position=spec[2]
+		actor.route=PackedVector3Array([spec[2],spec[3]])
+		add_child(actor)
+		people.append(actor)
+
+func publish_city_event(kind: String, point: Vector3, severity: float, source: String) -> void:
+	if is_instance_valid(events): events.publish(kind,point,severity,source)
