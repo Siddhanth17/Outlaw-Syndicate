@@ -43,11 +43,16 @@ def main():
     from PIL import Image
     import imageio_ffmpeg
     with Image.open(frames[0]) as first:size=first.size
+    if size!=(1920,1080):raise RuntimeError(f'Actual captures are {size}, not verified 1080p')
+    performance=json.loads((QA/'performance.json').read_text())
+    if (performance.get('render_width'),performance.get('render_height'))!=(1920,1080):raise RuntimeError('Unverified benchmark render dimensions')
     video=BUILD/'evidence/automated-traffic-sampled-silent.mp4'
     writer=imageio_ffmpeg.write_frames(str(video),size,fps=5,codec='libx264',pix_fmt_in='rgb24',pix_fmt_out='yuv420p',quality=7,macro_block_size=1,ffmpeg_log_level='error')
     writer.send(None)
     for path in frames:
-        with Image.open(path) as image:writer.send(image.convert('RGB').tobytes())
+        with Image.open(path) as image:
+            if image.size!=size:raise RuntimeError(f'Mixed capture dimensions: {path.name} {image.size}')
+            writer.send(image.convert('RGB').tobytes())
     writer.close()
     manifest={
         'source_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
@@ -58,7 +63,7 @@ def main():
         'preserved_metropolis_pck_sha256':digest(ROOT/'builds/metropolis-foundation/OutlawSyndicate.pck'),
         'source_passes':len(re.findall(r'^PASS ',source,re.M)),
         'windows_passes':results,
-        'performance':json.loads((QA/'performance.json').read_text()),
+        'performance':performance,
         'video':{'file':video.name,'frames':len(frames),'fps':5,'description':'sampled automated actual viewport, silent; test obstruction visible; not a human playthrough'},
         'human_20_30_minute_route':'NOT RUN',
         'limitations':'See progress report; seven texture RID warnings on Vulkan shutdown remain; no complete city/campaign claim'

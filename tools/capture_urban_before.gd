@@ -1,6 +1,9 @@
 extends SceneTree
 func _initialize() -> void:call_deferred("run")
 func run() -> void:
+	root.content_scale_size=Vector2i(1920,1080)
+	root.content_scale_mode=Window.CONTENT_SCALE_MODE_VIEWPORT
+	root.content_scale_aspect=Window.CONTENT_SCALE_ASPECT_KEEP
 	var game=load("res://scenes/main.tscn").instantiate()
 	root.add_child(game)
 	game.test_mode=true

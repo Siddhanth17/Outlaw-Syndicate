@@ -32,12 +32,19 @@ func view(at: Vector3, target: Vector3, name: String) -> void:
 	await capture(name)
 func run() -> void:
 	game.test_mode=true
+	if DisplayServer.get_name()!="headless":
+		get_window().content_scale_size=Vector2i(1920,1080)
+		get_window().content_scale_mode=Window.CONTENT_SCALE_MODE_VIEWPORT
+		get_window().content_scale_aspect=Window.CONTENT_SCALE_ASPECT_KEEP
 	game._menu_action("New game")
 	DirAccess.make_dir_recursive_absolute("user://urban-verification")
 	game.ui.gameplay.hide()
 	game.quarter.minutes=720
 	game.quarter.apply_clock()
 	await frames(15)
+	if DisplayServer.get_name()!="headless":
+		var actual_size: Vector2i=game.get_viewport().get_texture().get_size()
+		check(actual_size==Vector2i(1920,1080),"actual render target is 1920x1080 independent of Windows window clamping")
 	var traffic_car: VeyraCar=game.traffic.cars[0]
 	var start_at: Vector3=traffic_car.position
 	await frames(180)
@@ -144,7 +151,8 @@ func run() -> void:
 		Input.action_release("forward")
 		check(game.car.position.distance_to(drive_start)>20,"1080p rendering sample includes actual player-car traversal through the quarter")
 		await capture("drive-end")
-		var report: Dictionary={"scope":"10s 1080p actual forward drive, four urban blocks, two traffic cars and sixteen citizens; not full acceptance route","frames":times.size(),"mean_fps":times.size()*1000/total,"p95_ms":times[int(times.size()*.95)],"p99_ms":times[int(times.size()*.99)],"max_ms":times.back(),"texture_buffer_bytes":Performance.get_monitor(Performance.RENDER_VIDEO_MEM_USED),"draw_calls":Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)}
+		var actual_size: Vector2i=game.get_viewport().get_texture().get_size()
+		var report: Dictionary={"render_width":actual_size.x,"render_height":actual_size.y,"scope":"10s measured viewport actual forward drive, four urban blocks, two traffic cars and sixteen citizens; not full acceptance route","frames":times.size(),"mean_fps":times.size()*1000/total,"p95_ms":times[int(times.size()*.95)],"p99_ms":times[int(times.size()*.99)],"max_ms":times.back(),"texture_buffer_bytes":Performance.get_monitor(Performance.RENDER_VIDEO_MEM_USED),"draw_calls":Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)}
 		var file:=FileAccess.open("user://urban-verification/performance.json",FileAccess.WRITE)
 		file.store_string(JSON.stringify(report,"  "))
 		print("URBAN_PERFORMANCE ",report)
