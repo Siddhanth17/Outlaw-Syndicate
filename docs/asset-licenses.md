@@ -39,3 +39,7 @@ Nine NPC GLBs and the separate signature hero derive from the credited CC0 base.
 ## Reference-directed mobility increment
 
 Kenney Impact Sounds 1.0 provides CC0 source foley for forty processed movement WAVs; included Kenney-Impact-Sounds-CC0.txt and movement-audio-provenance.json retain source/output hashes, processing and limitations. Publisher page: https://kenney.nl/assets/impact-sounds . Asphalt/warehouse/stairs share concrete sources; dirt uses grass; metal/cloth are curated impact foley. Bike engine loop is original synthesis. New Harrier meshes, separated Sable door and hero swept ribbons/locks are project-authored; hero anatomy still derives from the credited CC0 base. The user reference remains ignored/local and is not redistributed as an asset. No new recognizable vehicle branding or copied tattoo artwork is used.
+
+## Articulated NPC physics increment
+
+No new character, vehicle, voice or third-party asset was downloaded or regenerated. Physical proxies, pose-bridge/constraint code, small procedural particle geometry and radial marks are project-authored. Impact foley reuses the already credited Kenney CC0 processed cloth/soft-impact samples; this is not a new human performance recording. Laboratory fixtures are engineering test geometry. Captures are the actual own-game executable. Godot/Jolt license notices remain included.

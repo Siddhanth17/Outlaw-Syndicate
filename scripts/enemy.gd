@@ -2,6 +2,7 @@ class_name HarborGuard
 extends CharacterBody3D
 
 enum State { PATROL, SUSPICION, INVESTIGATE, ENGAGE, DEFEATED, STAGGER, KNOCKED_DOWN, RECOVER }
+var ragdoll: NPCRagdoll
 var injuries: InjuryVisuals
 var appearance_id: String = "security"
 var body_collision: CollisionShape3D
@@ -60,6 +61,9 @@ func _ready() -> void:
 		dynamics.actor = self
 		skeletons[0].add_child(dynamics)
 		dynamics.reset_state()
+		ragdoll=NPCRagdoll.new()
+		add_child(ragdoll)
+		ragdoll.setup(self,skeletons[0])
 		var attachment := BoneAttachment3D.new()
 		attachment.bone_name = "RightHand"
 		skeletons[0].add_child(attachment)
@@ -132,7 +136,7 @@ func _play(clip: String) -> void:
 	if not animation:
 		return
 	for name: String in animation.get_animation_list():
-		if name.ends_with(clip) and animation.current_animation != name:
+		if name.ends_with(clip) and (animation.current_animation != name or not animation.is_playing()):
 			animation.play(name, 0.15)
 
 func take_damage(amount: float, direction: Vector3 = Vector3.ZERO, point: Vector3 = Vector3.ZERO) -> void:
@@ -140,6 +144,7 @@ func take_damage(amount: float, direction: Vector3 = Vector3.ZERO, point: Vector
 		return
 	_choose_fall_direction(direction)
 	if injuries: injuries.hit(point if point!=Vector3.ZERO else global_position+Vector3.UP*1.25,amount)
+	if is_instance_valid(game.character_impacts):game.character_impacts.hit(point if point!=Vector3.ZERO else global_position+Vector3.UP*1.25,direction,amount)
 	bullet_hit_count+=1
 	health=maxf(1 if get_meta("protected_story",false) else 0,health-amount)
 	knock_velocity=direction.limit_length(1)*minf(amount*0.06,2.5)
@@ -154,6 +159,8 @@ func take_damage(amount: float, direction: Vector3 = Vector3.ZERO, point: Vector
 		state=State.DEFEATED
 		injury_time=1000
 		if dynamics: dynamics.active=false
+		if ragdoll:ragdoll.start(direction,point if point!=Vector3.ZERO else global_position+Vector3.UP,amount)
+		if is_instance_valid(game.events):game.events.publish("defeat",global_position,30,name)
 		game.memory.remember("guard_defeated_"+name,{"district":"iron_harbor"})
 
 func hear_crash(at: Vector3, speed: float) -> void:
@@ -173,6 +180,7 @@ func receive_vehicle_contact(speed: float, direction: Vector3, point: Vector3) -
 	last_vehicle_hit=now
 	_choose_fall_direction(direction)
 	if injuries: injuries.hit(point,clampf(speed*2,3,40))
+	if is_instance_valid(game.character_impacts):game.character_impacts.hit(point,direction,speed*2)
 	vehicle_hit_count+=1
 	var damage: float=clampf((speed-1.0)*3.0,1,65)
 	health=maxf(1 if get_meta("protected_story",false) else 0,health-damage)
@@ -181,6 +189,7 @@ func receive_vehicle_contact(speed: float, direction: Vector3, point: Vector3) -
 	injury_time=0.6 if speed<6 else 3.0
 	state=State.STAGGER if speed<6 else State.KNOCKED_DOWN
 	if health<=0: state=State.DEFEATED
+	if speed>=6 and ragdoll:ragdoll.start(direction,point,speed*2)
 	if dynamics: dynamics.impact+=direction.normalized()*minf(speed,7)
 	if is_instance_valid(game.events): game.events.publish("vehicle_person",point,speed,name)
 	game.memory.heat=minf(100,game.memory.heat+(8 if speed<6 else 25))
@@ -193,38 +202,35 @@ func _can_stand() -> bool:
 	capsule.height=1.8
 	query.shape=capsule
 	query.transform=Transform3D(Basis.IDENTITY,global_position+Vector3.UP*0.94)
-	query.exclude=[get_rid()]
+	var exclusions: Array[RID]=[get_rid()]
+	if ragdoll and ragdoll.built:
+		for body: HarborPhysicalBone in ragdoll.bones.values():exclusions.append(body.get_rid())
+	query.exclude=exclusions
 	query.collision_mask=CollisionLayers.SOLIDS
 	return get_world_3d().direct_space_state.intersect_shape(query,1).is_empty()
 
 func _update_injury(delta: float) -> bool:
 	if state not in [State.STAGGER,State.KNOCKED_DOWN,State.RECOVER,State.DEFEATED]: return false
 	injury_time-=delta
-	var down: bool=state in [State.KNOCKED_DOWN,State.DEFEATED,State.RECOVER]
-	if down:
-		if animation: animation.stop()
-		if weapon: weapon.hide()
-		var capsule: CapsuleShape3D=body_collision.shape
-		capsule.height=0.68
-		body_collision.position.y=0.34
-		if state==State.KNOCKED_DOWN and injury_time<=0 and _can_stand(): state=State.RECOVER
-		var target: float=0 if state==State.RECOVER else PI/2
-		fall_angle=move_toward(fall_angle,target,delta*2.8)
-		var fallen: Basis=Basis(Quaternion(fall_axis,fall_angle))*fall_base
-		visual.basis=fallen
-		visual.position=Vector3.UP*lerpf(0.9,0.34,sin(fall_angle))-fallen*Vector3.UP*0.9
-		if state==State.RECOVER and fall_angle<0.01:
-			visual.basis=fall_base
-			visual.position=Vector3.ZERO
-			capsule.height=1.8
-			body_collision.position.y=0.9
-			state=State.PATROL
-			if dynamics: dynamics.reset_state()
-			_play("Idle")
-	else:
-		if dynamics: dynamics.impact+=knock_velocity*delta*4
-		_play("Land")
-		if injury_time<=0: state=State.ENGAGE if suspicion>=1 else State.PATROL
+	if ragdoll and ragdoll.active:
+		if state!=State.DEFEATED and ragdoll.age>2.5 and injury_time<=0 and ragdoll.max_speed()<0.7:
+			var point: Vector3=ragdoll.pelvis_position()
+			var ray:=PhysicsRayQueryParameters3D.create(point+Vector3.UP,point-Vector3.UP*2,CollisionLayers.STATIC)
+			var ground:=get_world_3d().direct_space_state.intersect_ray(ray)
+			if not ground.is_empty():
+				var old: Vector3=position
+				position=ground.position+Vector3.UP*0.05
+				if _can_stand():
+					ragdoll.stop()
+					velocity=Vector3.ZERO
+					state=State.PATROL
+					_play("Idle")
+				else:position=old
+		return true
+	if state==State.DEFEATED:return true
+	if dynamics: dynamics.impact+=knock_velocity*delta*4
+	_play("Land")
+	if injury_time<=0:state=State.ENGAGE if suspicion>=1 else State.PATROL
 	velocity.x=knock_velocity.x
 	velocity.z=knock_velocity.z
 	velocity.y=clampf(velocity.y-delta*24,-18,1)

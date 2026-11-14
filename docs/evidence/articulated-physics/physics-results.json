@@ -1,0 +1,116 @@
+{
+	"frontal": {
+		"angular_debug": "Physical_LeftLeg hinge=-127.62651060427 frame 21",
+		"angular_limit_excess_degrees": 2.62652586305948,
+		"contacts": 2946,
+		"highest_center_y": 1.6354615688324,
+		"minimum_capsule_support_y": -0.0183721529016618,
+		"minimum_center_y": 0.0357989929616451,
+		"paused": false,
+		"peak_joint_gap": 0.0105755366384983,
+		"peak_speed": 4.80357789993286,
+		"player_health": 100.0,
+		"rest_speed": 0.0244708489626646,
+		"self_contacts": 592,
+		"torso_direction": [
+			-0.0771484375,
+			-0.0690199062228203,
+			0.544437527656555
+		]
+	},
+	"running": {
+		"angular_debug": "Physical_Spine01 swing=31.8523678032186 twist=6.50739742743988 frame 33",
+		"angular_limit_excess_degrees": 3.85237161791587,
+		"contacts": 4500,
+		"highest_center_y": 1.63500964641571,
+		"minimum_capsule_support_y": -0.0199561614712351,
+		"minimum_center_y": 0.0253043584525585,
+		"paused": false,
+		"peak_joint_gap": 0.0064727165736258,
+		"peak_speed": 5.01823806762695,
+		"player_health": 100.0,
+		"rest_speed": 0.0235103387385607,
+		"self_contacts": 1280,
+		"torso_direction": [
+			0.168792724609375,
+			-0.0208906829357147,
+			0.557003021240234
+		]
+	},
+	"side": {
+		"angular_debug": "Physical_Spine02 swing=34.9880458322409 twist=1.58042037766178 frame 25",
+		"angular_limit_excess_degrees": 6.98804964693816,
+		"contacts": 3573,
+		"highest_center_y": 1.63541555404663,
+		"minimum_capsule_support_y": -0.0223029534172312,
+		"minimum_center_y": 0.0322709828615189,
+		"paused": false,
+		"peak_joint_gap": 0.00998357869684696,
+		"peak_speed": 4.69044828414917,
+		"player_health": 100.0,
+		"rest_speed": 0.00107313715852797,
+		"self_contacts": 1381,
+		"torso_direction": [
+			0.508621215820313,
+			-0.00994332134723663,
+			-0.182791143655777
+		]
+	},
+	"slope": {
+		"angular_debug": "Physical_Spine01 swing=35.7960494609437 twist=15.2221444596425 frame 31",
+		"angular_limit_excess_degrees": 7.79605327564101,
+		"contacts": 2848,
+		"highest_center_y": 2.61985206604004,
+		"minimum_capsule_support_y": 0.542752363884372,
+		"minimum_center_y": 0.63297575712204,
+		"paused": false,
+		"peak_joint_gap": 0.00616684462875128,
+		"peak_speed": 6.18274784088135,
+		"player_health": 100.0,
+		"rest_speed": 0.0198773480951786,
+		"self_contacts": 116,
+		"torso_direction": [
+			0.129791259765625,
+			-0.146401047706604,
+			-0.536287844181061
+		]
+	},
+	"stairs": {
+		"angular_debug": "Physical_Spine01 swing=37.8509205598589 twist=11.2815761310685 frame 34",
+		"angular_limit_excess_degrees": 9.85092437455619,
+		"contacts": 2920,
+		"highest_center_y": 2.71485042572021,
+		"minimum_capsule_support_y": 0.315680594973275,
+		"minimum_center_y": 0.401720434427261,
+		"paused": false,
+		"peak_joint_gap": 0.00683527113869786,
+		"peak_speed": 6.5857253074646,
+		"player_health": 100.0,
+		"rest_speed": 0.00441331835463643,
+		"self_contacts": 342,
+		"torso_direction": [
+			0.0119171142578125,
+			-0.23460978269577,
+			-0.509635031223297
+		]
+	},
+	"wall": {
+		"angular_debug": "Physical_LeftLeg hinge=-127.623355056874 frame 22",
+		"angular_limit_excess_degrees": 2.62337031566294,
+		"contacts": 4388,
+		"highest_center_y": 1.63546395301819,
+		"minimum_capsule_support_y": -0.0203816639456018,
+		"minimum_center_y": 0.0289079193025827,
+		"paused": false,
+		"peak_joint_gap": 0.010563125833869,
+		"peak_speed": 4.82148742675781,
+		"player_health": 100.0,
+		"rest_speed": 0.0776614025235176,
+		"self_contacts": 1356,
+		"torso_direction": [
+			-0.0655059814453125,
+			0.0707825198769569,
+			0.533851265907288
+		]
+	}
+}

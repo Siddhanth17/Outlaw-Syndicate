@@ -1,0 +1,33 @@
+{
+  "date": "2026-11-14",
+  "pass_counts": {
+    "source": 275,
+    "final_ragdoll_source": 52,
+    "ragdoll_export": 53,
+    "city_export": 68,
+    "mobility_export": 54,
+    "physics_acting_export": 50,
+    "mission_export": 14
+  },
+  "failures": 0,
+  "exit_codes": 0,
+  "files": {
+    "OutlawSyndicate.exe": {
+      "bytes": 104578048,
+      "sha256": "f9cb815a32a1ae3a73ad8699ed2b068cb76fe01636d7e8538243056fac05f37b"
+    },
+    "OutlawSyndicate.pck": {
+      "bytes": 133786056,
+      "sha256": "747ce6ee3f567b1e80f8d6b3277a4c76fec15c5b37c92642198a5f31dd5ef9c8"
+    }
+  },
+  "status": "Validated articulated-defeat increment; broader production milestone incomplete",
+  "not_run": [
+    "Full human/gamepad playthrough",
+    "Sustained thermal and total RAM profiling",
+    "New four-block production",
+    "Traffic",
+    "Police driving pursuit",
+    "Mission02 runtime"
+  ]
+}

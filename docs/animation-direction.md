@@ -1,3 +1,5 @@
+Articulated NPC physics now replaces whole-visual fall rotation. A meter-scale physical rig drives the preserved skinned skeleton through a modifier. Get-up blending, hand/garment collision and protagonist art remain incomplete.
+
 Reference/mobility increment adds timed hinged car-door root transitions and a separate Ride pose. Exact handle/wheel/peg contact, leg-over and leg-withdrawal clips remain incomplete.
 
 # Animation implementation

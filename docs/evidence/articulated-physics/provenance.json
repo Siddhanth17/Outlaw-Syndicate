@@ -1,0 +1,8 @@
+{
+  "source": "Actual articulated-physics Windows executable viewport captures",
+  "input": "Automated damage, physics and player-fire routes; not a full human keyboard/gamepad playthrough",
+  "timing": "Silent sampled frames, approximately twelve physics ticks apart. Encoding overhead changes real-time cadence; not synchronized audio/video.",
+  "before": "Preserved reference-mobility Windows export e6b5317; different camera/lighting, not a matched pixel comparison",
+  "art": "Original/previously credited game assets; no concept art or supplied reference image substituted",
+  "fixtures": "White wall/stairs/slope geometry are explicitly labeled engineering collision fixtures, not finished city art"
+}

@@ -37,20 +37,23 @@ func can_see_player() -> bool:
 	return super.can_see_player() if profile.role in ["police","faction","security"] and suspicion>=1 else false
 
 func _on_incident(event: Dictionary) -> void:
-	if state==State.DEFEATED or position.distance_to(event.position)>32: return
+	if state==State.DEFEATED or position.distance_to(event.position)>(16 if event.kind=="defeat" else 32): return
+	if event.kind=="defeat":
+		var sight:=PhysicsRayQueryParameters3D.create(global_position+Vector3.UP*1.4,event.position+Vector3.UP*0.4,CollisionLayers.STATIC|CollisionLayers.PROP|CollisionLayers.VEHICLE)
+		if not get_world_3d().direct_space_state.intersect_ray(sight).is_empty():return
 	threat=event.position
 	if story_actor:
 		if dynamics:
 			dynamics.has_head_target=true
 			dynamics.head_target=threat+Vector3.UP
 		return
-	if profile.role in ["police","faction","security"] and event.kind in ["gunshot","vehicle_person"]:
+	if profile.role in ["police","faction","security"] and event.kind in ["gunshot","vehicle_person","defeat"]:
 		suspicion=1
 		last_seen=game.player.position
 		state=State.INVESTIGATE
 		if weapon: weapon.show()
 		return
-	if event.kind in ["gunshot","vehicle_person","crash","glass"]:
+	if event.kind in ["gunshot","vehicle_person","crash","glass","defeat"]:
 		if danger_time<=0: panic_count+=1
 		danger_time=6
 		activity="flee"
@@ -79,7 +82,7 @@ func _physics_process(delta: float) -> void:
 	var fleeing: bool=danger_time>0
 	if fleeing:
 		var away: Vector3=(position-threat).normalized()
-		target=Vector3(clampf(position.x+away.x*8,-20,20),position.y,clampf(position.z+away.z*8,-155,38))
+		target=Vector3(clampf(position.x+away.x*8,-115,115),position.y,clampf(position.z+away.z*8,-205,60))
 	else:
 		activity="routine"
 		if position.distance_to(target)<1.0:
@@ -121,6 +124,7 @@ func take_damage(amount: float, direction: Vector3 = Vector3.ZERO, point: Vector
 		activity="flee"
 
 func restore_outcome(value: float) -> void:
+	if ragdoll:ragdoll.stop()
 	health=clampf(value,1 if story_actor else 0,70)
 	if health>=70 and injuries: injuries.restore([])
 	injury_time=0

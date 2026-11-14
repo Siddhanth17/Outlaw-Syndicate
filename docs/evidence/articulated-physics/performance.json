@@ -1,0 +1,17 @@
+{
+	"average_fps": 194.315715375139,
+	"engine_static_memory_bytes": 0.0,
+	"frames": 583,
+	"global_ambient_population": 12,
+	"max_ms": 15.094,
+	"mean_ms": 5.1462641509434,
+	"nearby_animated_workers": 3,
+	"one_percent_low_fps": 69.5208852326053,
+	"p95_ms": 9.225,
+	"physical_segments": 78,
+	"physics_process_mean_ms": 14.1770120068609,
+	"quality": "Balanced",
+	"resolution": "1920x1080",
+	"scope": "Three-second uncapped render sample with six newly activated ragdolls, three nearby animated workers, player traversal and the existing global population. No capture encoding during measurement; no traffic or world streaming test.",
+	"video_memory_bytes": 952245984.0
+}

@@ -1,3 +1,5 @@
+Current NPC physics: NPCRagdoll lazily creates 13 PhysicalBone3D segments under PhysicalBoneSimulator3D, with a meter/centimeter pose bridge, oriented native constraints, CCD, non-adjacent self-collision and sleep/pause/restoration. CharacterImpacts uses fixed effect pools. See articulated-physics-report.md.
+
 Current mobility additions: MovementAudio pooled surface foley; VehicleTransition explicit transient door timeline; HarborMotorcycle assisted two-wheel physics and occupancy; expanded collision-sampled city grid. See reference-mobility-report.md for persistence/fallback limitations.
 
 Latest interaction increment: see [interaction validation](interaction-validation.md) and [implementation/limits](physics-acting-report.md). Older counts and architecture statements below describe earlier builds.

@@ -1,3 +1,13 @@
+# Latest continuation — articulated NPC physics
+
+Recovered and preserved uncommitted work from e6b5317. Replaced whole-mesh defeat rotation with thirteen real physical segments, oriented constraints, captured animation pose/momentum, non-adjacent self-collision, floor/wall/stair/slope contact, sleeping/waking, pause/restoration and restrained pooled feedback. Added local occluded defeat awareness and corrected expanded-district flee bounds. See articulated-physics-report.md and articulated-physics-validation.md for real source/export evidence and remaining limitations.
+
+The test fixture initially attracted city police by firing from the old player location, causing player defeat and pausing two scenarios; moving the player into the isolated lab and checking external interruption restored valid tests. No physics acceptance check was suppressed. Earlier angular-limit/shape/solver failures were investigated and corrected rather than reported as passes.
+
+This is a physics/combat foundation, not a completed GTA-scale milestone. New roads/blocks/traffic/mission content: zero in this increment. Priority continuation: inspect human controls/recovery and refine palms/cloth/get-up blending; then validate four purposeful connected blocks, implement a physical lane graph and obstacle-aware traffic, expand pedestrian schedules/crossings and police vehicle response, and implement Broken Trust gameplay/checkpoints. Existing fixed population/roads/vehicles/voices and opening mission remain. No work continues after this session ends.
+
+Earlier entries are historical and may contain superseded limitations.
+
 # Latest continuation — reference-directed mobility
 
 Continued ff5e16e without restarting. Preserved old hero/NPC/voice assets and the previous Windows package. New separate half-tied hero derivative, nine-profile movement audio, real hinged driver door/timed transitions, an original assisted two-wheel motorcycle and a multi-road district expansion are implemented. See reference-mobility-report.md and reference-mobility-validation.md for actual evidence and scope. All remain partial production quality; no photorealism claim.

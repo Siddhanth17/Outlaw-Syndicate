@@ -1,3 +1,5 @@
+Latest actual Windows/source results are articulated-physics-validation.md. Earlier reports below describe previous builds.
+
 Current validation is reference-mobility-validation.md; earlier counts below are historical.
 
 Latest validation is in living-city-validation.md. Earlier reports below are historical; do not use their counts as current release results.

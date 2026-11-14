@@ -2,6 +2,7 @@ extends Node3D
 
 const SAVE_PATH: String = "user://veyra-save.json"
 var vehicle_transition: VehicleTransition
+var character_impacts: CharacterImpacts
 var events: CityEvents
 var navigation: CityNavigation
 var people: Array[CityNPC]=[]
@@ -52,6 +53,8 @@ func _ready() -> void:
 	add_child(navigation)
 	harbor = IronHarbor.new()
 	add_child(harbor)
+	character_impacts=CharacterImpacts.new()
+	add_child(character_impacts)
 	player = ValePlayer.new()
 	add_child(player)
 	player.position = Vector3(0, 1, 12)
@@ -122,6 +125,11 @@ func _ready() -> void:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	else:
 		_set_pause(true, "main")
+	if OS.get_cmdline_user_args().has("--verify-ragdoll"):
+		var validation:=RagdollValidation.new()
+		validation.game=self
+		add_child(validation)
+		validation.call_deferred("run")
 	if OS.get_cmdline_user_args().has("--verify-mobility"):
 		var validation:=MobilityValidation.new()
 		validation.game=self
@@ -177,6 +185,7 @@ func _menu_action(title: String) -> void:
 			_set_pause(false)
 		"New game":
 			if dialogue_director.active: dialogue_director.stop()
+			character_impacts.reset()
 			memory = CityMemory.new()
 			events.recent.clear()
 			for citizen: CityNPC in people: citizen.restore_outcome(70)
@@ -216,12 +225,17 @@ func _menu_action(title: String) -> void:
 			get_tree().change_scene_to_file("res://scenes/driving_course.tscn")
 		"Crash Test Facility":
 			get_tree().change_scene_to_file("res://scenes/crash_facility.tscn")
+		"Articulated Physics Laboratory":
+			get_tree().change_scene_to_file("res://scenes/ragdoll_lab.tscn")
 		"Movement Audio Laboratory":
 			get_tree().change_scene_to_file("res://scenes/movement_audio_lab.tscn")
 		"Living City Laboratory":
 			get_tree().change_scene_to_file("res://scenes/living_city_lab.tscn")
 		"Human Motion Laboratory":
 			get_tree().change_scene_to_file("res://scenes/human_motion_laboratory.tscn")
+		"Impact effects: Off": character_impacts.density=0
+		"Impact effects: Low": character_impacts.density=0.3
+		"Impact effects: Normal": character_impacts.density=0.6
 		"Movement volume +": movement_volume=minf(0,movement_volume+2)
 		"Movement volume -": movement_volume=maxf(-40,movement_volume-2)
 		"Dialogue volume +": dialogue_volume=minf(0,dialogue_volume+2)
@@ -296,11 +310,13 @@ func _fire() -> void:
 	var camera := player.camera
 	var query := PhysicsRayQueryParameters3D.create(camera.global_position, camera.global_position - camera.global_basis.z * 100)
 	query.exclude = [player.get_rid()]
-	query.collision_mask=CollisionLayers.STATIC|CollisionLayers.NPC|CollisionLayers.PROP|CollisionLayers.PROJECTILE
+	query.collision_mask=CollisionLayers.STATIC|CollisionLayers.NPC|CollisionLayers.PROP|CollisionLayers.PROJECTILE|CollisionLayers.RAGDOLL
 	query.collide_with_areas=true
 	var hit := get_world_3d().direct_space_state.intersect_ray(query)
 	if not hit.is_empty():
-		if hit.collider is HarborGuard:
+		if hit.collider is HarborPhysicalBone:
+			hit.collider.driver.nudge(hit.collider,-camera.global_basis.z*2.0)
+		elif hit.collider is HarborGuard:
 			hit.collider.take_damage(35, -camera.global_basis.z, hit.position)
 			if hit.collider.get_meta("civilian",false): memory.heat=minf(100,memory.heat+8)
 			else: faction_rep -= 1
@@ -583,6 +599,7 @@ func _end_cinematic() -> void:
 
 func _save_settings() -> void:
 	var config := ConfigFile.new()
+	config.set_value("effects","impact_density",character_impacts.density)
 	config.set_value("audio","movement_db",movement_volume)
 	config.set_value("audio","dialogue_db",dialogue_volume)
 	config.set_value("graphics", "preset", quality)
@@ -594,6 +611,7 @@ func _save_settings() -> void:
 func _load_settings() -> void:
 	var config := ConfigFile.new()
 	if config.load("user://settings.cfg") == OK:
+		character_impacts.density=clampf(float(config.get_value("effects","impact_density",0.6)),0,1)
 		movement_volume=clampf(float(config.get_value("audio","movement_db",-5)),-40,0)
 		dialogue_volume=clampf(float(config.get_value("audio","dialogue_db",-6)),-30,0)
 		quality = clampi(int(config.get_value("graphics", "preset", 1)), 0, 2)
@@ -641,6 +659,7 @@ func _save() -> void:
 		_say("Save", "Checkpoint replacement failed; previous save retained.")
 
 func _load() -> void:
+	character_impacts.reset()
 	if dialogue_director.active: dialogue_director.stop()
 	for path: String in [SAVE_PATH, SAVE_PATH + ".bak"]:
 		if not FileAccess.file_exists(path): continue
@@ -707,7 +726,7 @@ func _exit_tree() -> void:
 
 func _notification(what: int) -> void:
 	if not is_instance_valid(player): return
-	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and not test_mode and not OS.get_cmdline_user_args().has("--verify-physics") and not OS.get_cmdline_user_args().has("--verify-mission") and not OS.get_cmdline_user_args().has("--verify-city") and not OS.get_cmdline_user_args().has("--verify-mobility"):
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and not test_mode and not OS.get_cmdline_user_args().has("--verify-physics") and not OS.get_cmdline_user_args().has("--verify-mission") and not OS.get_cmdline_user_args().has("--verify-city") and not OS.get_cmdline_user_args().has("--verify-mobility") and not OS.get_cmdline_user_args().has("--verify-ragdoll"):
 		if not paused: _set_pause(true)
 
 func _on_crash(point: Vector3, speed: float) -> void:

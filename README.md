@@ -1,14 +1,14 @@
-Latest increment: reference-directed half-tied Adrian prototype, surface-aware movement audio, timed hinged car doors, a usable Harrier motorcycle prototype and an expanded service-road loop. See [current scope](docs/reference-mobility-report.md) and [export validation](docs/reference-mobility-validation.md). Art quality, full interaction polish and the campaign remain incomplete.
+Latest increment: articulated NPC defeat with thirteen physical segments, directional momentum, constrained joints, non-adjacent self-collision, restrained pooled impact effects, and a repeatable physics laboratory. See [implementation](docs/articulated-physics-report.md) and [actual Windows validation](docs/articulated-physics-validation.md). The wider city/campaign directive remains incomplete.
 
 # OUTLAW SYNDICATE
 
 Godot 4.6 / Jolt, Windows-first third-person crime game in active production.
 
-**Current build: reference-directed mobility prototype. One short opening mission, not the complete game or a ten-hour campaign.**
+**Current build: articulated NPC physics increment. One short opening mission, not the complete game or a ten-hour campaign.**
 
 ## Play the new build
 
-On this development machine run `D:/OutlawSyndicate/builds/reference-mobility/OutlawSyndicate.exe` with its adjacent PCK file. The original graybox package remains under `builds/windows` and `builds/preserved-11aedc2`. Binaries are local artifacts, not committed downloads.
+On this development machine run `D:/OutlawSyndicate/builds/articulated-physics/OutlawSyndicate.exe` with its adjacent PCK file. The original graybox package remains under `builds/windows` and `builds/preserved-11aedc2`. Binaries are local artifacts, not committed downloads.
 
 Choose **New game** for the introduction, or **Continue** for your checkpoint. Enter / controller A skips the introduction. Pause â†’ Controls lists bindings. The separate **Driving course** menu entry opens a handling test scene.
 
@@ -33,3 +33,5 @@ See `docs/production-checklist.md`, `docs/testing-report.md`, `docs/asset-licens
 Living City Laboratory shows the nine role assets and real vehicle/person experiments. F6 cycles voice samples; F7 starts the Adrian/Dante conversation. Press P to pause as an alternative to Esc. Actual district NPCs use the same models and behaviors.
 
 The Harrier motorcycle is parked near (-5, 10) in the starting area: approach and press E/Y, then use normal drive/brake/look controls. Stop before dismounting. Car doors animate during normal gameplay. Movement Audio Laboratory provides nine labeled acoustic pads; number keys 1–9 select a pad. Pause > Settings offers separate movement volume. Side roads at x=-70 and x=72 connect through streets at z=58 and z=-176. Bike traversal currently supports free roam; the opening mission still requires the Sable.
+
+Articulated Physics Laboratory: keys 1–5 reset frontal, side, running, wall and stair cases. Normal movement/look/shoot controls apply. Pause > Settings offers impact-effect density. The automated exported ragdoll route additionally checks a slope and concurrent bodies; its debug fixtures are not final environment art.
