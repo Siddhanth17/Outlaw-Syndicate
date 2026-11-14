@@ -15,6 +15,7 @@ var animation: AnimationPlayer
 var last_seen := Vector3.ZERO
 var reaction: float = 0
 var weapon: Node3D
+var dynamics: HumanDynamics
 
 func _ready() -> void:
 	origin = position
@@ -36,6 +37,10 @@ func _ready() -> void:
 				animation.get_animation(name).loop_mode = Animation.LOOP_LINEAR
 	var skeletons := visual.find_children("*", "Skeleton3D", true, false)
 	if not skeletons.is_empty():
+		dynamics = HumanDynamics.new()
+		dynamics.actor = self
+		skeletons[0].add_child(dynamics)
+		dynamics.reset_state()
 		var attachment := BoneAttachment3D.new()
 		attachment.bone_name = "RightHand"
 		skeletons[0].add_child(attachment)
@@ -58,6 +63,7 @@ func _physics_process(delta: float) -> void:
 	if game.paused or game.cinematic_active or state == State.DEFEATED:
 		return
 	clock += delta
+	if dynamics: dynamics.wind = game.harbor.wind_vector
 	if is_instance_valid(weapon): weapon.global_basis = Basis(Vector3.UP, visual.global_rotation.y)
 	shot_timer -= delta
 	reaction -= delta
@@ -79,7 +85,7 @@ func _physics_process(delta: float) -> void:
 			visual.rotation.y = atan2(offset.x, offset.z)
 			destination = game.player.position if distance > 12 else position
 			if shot_timer <= 0 and reaction <= 0 and distance < 27:
-				game.damage_player(8)
+				game.damage_player(8, (game.player.position - position).normalized())
 				game.sound("shot", position)
 				shot_timer = 1.25
 		State.INVESTIGATE:
@@ -113,12 +119,14 @@ func take_damage(amount: float) -> void:
 	if state == State.DEFEATED:
 		return
 	health -= amount
+	if dynamics: dynamics.impact += Vector3.FORWARD * minf(amount * 0.1, 6)
 	reaction = 0.3
 	suspicion = 1
 	state = State.ENGAGE
 	game.memory.remember("guard_alert_" + name, {"district": "iron_harbor", "faction": "rell_security", "reputation": -1})
 	if health <= 0:
 		state = State.DEFEATED
+		if dynamics: dynamics.active = false
 		collision_layer = 0
 		collision_mask = 0
 		if animation: animation.stop()

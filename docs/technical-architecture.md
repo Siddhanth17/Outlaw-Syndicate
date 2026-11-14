@@ -16,3 +16,7 @@ art/build_assets.py -> Blender 4.5.3 -> assets/*.glb -> Godot import -> gameplay
 Saves use atomic replacement and one backup. Position arrays are checked for length/type/finite bounds before restore; settings use ConfigFile. Remaining validation/migration and actual interrupted-write fault testing are still required. Low/Balanced/High presets adjust selected effects; High is not the default tested performance configuration.
 
 Still required before city expansion: extract MissionDirector/SaveService out of main.gd, explicit objective IDs and schema migration, streamed authored district scenes, real navigation, simulation budgets and object pooling. Existing monolithic composition is not a finished open-world architecture.
+
+## Reference refinement modules
+
+HumanDynamics is attached below each nearby supported Skeleton3D and executes after animation, preserving imported bone rest rotations. It uses bounded scale-independent angles rather than native SpringBoneSimulator3D on the existing 0.01-scale rig. Ground traversal remains code-driven without terrain IK. Human Motion Laboratory subclasses the actual main scene; it is not a separate character implementation. RuntimeVerification is an opt-in developer command (-- --verify-realism) that stages/saves inspection views from the exported EXE to user://verification and exits; normal product menu flows do not enable it. The environment uses reusable road/steel/sky/wind shaders, three authored warehouse variants and an instanced distant skyline.

@@ -1,4 +1,6 @@
-# Verification — Iron Harbor production increment, 14 November 2026
+# Verification — production history, 14 November 2026
+
+Latest realism increment: 92 PASS assertions (existing 72 + 20 new). New tests cover secondary chains, observed post-animation bone motion, settling, wind, bounds, teleport reset, visible seating, pelvis bounds, steering reach/rotation and exit restoration. Human Motion Laboratory launches. The exported realism-refinement EXE now has a successful opt-in capture route: six actual PNG captures returned OK and the process exited 0. The earlier external --script attempt below belongs to the previous increment. See realism-reference-report.md for current evidence/performance and unmet acceptance criteria.
 
 Engine: Godot 4.6.stable.official.89cea1439, Windows x64, Jolt Physics. Rendered source and exported package use Vulkan 1.4.357 / Forward+ on NVIDIA RTX 3050 6GB Laptop GPU. CPU i5-13450HX, approximately 16 GB RAM.
 

@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://8sx0arpw1v3k"
-path="res://.godot/imported/adrian_Image_0.jpg-3c0e9b8a60a89462efdfb7e408965840.ctex"
+path.bptc="res://.godot/imported/adrian_Image_0.jpg-3c0e9b8a60a89462efdfb7e408965840.bptc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "7b8059ef3856c9a871906159e5c5f298"
@@ -14,12 +15,12 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/characters/adrian_Image_0.jpg"
-dest_files=["res://.godot/imported/adrian_Image_0.jpg-3c0e9b8a60a89462efdfb7e408965840.ctex"]
+dest_files=["res://.godot/imported/adrian_Image_0.jpg-3c0e9b8a60a89462efdfb7e408965840.bptc.ctex"]
 
 [params]
 
-compress/mode=0
-compress/high_quality=false
+compress/mode=2
+compress/high_quality=true
 compress/lossy_quality=0.7
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0

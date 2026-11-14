@@ -7,8 +7,8 @@
 | Clothed rigged human | vibeassets uploader; Meshy-generated source | CC0-1.0, https://vibeassets.io/a/zpepqtthci | Imported in Blender, neutral gait-average pose and additional original action clips; exported as adrian.glb |
 | Walk animation | Publisher-generated Meshy clip | CC0-1.0, https://vibeassets.io/a/cy69g7t2a0 | Timing adapted for export |
 | Run animation | Publisher-generated Meshy clip | CC0-1.0, https://vibeassets.io/a/vb5npv0n6u | Timing adapted; accelerated copy for sprint |
-| Asphalt 02 diffuse/normal/roughness, 1K | Rob Tuytel / Poly Haven | CC0-1.0, https://polyhaven.com/a/asphalt_02 | Runtime tiling/tint/wet roughness |
-| Concrete Layers 02 diffuse/normal, 1K | Rob Tuytel / Poly Haven | CC0-1.0, https://polyhaven.com/a/concrete_layers_02 | Runtime tiling and modeled warehouse materials |
+| Asphalt 02 diffuse/normal/roughness, 2K | Rob Tuytel / Poly Haven | CC0-1.0, https://polyhaven.com/a/asphalt_02 | Runtime tiling/tint/wet roughness |
+| Concrete Layers 02 diffuse/normal, 2K | Rob Tuytel / Poly Haven | CC0-1.0, https://polyhaven.com/a/concrete_layers_02 | Runtime tiling and modeled warehouse materials |
 
 Publisher metadata snapshots for all three human/animation assets and complete CC0 text are in assets/licenses. Their descriptions explicitly identify Meshy generation, not captured human motion. Poly Haven's license: https://polyhaven.com/license . File sizes/SHA256 and modification notes are recorded in assets/asset-manifest.json. The same human temporarily represents Adrian, Dante and security; distinct cast and final protagonist identity remain unfinished. No Mixamo-proprietary raw download was used; source descriptions say Mixamo-style bone names.
 
@@ -23,3 +23,7 @@ Engine/tire/harbor/footstep/shot/reload WAV assets are original synthesized soun
 Godot 4.6 and Jolt: MIT; official notices included beside the Windows package. https://godotengine.org/license/ and https://github.com/jrouwe/JoltPhysics . Blender 4.5.3 LTS portable: GPL, tool only and not shipped in the game. Official archive SHA256 verified against publisher checksum: 6b657c8bdd3a7b65b07b9e1ae17eb4be7dd4aa23121da7f3d3354fc2551330a7. URL: https://download.blender.org/release/Blender4.5/blender-4.5.3-windows-x64.zip . Tool licensing does not impose Blender's license on independently created art.
 
 CesiumMan was downloaded only as an unused reference candidate; it is excluded from project assets, repository and export. Obsidian StoryLine was a planning reference only; no source copied.
+
+## Reference-directed refinement
+
+Original added models/sources: art/refine_realism.py, art/source/warehouse_realism_0.blend through warehouse_realism_2.blend, forklift.blend, assets/environment/manhole.glb, drain.glb and assets/vehicles/steering.glb. Additional modeled components, material shaders, skin/hem/hair weights and Drive pose are project-authored modifications of the previously credited assets. Existing Poly Haven maps were upgraded to 2K JPG files from the same asset pages and license. Procedural road/weathering/sky/wind shader code is original. User-supplied reference images were not copied into source, evidence or the package. The committed before/after images are actual own-game captures. See assets/asset-manifest.json for refreshed hashes and art/source/secondary-weights.json for weighted-region counts.

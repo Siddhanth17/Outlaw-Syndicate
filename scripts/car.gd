@@ -10,6 +10,8 @@ var lamps: Array[SpotLight3D] = []
 var last_velocity := Vector3.ZERO
 var throttle_smoothed: float = 0
 var damage_cooldown: float = 0
+var steering_visual: Node3D
+var brake_light: OmniLight3D
 
 func _ready() -> void:
 	mass = 1250
@@ -26,6 +28,14 @@ func _ready() -> void:
 	var body: Node3D = load("res://assets/vehicles/sable_body.glb").instantiate()
 	body.position.y = -0.80
 	add_child(body)
+	steering_visual = load("res://assets/vehicles/steering.glb").instantiate()
+	steering_visual.position = Vector3(-0.39, 0.25, 0.53)
+	add_child(steering_visual)
+	brake_light = OmniLight3D.new()
+	brake_light.position = Vector3(0, -0.1, -2.05)
+	brake_light.light_color = Color(1, 0.025, 0.01)
+	brake_light.omni_range = 2.6
+	add_child(brake_light)
 	for x: float in [-0.95, 0.95]:
 		for z: float in [-1.30, 1.32]:
 			var wheel := VehicleWheel3D.new()
@@ -80,9 +90,11 @@ func _physics_process(delta: float) -> void:
 	engine_force = throttle_smoothed * 2600 * torque_factor * clampf(integrity / 100, 0, 1)
 	var target: float = Input.get_axis("right", "left") * (0.42 / (1 + linear_velocity.length() * 0.035)) if occupied else 0.0
 	steering = move_toward(steering, target, delta * 1.3)
+	steering_visual.rotation.z = -steering * 2.2
 	brake = 30 if not occupied else (55 if Input.is_action_pressed("handbrake") else 0)
 	if occupied and throttle * forward_speed < -1:
 		brake = 40
+	brake_light.light_energy = 2.0 if brake > 0 and occupied else 0.15
 	for wheel: VehicleWheel3D in wheels:
 		wheel.wheel_friction_slip = 2.0 if absf(position.x) > 8 else (1.8 if Input.is_action_pressed("handbrake") and occupied else 3.2)
 	var impact: float = (linear_velocity - last_velocity).length()

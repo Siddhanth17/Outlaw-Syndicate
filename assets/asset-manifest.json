@@ -52,8 +52,8 @@
     },
     {
       "path": "assets/characters/adrian.glb",
-      "bytes": 2495028,
-      "sha256": "db473c6bf9551ef8d3533dcd0d9a1af5beeeebf56ee42890778513bc8a39dc24"
+      "bytes": 2579704,
+      "sha256": "ce5b15b6a1bd9173a4e0b0481a668aace56a36b699dc043cb5ee62f8676f9399"
     },
     {
       "path": "assets/characters/adrian_Image_0.jpg",
@@ -76,9 +76,24 @@
       "sha256": "40330bbaa4e25d3421a961ab40146cba6ada42ffd189ae87934694e4bcb692ca"
     },
     {
+      "path": "assets/environment/drain.glb",
+      "bytes": 152544,
+      "sha256": "c0a96fe9198e033613cd6c02cca883eab6a3ad51b025672b10420238525e42f0"
+    },
+    {
       "path": "assets/environment/fence.glb",
       "bytes": 311720,
       "sha256": "bf1612ad524fc3e134ced0ca021118b82cd247e2b7151063a4aac345e1ff3879"
+    },
+    {
+      "path": "assets/environment/forklift.glb",
+      "bytes": 133728,
+      "sha256": "37748e1de22b02328494defa2b8f25fc2368524f2c5f81b644320d73e9ce5e87"
+    },
+    {
+      "path": "assets/environment/manhole.glb",
+      "bytes": 186168,
+      "sha256": "dc3335a20f05a6958aea29694496fceb9abbb8c9adc48733b4f7c28dc20172d6"
     },
     {
       "path": "assets/environment/streetlamp.glb",
@@ -101,39 +116,84 @@
       "sha256": "ee35d817b5fa26f824479ef9d3a5ab308f4f33846c7d62d6583457dc900c6049"
     },
     {
+      "path": "assets/environment/warehouse_realism_0.glb",
+      "bytes": 8101804,
+      "sha256": "f6656cc689f20fa84f75eda94503007e6ca46741afda6942fddd818dd53a40ba"
+    },
+    {
+      "path": "assets/environment/warehouse_realism_0_concrete_diff.jpg",
+      "bytes": 2555097,
+      "sha256": "f70070187573ad05457c65c3efe7fb25fe1e071a5490c760e5b90f845aab9b91"
+    },
+    {
+      "path": "assets/environment/warehouse_realism_0_concrete_normal.jpg",
+      "bytes": 3389363,
+      "sha256": "6985e0782adb226423d81cdd080b0e06012fdfb20eb3952d2459218fdd3977e9"
+    },
+    {
+      "path": "assets/environment/warehouse_realism_1.glb",
+      "bytes": 8314672,
+      "sha256": "d0f29b8dba00f639b668fb37b99e9c914c7df1e7a8b39a044bc754adf4bf3058"
+    },
+    {
+      "path": "assets/environment/warehouse_realism_1_concrete_diff.jpg",
+      "bytes": 2555097,
+      "sha256": "f70070187573ad05457c65c3efe7fb25fe1e071a5490c760e5b90f845aab9b91"
+    },
+    {
+      "path": "assets/environment/warehouse_realism_1_concrete_normal.jpg",
+      "bytes": 3389363,
+      "sha256": "6985e0782adb226423d81cdd080b0e06012fdfb20eb3952d2459218fdd3977e9"
+    },
+    {
+      "path": "assets/environment/warehouse_realism_2.glb",
+      "bytes": 8217840,
+      "sha256": "c5735951420ee6a236e37b9a125a0a40a0fed609505e16ff25baa14d1a3a4c20"
+    },
+    {
+      "path": "assets/environment/warehouse_realism_2_concrete_diff.jpg",
+      "bytes": 2555097,
+      "sha256": "f70070187573ad05457c65c3efe7fb25fe1e071a5490c760e5b90f845aab9b91"
+    },
+    {
+      "path": "assets/environment/warehouse_realism_2_concrete_normal.jpg",
+      "bytes": 3389363,
+      "sha256": "6985e0782adb226423d81cdd080b0e06012fdfb20eb3952d2459218fdd3977e9"
+    },
+    {
       "path": "assets/textures/asphalt_diff.jpg",
-      "bytes": 731707,
-      "sha256": "1aa5ce99f58a625c71d48cfc3e68b65ca85ccb00f39e045c0a928608a0ea25ed"
+      "bytes": 3075676,
+      "sha256": "28f5ba8690553f192c0e5e1a5ff40f34765b4b93f4cc7059b1a3e9c795b6c28c"
     },
     {
       "path": "assets/textures/asphalt_normal.jpg",
-      "bytes": 1240122,
-      "sha256": "42a1c381b53204e83a982db2864479a30bc127bbdeebb1006f8ee51bff099df3"
+      "bytes": 4943950,
+      "sha256": "ffe49db71a0fd34c1e259625df66a302a237597d6ef655307987ec4e45bc6f21"
     },
     {
       "path": "assets/textures/asphalt_rough.jpg",
-      "bytes": 544032,
-      "sha256": "70ba3edc65525eb4dc366cf010ca7ae0bd34e0251ff0225c2dad627a873d0712"
+      "bytes": 2230457,
+      "sha256": "b9a516b61b7040a9245ac206642d5f767ad9589a0169c4a1668221429e8a998c"
     },
     {
       "path": "assets/textures/concrete_diff.jpg",
-      "bytes": 598800,
-      "sha256": "cca314fbb793e3928111912f1d6d4d79edf4420402e56019d70fec0bdc2efca5"
+      "bytes": 2555097,
+      "sha256": "f70070187573ad05457c65c3efe7fb25fe1e071a5490c760e5b90f845aab9b91"
     },
     {
       "path": "assets/textures/concrete_normal.jpg",
-      "bytes": 734532,
-      "sha256": "ee35d817b5fa26f824479ef9d3a5ab308f4f33846c7d62d6583457dc900c6049"
+      "bytes": 3389363,
+      "sha256": "6985e0782adb226423d81cdd080b0e06012fdfb20eb3952d2459218fdd3977e9"
     },
     {
       "path": "assets/vehicles/sable_body.glb",
-      "bytes": 420140,
-      "sha256": "6921488eab41eb09fd682febc2ce488a5c4395cdbbf12235928813a71712eeb1"
+      "bytes": 468904,
+      "sha256": "0d4b7ebdc6abe349d7a2da315c7c028ccbf59a7f759761eb616551a1eff94bea"
     },
     {
       "path": "assets/vehicles/sable_wheel.glb",
       "bytes": 532420,
-      "sha256": "bd1bb25e8607f693357b995243c3f5b5c1ace366dccf01c9a89a1af7977bcd4d"
+      "sha256": "690e852e3398b28aeed9e0d429cb9e3e43d886ac9a8aeb9562f79ed7ea9e86b7"
     },
     {
       "path": "assets/vehicles/sidearm.glb",
@@ -141,9 +201,14 @@
       "sha256": "896aa0f727c201cc362e4b2e657dbfa284a5d757f8e0eb242f2368a52914fb36"
     },
     {
+      "path": "assets/vehicles/steering.glb",
+      "bytes": 54320,
+      "sha256": "bcb0e0e4126a56224b97d4ed1753ce47df71a3799ec8ee685a36984546ca33a7"
+    },
+    {
       "path": "art/source/adrian.blend",
-      "bytes": 9230501,
-      "sha256": "be810826e2e181102b8486ee8ce30648c42e76efa450c618841f599324aebeaf"
+      "bytes": 9460333,
+      "sha256": "da45adfab4cf948fafd220a444e0bef3bd48b22d2474f26757956f97367ed2ce"
     },
     {
       "path": "art/source/camper-cc0.glb",
@@ -161,14 +226,42 @@
       "sha256": "5edecd217be63fef33e72cec3d65ee5e5935782847f83d64025a937a6108d4ec"
     },
     {
+      "path": "art/source/forklift.blend",
+      "bytes": 622941,
+      "sha256": "7f81fe335b9488ed70c652bacac36ab9721cdd46fcaee6141e37bfd6cfc0da49"
+    },
+    {
       "path": "art/source/sable_body.blend",
-      "bytes": 1000794,
-      "sha256": "ad07b1550cd9f72e6c4c60e413e9a34712d542d1a213c249f0f77ef54473ae6e"
+      "bytes": 1102890,
+      "sha256": "1e44517a4f208e82602343e6e6238baf7574c4605fb62cbb169668c57fca5832"
     },
     {
       "path": "art/source/warehouse.blend",
       "bytes": 2271189,
       "sha256": "8622d7e262232f3e4276d4ef0db5f5f43120218ee57aad281154590c0b743a6a"
+    },
+    {
+      "path": "art/source/warehouse_realism_0.blend",
+      "bytes": 2839748,
+      "sha256": "3b3950a2f1bebe2aeb3926b7d3caf007456b6ad3367199df098231159829d713"
+    },
+    {
+      "path": "art/source/warehouse_realism_1.blend",
+      "bytes": 3067619,
+      "sha256": "592ae646f8bc4c4d37ef410403bdfb6ebadc1b52a370f31cef782efd3b81c5b2"
+    },
+    {
+      "path": "art/source/warehouse_realism_2.blend",
+      "bytes": 3054704,
+      "sha256": "ce349978c64d86e6aadcc4a5d502ad2da2b65f9bb46f7699581a55ce538c2c78"
     }
-  ]
+  ],
+  "realism_refinement": {
+    "original_sources": [
+      "art/refine_realism.py",
+      "art/build_assets.py"
+    ],
+    "modifications": "Eight weighted hair/hem bones, seated Drive clip, separate roughness regions; curved sedan profiles, cabin cavity and steering wheel; original warehouse service variants, forklift, drains/manholes; existing CC0 maps upgraded to 2K. User reference images are not game assets.",
+    "runtime": "Scale-aware post-animation SkeletonModifier3D; procedural original surface/sky/wind shaders."
+  }
 }

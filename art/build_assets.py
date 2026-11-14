@@ -81,23 +81,40 @@ def export(name,source=False):
 
 def car():
     reset();paint=material('Oxide / automotive lacquer',(.32,.08,.035),.55,.26);trim=material('Black anodized trim',(.028,.033,.038),.65,.3);glass=material('Smoked blue automotive glazing',(.055,.12,.17),.5,.15);chrome=material('Machined aluminum',(.55,.6,.63),.85,.24);lamp=material('Headlight reflector',(.85,.88,.72),.5,.15,emission=1);red=material('Tail lenses',(.65,.015,.008),.3,.2,emission=1)
-    glass.node_tree.nodes.get('Principled BSDF').inputs['Alpha'].default_value=.55
+    glass.node_tree.nodes.get('Principled BSDF').inputs['Alpha'].default_value=.22
     glass.surface_render_method='DITHERED'
+    paint.node_tree.nodes.get('Principled BSDF').inputs['Coat Weight'].default_value=.45
+    paint.node_tree.nodes.get('Principled BSDF').inputs['Coat Roughness'].default_value=.18
     # Lofted closed hull: rounded shoulder line, belt line, hood and deck.
     sections=[(-2.15,.70,.38,.61),(-1.96,.91,.25,.76),(-1.35,.96,.22,.83),(-.72,.94,.22,.88),(.6,.94,.22,.86),(1.55,.92,.25,.78),(2.05,.77,.32,.67)]
-    verts=[]
+    # Smooth longitudinal body profiles with a crowned hood/deck cross-section.
+    controls=sections;sections=[]
+    for i in range(len(controls)-1):
+        p0=controls[max(0,i-1)];p1=controls[i];p2=controls[i+1];p3=controls[min(len(controls)-1,i+2)]
+        for k in range(4):
+            t=k/4
+            values=[]
+            for axis in range(4):
+                values.append(.5*((2*p1[axis])+(-p0[axis]+p2[axis])*t+(2*p0[axis]-5*p1[axis]+4*p2[axis]-p3[axis])*t*t+(-p0[axis]+3*p1[axis]-3*p2[axis]+p3[axis])*t*t*t))
+            sections.append(values)
+    sections.append(controls[-1])
+    verts=[];ring=12
     for y,w,low,high in sections:
-        for x,z in [(-w*.84,low),(-w,low+.14),(-w,high-.13),(-w*.88,high),(w*.88,high),(w,high-.13),(w,low+.14),(w*.84,low)]:verts.append((x,y,z))
-    faces=[tuple(range(7,-1,-1))]
+        for x,z in [(-w*.82,low),(-w,low+.14),(-w,high-.13),(-w*.88,high),(-w*.45,high+.035),(0,high+.05),(w*.45,high+.035),(w*.88,high),(w,high-.13),(w,low+.14),(w*.82,low),(0,low-.015)]:verts.append((x,y,z))
+    faces=[tuple(range(ring-1,-1,-1))]
     for i in range(len(sections)-1):
-        for j in range(8):faces.append((i*8+j,i*8+(j+1)%8,(i+1)*8+(j+1)%8,(i+1)*8+j))
-    faces.append(tuple(range((len(sections)-1)*8,len(sections)*8)))
+        for j in range(ring):faces.append((i*ring+j,i*ring+(j+1)%ring,(i+1)*ring+(j+1)%ring,(i+1)*ring+j))
+    faces.append(tuple(range((len(sections)-1)*ring,len(sections)*ring)))
     hull=mesh('Sable GT / formed body shell',verts,faces,paint)
     # Cut actual wheel arches through the body with boolean cylinders.
     for y in [-1.32,1.30]:
         cutter=cyl('arch cutter',(0,y,.35),.46,3,None,(0,math.pi/2,0),32)
         bpy.context.view_layer.objects.active=hull;mod=hull.modifiers.new('Stamped wheel arch','BOOLEAN');mod.object=cutter;mod.operation='DIFFERENCE'
         bpy.ops.object.modifier_apply(modifier=mod.name);bpy.data.objects.remove(cutter,do_unlink=True)
+    cockpit=box('Cabin cavity tool',(0,.18,1.15),(1.50,1.80,1.80),None,0)
+    bpy.context.view_layer.objects.active=hull
+    cavity=hull.modifiers.new('Open passenger compartment','BOOLEAN');cavity.object=cockpit;cavity.operation='DIFFERENCE'
+    bpy.ops.object.modifier_apply(modifier=cavity.name);bpy.data.objects.remove(cockpit,do_unlink=True)
     finish(hull,None,.045)
     for f in hull.data.polygons:f.use_smooth=True
     # Tapered greenhouse with separate glass panels and pillars.
@@ -111,16 +128,20 @@ def car():
         for y in [-.3,.63]:box('Recessed door handle',(side*.95,y,.73),(.025,.16,.035),chrome,.01)
         box('Side mirror',(side*1.02,-.65,1.02),(.18,.25,.11),paint,.045)
         beam('Sill rail',(side*.92,-.82,.28),(side*.92,.79,.28),.045,trim)
-        for y in [-.45,.65]:
+        for y in [0,.85]:
             box('Seat',(side*.38,y,.66),(.53,.55,.12),trim,.08);box('Seat back',(side*.38,y+.18,.93),(.5,.13,.55),trim,.07)
     box('Front grille',(0,-2.12,.46),(1.25,.07,.2),trim,.025)
+    for side in [-1,1]:
+        for y in [-.8,.23,1.12]:beam('Door panel joint',(side*.943,y,.40),(side*.943,y,.80),.006,trim)
+        beam('Hood panel joint',(side*.66,-1.85,.80),(side*.74,-.9,.89),.006,trim)
     for x in [-.62,.62]:
         box('Headlamp lens',(x,-2.04,.67),(.37,.08,.16),lamp,.04)
         box('Tail lamp',(x,2.02,.62),(.38,.08,.13),red,.03)
     for x in [-.5,-.25,0,.25,.5]:box('Grille fin',(x,-2.165,.46),(.025,.015,.13),chrome,.003)
     box('Rear bumper',(0,2.07,.36),(1.45,.08,.1),trim,.025)
     box('Dashboard',(0,-.64,.93),(1.4,.22,.18),trim,.04)
-    bpy.ops.mesh.primitive_torus_add(major_radius=.16,minor_radius=.018,major_segments=24,minor_segments=8,location=(-.39,-.53,1.05),rotation=(math.pi/2,0,0));finish(bpy.context.object,trim)
+    box('Carpet floor',(0,.18,.27),(1.45,1.75,.03),trim,.015)
+
     text('Rear plate','VEYRA  08',(0,2.10,.52),.10,chrome,(-math.pi/2,0,math.pi))
     export('vehicles/sable_body.glb',True)
     reset();rubber=material('Treaded rubber',(.025,.028,.032),0,.88);alloy=material('Forged wheel',(.34,.39,.42),.85,.24);brake=material('Brake rotor',(.12,.14,.16),.8,.5)
@@ -302,4 +323,5 @@ def human():
     arm.animation_data.action=walk
     export('characters/adrian.glb',True)
 
-car();industrial();human()
+if __name__ == '__main__':
+    car();industrial();human()

@@ -25,6 +25,7 @@ var step_time: float = 0
 var footstep: AudioStreamPlayer3D
 var vehicle: VeyraCar
 var camera_manual_time: float = 0
+var dynamics: HumanDynamics
 
 func _ready() -> void:
 	floor_snap_length = 0.25
@@ -64,6 +65,10 @@ func _ready() -> void:
 	var skeletons := visual.find_children("*", "Skeleton3D", true, false)
 	if not skeletons.is_empty():
 		var skeleton: Skeleton3D = skeletons[0]
+		dynamics = HumanDynamics.new()
+		dynamics.actor = self
+		skeleton.add_child(dynamics)
+		dynamics.reset_state()
 		var attachment := BoneAttachment3D.new()
 		attachment.bone_name = "RightHand"
 		skeleton.add_child(attachment)
@@ -83,14 +88,22 @@ func _setup_animation() -> void:
 	tree.root_node = tree.get_path_to(animator.get_node(animator.root_node))
 	var states := AnimationNodeStateMachine.new()
 	var names: Array[String] = []
-	for key: String in ["Idle", "Walk", "Run", "Sprint", "Interact", "Aim", "Shoot", "Reload", "Jump", "Land", "Turn", "Enter", "Exit"]:
+	for key: String in ["Idle", "Walk", "Run", "Sprint", "Interact", "Aim", "Shoot", "Reload", "Jump", "Land", "Turn", "Enter", "Exit", "Drive"]:
 		for animation: String in animator.get_animation_list():
 			if animation.ends_with(key):
 				var clip := animator.get_animation(animation)
-				clip.loop_mode = Animation.LOOP_LINEAR if key in ["Idle", "Walk", "Run", "Sprint", "Aim"] else Animation.LOOP_NONE
+				clip.loop_mode = Animation.LOOP_LINEAR if key in ["Idle", "Walk", "Run", "Sprint", "Aim", "Drive"] else Animation.LOOP_NONE
 				var node := AnimationNodeAnimation.new()
 				node.animation = animation
-				states.add_node(key, node)
+				if key in ["Walk", "Run", "Sprint"]:
+					var locomotion := AnimationNodeBlendTree.new()
+					locomotion.add_node("Clip", node)
+					locomotion.add_node("Rate", AnimationNodeTimeScale.new())
+					locomotion.connect_node("Rate", 0, "Clip")
+					locomotion.connect_node("output", 0, "Rate")
+					states.add_node(key, locomotion)
+				else:
+					states.add_node(key, node)
 				names.append(key)
 	for a: String in names:
 		for b: String in names:
@@ -156,6 +169,9 @@ func _physics_process(delta: float) -> void:
 		visual.rotation.y = lerp_angle(visual.rotation.y, facing, delta * 12)
 	action_time -= delta
 	var locomotion: String = "Sprint" if speed > 5 else ("Run" if speed > 2.5 else "Walk")
+	if tree:
+		var nominal: float = 6.5 if locomotion == "Sprint" else (3.4 if locomotion == "Run" else 1.8)
+		tree.set("parameters/" + locomotion + "/Rate/scale", clampf(Vector2(velocity.x, velocity.z).length() / nominal, 0.15, 1.3))
 	var turning: bool = absf(angle_difference(last_yaw, yaw)) > 0.01 and axis.length() < 0.1
 	var state: String = action_name if action_time > 0 else ("Jump" if not is_on_floor() else ("Aim" if aiming else (locomotion if axis.length() > 0.1 else ("Turn" if turning else "Idle"))))
 	if turning:

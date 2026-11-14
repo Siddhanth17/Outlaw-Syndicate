@@ -1,0 +1,11 @@
+{
+	"fps": 155.835696192077,
+	"frames": 600,
+	"mean_ms": 6.417015,
+	"one_percent_low_fps": 125.460020073603,
+	"p95_ms": 7.288,
+	"renderer": "forward_plus",
+	"resolution": "(1920, 1080)",
+	"scope": "Short rendered inspection view, Balanced, wall frame intervals; not sustained or isolated GPU profiling.",
+	"video_memory_bytes": 798436336.0
+}

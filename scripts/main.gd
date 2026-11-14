@@ -28,6 +28,7 @@ var dante: Node3D
 var faction_rep: int = 0
 var return_screen: String = "pause"
 var ambience: AudioStreamPlayer
+var dante_dynamics: HumanDynamics
 
 func _ready() -> void:
 	test_mode = OS.get_cmdline_args().has("--script") or OS.get_cmdline_args().has("--headless")
@@ -61,6 +62,12 @@ func _ready() -> void:
 	dante.position = Vector3(-1.4, 0.05, -1)
 	dante.rotation.y = 0.7
 	add_child(dante)
+	var dante_skeletons := dante.find_children("*", "Skeleton3D", true, false)
+	if not dante_skeletons.is_empty():
+		dante_dynamics = HumanDynamics.new()
+		dante_dynamics.actor = dante
+		dante_skeletons[0].add_child(dante_dynamics)
+		dante_dynamics.reset_state()
 	var players := dante.find_children("*", "AnimationPlayer", true, false)
 	if not players.is_empty():
 		var animation: AnimationPlayer = players[0]
@@ -81,6 +88,10 @@ func _ready() -> void:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	else:
 		_set_pause(true, "main")
+	if OS.get_cmdline_user_args().has("--verify-realism"):
+		var verifier := RuntimeVerification.new()
+		verifier.game = self
+		add_child(verifier)
 
 func _setup_input() -> void:
 	GameInputs.install()
@@ -140,6 +151,8 @@ func _menu_action(title: String) -> void:
 		"Driving course":
 			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 			get_tree().change_scene_to_file("res://scenes/driving_course.tscn")
+		"Human Motion Laboratory":
+			get_tree().change_scene_to_file("res://scenes/human_motion_laboratory.tscn")
 		"Sensitivity +": player.sensitivity = minf(0.01, player.sensitivity + 0.0005)
 		"Sensitivity -": player.sensitivity = maxf(0.0005, player.sensitivity - 0.0005)
 		"Graphics: Low": quality = 0
@@ -218,13 +231,14 @@ func _fire() -> void:
 	if not player.reduced_shake:
 		player.pitch += 0.015
 
-func damage_player(amount: float) -> void:
+func damage_player(amount: float, direction: Vector3 = Vector3.ZERO) -> void:
 	if paused or cinematic_active:
 		return
 	if player.driving:
 		car.integrity = maxf(0, car.integrity - amount * 0.4)
 	else:
 		player.health = maxf(0, player.health - amount)
+		if player.dynamics: player.dynamics.impact += direction * minf(amount * 0.3, 6)
 	if player.health <= 0:
 		_set_pause(true, "defeat")
 
@@ -246,6 +260,16 @@ func _process(delta: float) -> void:
 			reserve -= amount
 	if player.driving:
 		player.global_position = car.global_position + Vector3(0, 0.4, 0)
+		player.visual.global_transform = car.global_transform * Transform3D(Basis.IDENTITY, Vector3(-0.38, -0.8, 0))
+	if player.dynamics:
+		player.dynamics.wind = harbor.wind_vector
+		player.dynamics.has_head_target = not player.driving and player.position.distance_to(dante.position) < 6
+		player.dynamics.head_target = dante.position + Vector3.UP * 1.5
+	if dante_dynamics:
+		dante_dynamics.active = player.position.distance_to(dante.position) < 30
+		dante_dynamics.wind = harbor.wind_vector
+		dante_dynamics.has_head_target = player.position.distance_to(dante.position) < 6
+		dante_dynamics.head_target = player.position + Vector3.UP * 1.5
 	var observed: bool = player.position.distance_to(Vector3(12, 0, -95)) < 32
 	for guard: HarborGuard in guards:
 		if is_instance_valid(guard) and guard.state == HarborGuard.State.ENGAGE:
@@ -290,7 +314,9 @@ func _interact() -> void:
 	elif player.position.distance_to(car.position) < 5:
 		player.driving = true
 		player.vehicle = car
-		player.visual.hide()
+		player.visual.show()
+		player.perform("Drive", 99999)
+		if player.dynamics: player.dynamics.reset_state()
 		player.collision_layer = 0
 		player.collision_mask = 0
 		player.arm.add_excluded_object(car.get_rid())
@@ -306,6 +332,8 @@ func _leave_car() -> void:
 		var ground := get_world_3d().direct_space_state.intersect_ray(query)
 		if not ground.is_empty(): player.position.y = ground.position.y + 0.05
 	player.driving = false
+	player.visual.transform = Transform3D.IDENTITY
+	if player.dynamics: player.dynamics.reset_state()
 	player.visual.show()
 	player.collision_layer = 1
 	player.collision_mask = 1
@@ -450,6 +478,7 @@ func _load() -> void:
 		car.linear_velocity = Vector3.ZERO
 		car.angular_velocity = Vector3.ZERO
 		player.velocity = Vector3.ZERO
+		if player.dynamics: player.dynamics.reset_state()
 		car.integrity = clampf(float(data.get("integrity", 100)), 0, 100)
 		player.health = clampf(float(data.get("health", 100)), 1, 100)
 		ammunition = clampi(int(data.get("ammunition", 12)), 0, 12)

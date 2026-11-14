@@ -125,7 +125,7 @@ func show_screen(screen: String) -> void:
 	modal_column.add_child(label("THE CITY THAT SOLD ITS SOUL", 13, Color(0.8, 0.57, 0.32)))
 	var actions: Array[String] = []
 	match screen:
-		"main": actions = ["New game", "Continue", "Driving course", "Settings", "Controls", "Credits", "Exit"]
+		"main": actions = ["New game", "Continue", "Driving course", "Human Motion Laboratory", "Settings", "Controls", "Credits", "Exit"]
 		"pause": actions = ["Resume", "Save checkpoint", "Load checkpoint", "Settings", "Controls", "Main menu", "Exit"]
 		"settings": actions = ["Graphics: Low", "Graphics: Balanced", "Graphics: High", "Sensitivity +", "Sensitivity -", "Subtitles toggle", "Reduced shake toggle", "Back"]
 		"controls":

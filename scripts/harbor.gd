@@ -4,6 +4,9 @@ extends Node3D
 var environment: WorldEnvironment
 var local_lights: Array[Light3D] = []
 var shutters: Array[Node3D] = []
+var wind_strength: float = 0.8
+var wind_vector := Vector3(0.8, 0, 0.3)
+var wind_materials: Array[ShaderMaterial] = []
 
 func asset(path: String, at: Vector3, yaw: float = 0.0) -> Node3D:
 	var model: Node3D = load("res://assets/" + path + ".glb").instantiate()
@@ -39,6 +42,13 @@ func surface(at: Vector3, size: Vector2, kind: String, tint: Color, scale_uv: fl
 		mat.roughness_texture = load("res://assets/textures/asphalt_rough.jpg")
 	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
 	model.material_override = mat
+	if kind == "asphalt":
+		var road := ShaderMaterial.new()
+		road.shader = load("res://shaders/road.gdshader")
+		road.set_shader_parameter("albedo_map", mat.albedo_texture)
+		road.set_shader_parameter("normal_map", mat.normal_texture)
+		road.set_shader_parameter("rough_map", mat.roughness_texture)
+		model.material_override = road
 	add_child(model)
 	model.position = at
 	return model
@@ -46,7 +56,13 @@ func surface(at: Vector3, size: Vector2, kind: String, tint: Color, scale_uv: fl
 func _ready() -> void:
 	environment = WorldEnvironment.new()
 	var env := Environment.new()
-	env.background_mode = Environment.BG_COLOR
+	env.background_mode = Environment.BG_SKY
+	var sky := Sky.new()
+	var sky_material := ShaderMaterial.new()
+	sky_material.shader = load("res://shaders/harbor_sky.gdshader")
+	sky.sky_material = sky_material
+	sky.radiance_size = Sky.RADIANCE_SIZE_64
+	env.sky = sky
 	env.background_color = Color(0.002, 0.004, 0.009)
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	env.ambient_light_color = Color(0.22, 0.35, 0.55)
@@ -80,7 +96,8 @@ func _ready() -> void:
 		surface(Vector3(side * 10, 0.145, -60), Vector2(4, 225), "concrete", Color(0.65, 0.66, 0.65), 2, 0.78)
 		for i: int in range(7):
 			var z: float = 24 - i * 29
-			var building := asset("environment/warehouse", Vector3(side * 32, 0, z), PI / 2 if side < 0 else -PI / 2)
+			var building := asset("environment/warehouse_realism_%d" % (i % 3), Vector3(side * 32, 0, z), PI / 2 if side < 0 else -PI / 2)
+			_weather_building(building, i)
 			shutters.append(building)
 			solid(Vector3(side * 32, 3.5, z), Vector3(16, 7, 24))
 		for i: int in range(9):
@@ -108,6 +125,50 @@ func _ready() -> void:
 		asset("environment/cargo", Vector3(13 + (i % 2) * 2, 0.15, 24 - i * 9), i * 0.7)
 	asset("environment/crane", Vector3(54, 0, -60), 0.0)
 	asset("environment/crane", Vector3(54, 0, -126), 0.0)
+	for z: float in [-26.0, -84.0, -140.0]:
+		var flood := SpotLight3D.new()
+		flood.position = Vector3(22, 6, z)
+		flood.light_color = Color(0.80, 0.86, 0.93)
+		flood.light_energy = 8
+		flood.spot_range = 19
+		flood.spot_angle = 48
+		flood.shadow_enabled = true
+		add_child(flood)
+		flood.look_at(Vector3(14, 0.2, z))
+	var skyline := MultiMeshInstance3D.new()
+	var instances := MultiMesh.new()
+	instances.transform_format = MultiMesh.TRANSFORM_3D
+	instances.mesh = BoxMesh.new()
+	instances.instance_count = 22
+	var backdrop := ShaderMaterial.new()
+	backdrop.shader = load("res://shaders/skyline.gdshader")
+	skyline.material_override = backdrop
+	for i: int in range(22):
+		var height: float = 12 + ((i * 17) % 29)
+		var basis := Basis.IDENTITY.scaled(Vector3(5 + i % 5, height, 8))
+		instances.set_instance_transform(i, Transform3D(basis, Vector3(-85 + i * 8, height / 2, -219 - (i % 3) * 12)))
+	skyline.multimesh = instances
+	add_child(skyline)
+	for at: Vector3 in [Vector3(2, 0.023, -20), Vector3(-3, 0.023, -75), Vector3(4, 0.023, -125)]:
+		asset("environment/manhole", at)
+	for i: int in range(14):
+		asset("environment/drain", Vector3(7.75, 0.025, 30 - i * 14))
+	for at: Vector3 in [Vector3(18, 0.1, -26), Vector3(-19, 0.1, -91), Vector3(18, 0.1, -135)]:
+		asset("environment/forklift", at, 0.8)
+	for i: int in range(3):
+		var flag := MeshInstance3D.new()
+		var fabric := PlaneMesh.new()
+		fabric.size = Vector2(1.3, 0.7)
+		fabric.subdivide_width = 14
+		fabric.subdivide_depth = 6
+		flag.mesh = fabric
+		flag.rotation.x = PI / 2
+		flag.position = Vector3(19, 4.5, -25 - i * 55)
+		var fabric_mat := ShaderMaterial.new()
+		fabric_mat.shader = load("res://shaders/wind_fabric.gdshader")
+		flag.material_override = fabric_mat
+		wind_materials.append(fabric_mat)
+		add_child(flag)
 	# Painted road strokes are thin planes, not floating solid boxes.
 	var stripe_mat := StandardMaterial3D.new()
 	stripe_mat.albedo_color = Color(0.75, 0.61, 0.34)
@@ -134,6 +195,36 @@ func _ready() -> void:
 	probe.max_distance = 85
 	probe.intensity = 0.65
 	add_child(probe)
+
+func _process(_delta: float) -> void:
+	var time: float = Time.get_ticks_msec() / 1000.0
+	wind_vector = Vector3(0.8 + sin(time * 0.7) * 0.18, 0, 0.25) * wind_strength
+	for mat: ShaderMaterial in wind_materials:
+		mat.set_shader_parameter("strength", wind_strength)
+
+func _weather_building(building: Node3D, index: int) -> void:
+	var colors: Array[Color] = [Color(0.24, 0.30, 0.30), Color(0.33, 0.29, 0.23), Color(0.21, 0.27, 0.32)]
+	for node: Node in building.find_children("*", "MeshInstance3D", true, false):
+		var mesh: MeshInstance3D = node
+		for surface_index: int in range(mesh.mesh.get_surface_count()):
+			var old: Material = mesh.get_active_material(surface_index)
+			if old and old.resource_name.contains("Galvanized"):
+				var replacement := ShaderMaterial.new()
+				replacement.shader = load("res://shaders/industrial_finish.gdshader")
+				replacement.set_shader_parameter("paint", colors[index % 3])
+				replacement.set_shader_parameter("age", 0.25 + (index % 4) * 0.2)
+				mesh.set_surface_override_material(surface_index, replacement)
+			elif old and old.resource_name.contains("Weathered concrete"):
+				var concrete := StandardMaterial3D.new()
+				concrete.albedo_texture = load("res://assets/textures/concrete_diff.jpg")
+				concrete.normal_enabled = true
+				concrete.normal_texture = load("res://assets/textures/concrete_normal.jpg")
+				concrete.normal_scale = 0.4
+				concrete.roughness = 0.85
+				concrete.uv1_triplanar = true
+				concrete.uv1_world_triplanar = true
+				concrete.uv1_scale = Vector3.ONE * 0.4
+				mesh.set_surface_override_material(surface_index, concrete)
 
 func preset(quality: int) -> void:
 	var env := environment.environment

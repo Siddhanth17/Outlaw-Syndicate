@@ -13,3 +13,5 @@ godot.zip
 builds/
 *.tmp
 *.log
+__pycache__/
+*.pyc

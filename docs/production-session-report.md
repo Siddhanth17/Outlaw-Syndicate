@@ -1,5 +1,7 @@
 # Iron Harbor production session — 14 November 2026
 
+Historical first-production increment. The later, stricter reference-directed pass is documented in realism-reference-report.md; the 79.2% checklist below is not a reference-quality realism score.
+
 Delivered a substantial playable production increment in the existing **Godot 4.6/Jolt** project. **19/24 checklist items verified (79.2% acceptance coverage)**. Five partial items are not counted; the polished visual milestone and full game remain incomplete. This measures the fixed checklist, not production effort or full-game completion.
 
 ## Implemented changes
