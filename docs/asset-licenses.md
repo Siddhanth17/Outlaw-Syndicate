@@ -43,3 +43,7 @@ Kenney Impact Sounds 1.0 provides CC0 source foley for forty processed movement 
 ## Articulated NPC physics increment
 
 No new character, vehicle, voice or third-party asset was downloaded or regenerated. Physical proxies, pose-bridge/constraint code, small procedural particle geometry and radial marks are project-authored. Impact foley reuses the already credited Kenney CC0 processed cloth/soft-impact samples; this is not a new human performance recording. Laboratory fixtures are engineering test geometry. Captures are the actual own-game executable. Godot/Jolt license notices remain included.
+
+## Metropolis foundation increment
+
+Harrier swept handlebars, separate steering parts, open wheel rims, hubs and rotors are edits to the original project-authored Blender model. Rider IK, phone UI, synthesized ring and social/repair code are project-authored. The short Dante phone reply reuses `greeting_dante.wav` with its existing Kokoro provenance and notices; no voice cloning or new third-party download was used. The city-builder image is layout inspiration only and is not shipped, traced or used as an asset. Neither screenshot nor the private Adrian reference is packaged.

@@ -1,16 +1,16 @@
-Latest increment: articulated NPC defeat with thirteen physical segments, directional momentum, constrained joints, non-adjacent self-collision, restrained pooled impact effects, and a repeatable physics laboratory. See [implementation](docs/articulated-physics-report.md) and [actual Windows validation](docs/articulated-physics-validation.md). The wider city/campaign directive remains incomplete.
+Latest increment: optional story acceptance from free roam, a functional first phone/contact/garage loop, and motorcycle rider contact IK. See docs/metropolis-foundation.md for scope and validation. The living-metropolis directive remains incomplete. Prior builds are preserved.
 
 # OUTLAW SYNDICATE
 
 Godot 4.6 / Jolt, Windows-first third-person crime game in active production.
 
-**Current build: articulated NPC physics increment. One short opening mission, not the complete game or a ten-hour campaign.**
+**Current build: metropolis foundation increment. Existing harbor and one short optional opening mission; the large city and campaign remain unfinished.**
 
 ## Play the new build
 
-On this development machine run `D:/OutlawSyndicate/builds/articulated-physics/OutlawSyndicate.exe` with its adjacent PCK file. The original graybox package remains under `builds/windows` and `builds/preserved-11aedc2`. Binaries are local artifacts, not committed downloads.
+On this development machine run `D:/OutlawSyndicate/builds/metropolis-foundation/OutlawSyndicate.exe` with its adjacent PCK file. The previous build remains in `builds/articulated-physics`. Binaries are local artifacts, not committed downloads.
 
-Choose **New game** for the introduction, or **Continue** for your checkpoint. Enter / controller A skips the introduction. Pause → Controls lists bindings. The separate **Driving course** menu entry opens a handling test scene.
+Choose **New game** for harbor free roam. On foot, Tab > Messages > Accept intentionally starts The Last Address. E near Dante in free roam opens conversation: greet, ask about work, then request his number. Contacts supports a short voiced call. A damaged stationary Sable near the garage can be repaired for $50. Camera captures a scene PNG without HUD; Gallery browses saved captures. F5 saves the gallery index and relationship. Settings offers Tab or O for the phone. Continue restores your checkpoint.
 
 WASD / left stick: move or drive. Mouse / right stick: look. Shift / B: sprint. Space / A: jump or brake. E / Y: interact or enter/exit at low speed. Right mouse / LB: aim. Left mouse / RB: shoot. R / X: reload. Esc / Start: pause. F5/F9: save/load. Mouse aim is required to align shots; combat is fictional and gameplay-tuned.
 

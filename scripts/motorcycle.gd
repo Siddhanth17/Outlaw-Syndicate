@@ -15,6 +15,16 @@ var dismount_at: Vector3
 var lean: float = 0
 var contact_cooldown: float = 0
 var world_contacts: int = 0
+var rider_ik: RiderIK
+var handlebar: Node3D
+
+func contact_point(point: String) -> Vector3:
+	if point == "seat": return model.to_global(Vector3(0,0.92,-0.25))
+	var side: float = 1 if point.begins_with("Left") else -1
+	if point.ends_with("Hand"):
+		var pivot := Vector3(0,1.17,0.29)
+		return model.to_global(pivot+Basis(Vector3.UP,steering)*Vector3(side*0.35,0,0))
+	return model.to_global(Vector3(side*0.24,0.46,-0.15))
 
 func _ready() -> void:
 	mass=220
@@ -37,6 +47,12 @@ func _ready() -> void:
 	model=load("res://assets/vehicles/harrier_bike.glb").instantiate()
 	model.position.y=-0.55
 	add_child(model)
+	handlebar=Node3D.new()
+	model.add_child(handlebar)
+	handlebar.position=Vector3(0,1.17,0.29)
+	for part: Node in model.find_children("*","MeshInstance3D",true,false):
+		if str(part.name).begins_with("Grip") or str(part.name).begins_with("Mirror") or str(part.name).begins_with("Handlebar"):
+			part.reparent(handlebar,true)
 	for z: float in [-0.72,0.72]:
 		var wheel:=VehicleWheel3D.new()
 		wheel.position=Vector3(0,-0.05,z)
@@ -86,6 +102,10 @@ func interact() -> bool:
 		return false
 	mount_direction=rider==null
 	rider=game.player
+	if not is_instance_valid(rider_ik):
+		rider_ik=RiderIK.new()
+		rider_ik.bike=self
+		rider.dynamics.get_parent().add_child(rider_ik)
 	dismount_at=point
 	mount_from=rider.global_position
 	mount_clock=0
@@ -135,7 +155,8 @@ func _process(delta: float) -> void:
 	elif rider.riding_bike:
 		rider.global_position=global_position+Vector3.UP*0.1
 		rider.velocity=linear_velocity
-		rider.visual.global_transform=global_transform*Transform3D(Basis(Vector3.FORWARD,lean),Vector3(0,-0.30,0))
+		# Match the model's roll axis and origin; IK then seats the pelvis precisely.
+		rider.visual.global_transform=model.global_transform*Transform3D(Basis.IDENTITY,Vector3(0,0.25,0))
 
 func _physics_process(delta: float) -> void:
 	var occupied: bool=rider!=null and rider.riding_bike and not mounting
@@ -146,6 +167,7 @@ func _physics_process(delta: float) -> void:
 	brake=18 if not occupied else (38 if Input.is_action_pressed("handbrake") or throttle*speed < -1 else 0)
 	lean=lerpf(lean,clampf(-steering*linear_velocity.length()*0.07,-0.40,0.40),1-exp(-delta*6))
 	model.rotation.z=lean
+	handlebar.rotation.y=steering
 	engine.pitch_scale=0.8+minf(1.4,linear_velocity.length()*0.065+absf(throttle)*0.3)
 	engine.volume_db=-20 if occupied else -40
 	contact_cooldown=maxf(0,contact_cooldown-delta)

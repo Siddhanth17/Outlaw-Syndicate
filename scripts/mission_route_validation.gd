@@ -47,6 +47,7 @@ func brake() -> void:
 func run() -> void:
 	game.test_mode = true
 	game._menu_action("New game")
+	game.start_story() # Story routes now require explicit acceptance.
 	game._end_cinematic()
 	await step(90)
 	check(await walk_to(Vector3.ZERO), "walk to Dante using movement input")

@@ -62,7 +62,10 @@ def export(name,source=False):
         # One draw surface per material instead of one draw call per modeled rib.
         groups={}
         for o in list(bpy.context.scene.objects):
-            if o.type=='MESH':groups.setdefault((o.name if name == 'vehicles/sable_body.glb' and any(tag in o.name for tag in ['Windshield','Rear screen','Side glass','bumper','Headlamp','Tail lamp','Side mirror']) else o.active_material.name if o.active_material else 'none'),[]).append(o)
+            if o.type=='MESH':
+                moving_bike_part = name == 'vehicles/harrier_bike.glb' and any(o.name.startswith(tag) for tag in ['Handlebar','Grip','Mirror'])
+                separate_car_part = name == 'vehicles/sable_body.glb' and any(tag in o.name for tag in ['Windshield','Rear screen','Side glass','bumper','Headlamp','Tail lamp','Side mirror'])
+                groups.setdefault(o.name if moving_bike_part or separate_car_part else o.active_material.name if o.active_material else 'none',[]).append(o)
         for objects in groups.values():
             bpy.ops.object.select_all(action='DESELECT')
             for o in objects:o.select_set(True)

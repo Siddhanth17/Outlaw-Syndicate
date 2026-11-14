@@ -41,6 +41,14 @@ var crash_interest: Vector3
 var crash_interest_time: float = 0
 var dialogue_director: DialogueDirector
 var dante_dynamics: HumanDynamics
+var story_active: bool = true # Legacy checkpoints keep their mission progression.
+var phone: HarborPhone
+
+func start_story() -> void:
+	if story_active: return
+	story_active=true
+	marker.show()
+	_say("The Last Address","Meet Dante at the garage when you're ready.")
 
 func _ready() -> void:
 	test_mode = OS.get_cmdline_args().has("--script") or OS.get_cmdline_args().has("--headless")
@@ -76,6 +84,9 @@ func _ready() -> void:
 	ui = GameHUD.new()
 	add_child(ui)
 	ui.command.connect(_menu_action)
+	phone=HarborPhone.new()
+	phone.game=self
+	add_child(phone)
 	marker = MeshInstance3D.new()
 	var ring := TorusMesh.new()
 	ring.inner_radius = 0.60
@@ -127,6 +138,11 @@ func _ready() -> void:
 		_set_pause(true, "main")
 	if OS.get_cmdline_user_args().has("--verify-ragdoll"):
 		var validation:=RagdollValidation.new()
+		validation.game=self
+		add_child(validation)
+		validation.call_deferred("run")
+	if OS.get_cmdline_user_args().has("--verify-metropolis"):
+		var validation:=MetropolisValidation.new()
 		validation.game=self
 		add_child(validation)
 		validation.call_deferred("run")
@@ -184,7 +200,12 @@ func _menu_action(title: String) -> void:
 			_load()
 			_set_pause(false)
 		"New game":
+			phone.close()
+			story_active=false
+			phone.photos.clear()
+			phone.reset_social()
 			if dialogue_director.active: dialogue_director.stop()
+			_end_cinematic()
 			character_impacts.reset()
 			memory = CityMemory.new()
 			events.recent.clear()
@@ -215,7 +236,8 @@ func _menu_action(title: String) -> void:
 			harbor.consequence(false)
 			marker.show()
 			_set_pause(false)
-			_start_cinematic(false)
+			marker.hide()
+			_say("Free roam","Explore Iron Harbor. Open your phone [%s] to choose when to start The Last Address."%phone.key_label())
 		"Settings", "Controls", "Credits":
 			return_screen = ui.current_screen
 			ui.show_screen(title.to_lower())
@@ -247,6 +269,8 @@ func _menu_action(title: String) -> void:
 		"Graphics: High": quality = 2
 		"Subtitles toggle": subtitles_enabled = not subtitles_enabled
 		"Reduced shake toggle": player.reduced_shake = not player.reduced_shake
+		"Phone key: Tab": phone.bind_key(KEY_TAB)
+		"Phone key: O": phone.bind_key(KEY_O)
 		"Exit": get_tree().quit()
 	harbor.preset(quality)
 	dialogue_director.audio.volume_db=dialogue_volume
@@ -255,6 +279,7 @@ func _menu_action(title: String) -> void:
 
 func _set_pause(value: bool, screen: String = "pause") -> void:
 	paused = value
+	if is_instance_valid(phone) and phone.opened: phone.close()
 	player.camera_input_enabled = not paused and not cinematic_active
 	harbor.pause_props(paused or cinematic_active)
 	player.set_physics_process(not paused and not cinematic_active)
@@ -271,7 +296,17 @@ func _set_pause(value: bool, screen: String = "pause") -> void:
 func _pause() -> void:
 	_set_pause(not paused)
 
+func _input(event: InputEvent) -> void:
+	# Handle the binding before GUI focus consumes Tab as focus-next.
+	if event.is_action_pressed("phone") and not event.is_echo() and not paused and not cinematic_active:
+		phone.toggle()
+		get_viewport().set_input_as_handled()
+	elif phone.opened and event.is_action_pressed("pause"):
+		_pause()
+		get_viewport().set_input_as_handled()
+
 func _unhandled_input(event: InputEvent) -> void:
+	if phone.opened and not event.is_action_pressed("pause"): return
 	if event.is_action_pressed("skip") and cinematic_active:
 		if dialogue_director.active: dialogue_director.stop()
 		else: _end_cinematic()
@@ -376,7 +411,7 @@ func _process(delta: float) -> void:
 		player.visual.global_transform = car.global_transform * Transform3D(Basis.IDENTITY, Vector3(-0.38, -0.8, 0))
 	if player.dynamics:
 		player.dynamics.wind = harbor.wind_vector
-		player.dynamics.has_head_target = not player.driving and player.position.distance_to(dante.position) < 6
+		player.dynamics.has_head_target = not player.driving and not player.riding_bike and player.position.distance_to(dante.position) < 6
 		player.dynamics.head_target = dante.position + Vector3.UP * 1.5
 	if dante_dynamics:
 		dante_dynamics.active = player.position.distance_to(dante.position) < 30
@@ -389,7 +424,12 @@ func _process(delta: float) -> void:
 			observed = true
 	if not observed:
 		memory.heat = maxf(0, memory.heat - delta * 5)
-	if memory.stage < mission.stages.size():
+	if not story_active:
+		marker.hide()
+		ui.objective_title.text="IRON HARBOR / FREE ROAM"
+		ui.objective.text="Explore at your own pace.\n[%s] Phone • choose your story"%phone.key_label()
+	elif memory.stage < mission.stages.size():
+		ui.objective_title.text="THE LAST ADDRESS"
 		var stage: Dictionary = mission.stages[memory.stage]
 		var at := Vector3(stage.position[0], 0, stage.position[2])
 		marker.position = at + Vector3(0, 0.12, 0)
@@ -411,6 +451,8 @@ func _process(delta: float) -> void:
 		ui.prompt.text = "[E] Drive Sable GT"
 	elif marker.visible and player.position.distance_to(marker.position) < 5:
 		ui.prompt.text = "[E] Interact"
+	elif not story_active and player.position.distance_to(dante.position)<4:
+		ui.prompt.text="[E] Talk to Dante Cross • mechanic"
 	if vehicle_transition.active: ui.prompt.text="Vehicle interaction: "+vehicle_transition.phase
 	if player.riding_bike:
 		ui.ammo.text="HARRIER / %03d KM/H"%int(bike.linear_velocity.length()*3.6)
@@ -421,10 +463,13 @@ func _process(delta: float) -> void:
 
 func _interact() -> void:
 	if vehicle_transition.active or bike.mounting:return
+	if not story_active and not player.driving and not player.riding_bike and player.position.distance_to(dante.position)<4:
+		phone.talk_to_dante()
+		return
 	if bike.rider!=null:
 		bike.interact()
 		return
-	if memory.stage < mission.stages.size():
+	if story_active and memory.stage < mission.stages.size():
 		var stage: Dictionary = mission.stages[memory.stage]
 		var at := Vector3(stage.position[0], player.position.y, stage.position[2])
 		if stage.kind == "interact" and player.position.distance_to(at) < 5 and not player.driving:
@@ -604,6 +649,7 @@ func _save_settings() -> void:
 	config.set_value("audio","dialogue_db",dialogue_volume)
 	config.set_value("graphics", "preset", quality)
 	config.set_value("controls", "sensitivity", player.sensitivity)
+	config.set_value("controls", "phone_key", phone.key_code)
 	config.set_value("accessibility", "subtitles", subtitles_enabled)
 	config.set_value("accessibility", "reduced_shake", player.reduced_shake)
 	config.save("user://settings.cfg")
@@ -611,6 +657,7 @@ func _save_settings() -> void:
 func _load_settings() -> void:
 	var config := ConfigFile.new()
 	if config.load("user://settings.cfg") == OK:
+		phone.bind_key(int(config.get_value("controls","phone_key",KEY_TAB)))
 		character_impacts.density=clampf(float(config.get_value("effects","impact_density",0.6)),0,1)
 		movement_volume=clampf(float(config.get_value("audio","movement_db",-5)),-40,0)
 		dialogue_volume=clampf(float(config.get_value("audio","dialogue_db",-6)),-30,0)
@@ -627,6 +674,7 @@ func _save() -> void:
 		_say("Checkpoint","Finish the vehicle interaction before saving.")
 		return
 	var data := memory.snapshot()
+	data["open_world"]={"story_active":story_active,"photos":phone.photos,"dante_social":phone.social_snapshot()}
 	var outcomes: Dictionary={}
 	for citizen: CityNPC in people: outcomes[citizen.npc_id]={"health":citizen.health,"injuries":citizen.injuries.snapshot()}
 	if dante is CityNPC: outcomes[dante.npc_id]={"health":dante.health,"injuries":dante.injuries.snapshot()}
@@ -677,6 +725,11 @@ func _load() -> void:
 				if not (component is float or component is int) or not is_finite(float(component)) or absf(float(component)) > 10000:
 					valid = false
 		if not valid or not memory.restore(data): continue
+		phone.close()
+		var world: Dictionary=data.get("open_world",{}) if data.get("open_world",{}) is Dictionary else {}
+		story_active=bool(world.get("story_active",true))
+		phone.restore(world.get("photos",[]))
+		phone.restore_social(world.get("dante_social",{}))
 		_leave_car(true)
 		var bike_at: Variant=data.get("bike")
 		if bike_at is Array and bike_at.size()==3 and bike_at.all(func(v: Variant) -> bool: return (v is float or v is int) and is_finite(float(v)) and absf(float(v))<10000):

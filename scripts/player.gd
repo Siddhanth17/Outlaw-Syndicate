@@ -180,6 +180,8 @@ func _physics_process(delta: float) -> void:
 	camera_manual_time -= delta
 	if driving and is_instance_valid(vehicle) and absf(rx) < 0.15 and camera_manual_time <= 0:
 		yaw = lerp_angle(yaw, vehicle.rotation.y + PI, 1 - exp(-delta * 1.3))
+	elif riding_bike and is_instance_valid(get_parent().bike) and absf(rx) < 0.15 and camera_manual_time <= 0:
+		yaw = lerp_angle(yaw, get_parent().bike.rotation.y + PI, 1 - exp(-delta * 1.3))
 	aiming = Input.is_action_pressed("aim") and not in_vehicle
 	var offset := Basis(Vector3.UP, yaw) * Vector3(0.55 if not in_vehicle else 0.0, 1.45 if not in_vehicle else 1.6, 0)
 	pivot.position = pivot.position.lerp(offset, 1 - exp(-delta * 9))
