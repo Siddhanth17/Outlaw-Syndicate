@@ -16,7 +16,7 @@ func rebuild() -> void:
 	query.collision_mask=CollisionLayers.STATIC
 	for x: int in range(-60,61):
 		for z: int in range(-108,121):
-			query.transform=Transform3D(Basis.IDENTITY,Vector3(x*2,1.0,z*2))
+			query.transform=Transform3D(Basis.IDENTITY,Vector3(x*2,1.1,z*2))
 			grid.set_point_solid(Vector2i(x,z),not get_parent().get_world_3d().direct_space_state.intersect_shape(query,1).is_empty())
 			grid.set_point_weight_scale(Vector2i(x,z),3.0 if abs(x*2)<8 else 1.0)
 	built=true

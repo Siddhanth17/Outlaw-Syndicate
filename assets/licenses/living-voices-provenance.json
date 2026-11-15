@@ -1,0 +1,175 @@
+{
+  "generator": "kokoro-onnx, local original authored text, generic licensed presets; no cloning",
+  "licenses": [
+    "Kokoro Apache-2.0",
+    "kokoro-onnx MIT"
+  ],
+  "model_sha256": "ae315a79b623f244700e4afb9246c46a26066782e049ba174bf3ba433970ee9c",
+  "voices_sha256": "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d",
+  "lines": {
+    "resident_00": {
+      "line": "This is Lena at the Lantern. Stop by while I am at the counter. Coffee and sandwiches are on the menu.",
+      "audio": "res://assets/audio/living/resident_00.wav",
+      "preset": "af_nicole",
+      "duration": 9.984666666666667,
+      "peak": 0.8899999856948853,
+      "sha256": "666d9a4103e907c642faf629cce64c66f730631b90d7d49a526c341af81b5be9"
+    },
+    "resident_01": {
+      "line": "This is Soren. I am around Northline. Come and find me if you want to talk.",
+      "audio": "res://assets/audio/living/resident_01.wav",
+      "preset": "bm_daniel",
+      "duration": 4.591333333333333,
+      "peak": 0.7114359140396118,
+      "sha256": "e219838bb3f9c9458cca7004a1da7effab3d4b2fc887c767372470376c17b54b"
+    },
+    "resident_02": {
+      "line": "This is Mei. I am around Northline. Come and find me if you want to talk.",
+      "audio": "res://assets/audio/living/resident_02.wav",
+      "preset": "af_sarah",
+      "duration": 4.358666666666666,
+      "peak": 0.7325705289840698,
+      "sha256": "dd070750e2c59d0498246d45609a3a80e4ac9699c83586faf07e3007e8987db6"
+    },
+    "resident_03": {
+      "line": "This is Imani. I am around Northline. Come and find me if you want to talk.",
+      "audio": "res://assets/audio/living/resident_03.wav",
+      "preset": "bf_emma",
+      "duration": 4.400625,
+      "peak": 0.6264998912811279,
+      "sha256": "f5252fd5dd69b3994dea89b18722c4d1d9bc4058c69fb863826dd29f8b0ab8f2"
+    },
+    "resident_04": {
+      "line": "This is Elias. I am around Northline. Come and find me if you want to talk.",
+      "audio": "res://assets/audio/living/resident_04.wav",
+      "preset": "bm_lewis",
+      "duration": 4.947333333333333,
+      "peak": 0.8899999856948853,
+      "sha256": "3f649211fb97fd1ebc77f8d0b06d3f77db777e1d2d89397a2f73a9577e785aee"
+    },
+    "resident_05": {
+      "line": "This is Ruby. I am around Northline. Come and find me if you want to talk.",
+      "audio": "res://assets/audio/living/resident_05.wav",
+      "preset": "af_sarah",
+      "duration": 4.497958333333333,
+      "peak": 0.7837790846824646,
+      "sha256": "3320527ae9d90dbe57924fa5085741569de9b7242354402576d4b52870925e23"
+    },
+    "resident_06": {
+      "line": "This is Tomas. I am around Northline. Come and find me if you want to talk.",
+      "audio": "res://assets/audio/living/resident_06.wav",
+      "preset": "am_onyx",
+      "duration": 5.118666666666667,
+      "peak": 0.838239312171936,
+      "sha256": "2a721da3242af7c9b89ee62df5c681dd691cab4aad9158c7cb67f763294d6006"
+    },
+    "resident_07": {
+      "line": "This is Ava. I am around Northline. Come and find me if you want to talk.",
+      "audio": "res://assets/audio/living/resident_07.wav",
+      "preset": "bf_emma",
+      "duration": 4.282625,
+      "peak": 0.6276116967201233,
+      "sha256": "2912b0adeccdbc9ef89de0ce90af86976dcb00c823c45629b103da0a8da1d8e7"
+    },
+    "resident_08": {
+      "line": "This is Nico. I am around Northline. Come and find me if you want to talk.",
+      "audio": "res://assets/audio/living/resident_08.wav",
+      "preset": "af_nicole",
+      "duration": 6.911291666666667,
+      "peak": 0.8899999856948853,
+      "sha256": "696676cae1596f66d4be7371510b4f7b5c8290f7298029ca2a136d285d689341"
+    },
+    "resident_09": {
+      "line": "This is June. I am around Northline. Come and find me if you want to talk.",
+      "audio": "res://assets/audio/living/resident_09.wav",
+      "preset": "bm_daniel",
+      "duration": 4.6226666666666665,
+      "peak": 0.781794548034668,
+      "sha256": "77d932184e4e46f9bde5abb3d8a05b55f4ba99f02740988fc3a24fedb1948c4f"
+    },
+    "resident_10": {
+      "line": "This is Owen. I am around Northline. Come and find me if you want to talk.",
+      "audio": "res://assets/audio/living/resident_10.wav",
+      "preset": "af_sarah",
+      "duration": 4.381333333333333,
+      "peak": 0.6588231921195984,
+      "sha256": "077a62759687f1dbfee0cdade3b648666c05f82ee6d34978909970b7dae9df51"
+    },
+    "resident_11": {
+      "line": "This is Mina. I am around Northline. Come and find me if you want to talk.",
+      "audio": "res://assets/audio/living/resident_11.wav",
+      "preset": "bf_emma",
+      "duration": 4.274,
+      "peak": 0.6677501201629639,
+      "sha256": "8535c7117913d8e23c4573d2704f8df7ed42ddc4ad1aa4c8c199141356391fa3"
+    },
+    "resident_12": {
+      "line": "This is Arlo. I am around Northline. Come and find me if you want to talk.",
+      "audio": "res://assets/audio/living/resident_12.wav",
+      "preset": "bm_lewis",
+      "duration": 4.873333333333333,
+      "peak": 0.8899999856948853,
+      "sha256": "ba7ecefda506eb1441f68ee186bc8f1b8e296bd911c4449e4d26f2f6eadafc1f"
+    },
+    "resident_13": {
+      "line": "This is Rosa. I am around Northline. Come and find me if you want to talk.",
+      "audio": "res://assets/audio/living/resident_13.wav",
+      "preset": "af_sarah",
+      "duration": 4.475291666666666,
+      "peak": 0.6889150142669678,
+      "sha256": "e9dfac241b5b4407d06ac7299aa062330fecb5c5c0d9f87d8c11ba1d202db5f6"
+    },
+    "resident_14": {
+      "line": "This is Sam. I am around Northline. Come and find me if you want to talk.",
+      "audio": "res://assets/audio/living/resident_14.wav",
+      "preset": "am_onyx",
+      "duration": 5.226666666666667,
+      "peak": 0.881449282169342,
+      "sha256": "7473fed4b9bd4d0ea6cb6e9dd166a60e3daf7747cf5ff3ac9763ab765f19f653"
+    },
+    "resident_15": {
+      "line": "This is Talia. I am around Northline. Come and find me if you want to talk.",
+      "audio": "res://assets/audio/living/resident_15.wav",
+      "preset": "bf_emma",
+      "duration": 4.390625,
+      "peak": 0.6760895252227783,
+      "sha256": "2bbe1587f83dd94586a630f7b12c1b8eacad8ecccb3c9e1b585b904ab2c9bea0"
+    },
+    "resident_16": {
+      "line": "This is Noah. I am around Northline. Come and find me if you want to talk.",
+      "audio": "res://assets/audio/living/resident_16.wav",
+      "preset": "af_nicole",
+      "duration": 6.740625,
+      "peak": 0.8899999856948853,
+      "sha256": "530e9b500f8717494811139bf9fccfe05a758ede97a19ce582b7328789b16bb4"
+    },
+    "resident_17": {
+      "line": "This is Eden. I am around Northline. Come and find me if you want to talk.",
+      "audio": "res://assets/audio/living/resident_17.wav",
+      "preset": "bm_daniel",
+      "duration": 4.614,
+      "peak": 0.8212904334068298,
+      "sha256": "6f64ce9483bd7bd5c26c87a12c3caed494b1aafd497a38173127e38a8d5b9149"
+    },
+    "resident_18": {
+      "line": "This is Amir. I am around Northline. Come and find me if you want to talk.",
+      "audio": "res://assets/audio/living/resident_18.wav",
+      "preset": "af_sarah",
+      "duration": 4.391291666666667,
+      "peak": 0.6790849566459656,
+      "sha256": "c314a70edacaf489df0f54d53d1fbaba218fd2921f3ab786458765f32895df7d"
+    },
+    "resident_19": {
+      "line": "This is Cora. I am around Northline. Come and find me if you want to talk.",
+      "audio": "res://assets/audio/living/resident_19.wav",
+      "preset": "bf_emma",
+      "duration": 4.261291666666667,
+      "peak": 0.6283844113349915,
+      "sha256": "5d140fb5b06fe835ec774f770f15d49e633fd7909de016ac8760872158520c72"
+    }
+  },
+  "original_synthesis": [
+    "phone_ring.wav",
+    "register.wav"
+  ]
+}

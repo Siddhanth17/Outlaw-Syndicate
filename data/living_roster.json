@@ -1,0 +1,605 @@
+{
+  "version": 1,
+  "citizens": [
+    {
+      "id": "resident_00",
+      "name": "Lena Ortiz",
+      "appearance": "shopkeeper",
+      "occupation": "cafe owner",
+      "recurring": true,
+      "home": [
+        -10,
+        0.2,
+        76
+      ],
+      "work": [
+        -14.5,
+        0.36,
+        80
+      ],
+      "rest": [
+        -10,
+        0.2,
+        85
+      ],
+      "work_start": 8,
+      "work_end": 19,
+      "break_start": 12.5,
+      "break_end": 13,
+      "voice": "Nadia",
+      "background": "Keeps the Lantern cafe running for the early shift.",
+      "city_line": "The cafe opens at eight. I close at seven, with a short break after half past twelve.",
+      "call_line": "This is Lena at the Lantern. Stop by while I am at the counter. Coffee and sandwiches are on the menu."
+    },
+    {
+      "id": "resident_01",
+      "name": "Soren Pike",
+      "appearance": "pedestrian",
+      "occupation": "bank clerk",
+      "recurring": true,
+      "home": [
+        10,
+        0.2,
+        80
+      ],
+      "work": [
+        10,
+        0.2,
+        100
+      ],
+      "rest": [
+        10,
+        0.2,
+        89
+      ],
+      "work_start": 8,
+      "work_end": 18,
+      "break_start": 12.5,
+      "break_end": 13,
+      "voice": "Victor",
+      "background": "A Northline resident balancing work and life near the harbor.",
+      "city_line": "Northline is quieter after closing. The harbor shifts run later.",
+      "call_line": "This is Soren. I am around Northline. Come and find me if you want to talk."
+    },
+    {
+      "id": "resident_02",
+      "name": "Mei Calder",
+      "appearance": "industrial_worker",
+      "occupation": "maintenance technician",
+      "recurring": true,
+      "home": [
+        -10,
+        0.2,
+        76
+      ],
+      "work": [
+        -10,
+        0.2,
+        96
+      ],
+      "rest": [
+        -10,
+        0.2,
+        85
+      ],
+      "work_start": 8,
+      "work_end": 18,
+      "break_start": 12.5,
+      "break_end": 13,
+      "voice": "Mara",
+      "background": "A Northline resident balancing work and life near the harbor.",
+      "city_line": "Northline is quieter after closing. The harbor shifts run later.",
+      "call_line": "This is Mei. I am around Northline. Come and find me if you want to talk."
+    },
+    {
+      "id": "resident_03",
+      "name": "Imani Reed",
+      "appearance": "police",
+      "occupation": "community officer",
+      "recurring": true,
+      "home": [
+        10,
+        0.2,
+        80
+      ],
+      "work": [
+        10,
+        0.2,
+        100
+      ],
+      "rest": [
+        10,
+        0.2,
+        89
+      ],
+      "work_start": 8,
+      "work_end": 18,
+      "break_start": 12.5,
+      "break_end": 13,
+      "voice": "Elena",
+      "background": "A Northline resident balancing work and life near the harbor.",
+      "city_line": "Northline is quieter after closing. The harbor shifts run later.",
+      "call_line": "This is Imani. I am around Northline. Come and find me if you want to talk."
+    },
+    {
+      "id": "resident_04",
+      "name": "Elias Shaw",
+      "appearance": "delivery_driver",
+      "occupation": "courier",
+      "recurring": true,
+      "home": [
+        -10,
+        0.2,
+        104
+      ],
+      "work": [
+        -10,
+        0.2,
+        124
+      ],
+      "rest": [
+        -10,
+        0.2,
+        113
+      ],
+      "work_start": 8,
+      "work_end": 18,
+      "break_start": 12.5,
+      "break_end": 13,
+      "voice": "Elias",
+      "background": "A Northline resident balancing work and life near the harbor.",
+      "city_line": "Northline is quieter after closing. The harbor shifts run later.",
+      "call_line": "This is Elias. I am around Northline. Come and find me if you want to talk."
+    },
+    {
+      "id": "resident_05",
+      "name": "Ruby Hale",
+      "appearance": "pedestrian",
+      "occupation": "office assistant",
+      "recurring": true,
+      "home": [
+        10,
+        0.2,
+        108
+      ],
+      "work": [
+        10,
+        0.2,
+        128
+      ],
+      "rest": [
+        10,
+        0.2,
+        117
+      ],
+      "work_start": 8,
+      "work_end": 18,
+      "break_start": 12.5,
+      "break_end": 13,
+      "voice": "Mara",
+      "background": "A Northline resident balancing work and life near the harbor.",
+      "city_line": "Northline is quieter after closing. The harbor shifts run later.",
+      "call_line": "This is Ruby. I am around Northline. Come and find me if you want to talk."
+    },
+    {
+      "id": "resident_06",
+      "name": "Tomas Vega",
+      "appearance": "security",
+      "occupation": "security officer",
+      "recurring": true,
+      "home": [
+        -10,
+        0.2,
+        104
+      ],
+      "work": [
+        -10,
+        0.2,
+        124
+      ],
+      "rest": [
+        -10,
+        0.2,
+        113
+      ],
+      "work_start": 8,
+      "work_end": 18,
+      "break_start": 12.5,
+      "break_end": 13,
+      "voice": "Marcus",
+      "background": "A Northline resident balancing work and life near the harbor.",
+      "city_line": "Northline is quieter after closing. The harbor shifts run later.",
+      "call_line": "This is Tomas. I am around Northline. Come and find me if you want to talk."
+    },
+    {
+      "id": "resident_07",
+      "name": "Ava Mercer",
+      "appearance": "pedestrian",
+      "occupation": "property agent",
+      "recurring": true,
+      "home": [
+        10,
+        0.2,
+        108
+      ],
+      "work": [
+        10,
+        0.2,
+        128
+      ],
+      "rest": [
+        10,
+        0.2,
+        117
+      ],
+      "work_start": 8,
+      "work_end": 18,
+      "break_start": 12.5,
+      "break_end": 13,
+      "voice": "Elena",
+      "background": "A Northline resident balancing work and life near the harbor.",
+      "city_line": "Northline is quieter after closing. The harbor shifts run later.",
+      "call_line": "This is Ava. I am around Northline. Come and find me if you want to talk."
+    },
+    {
+      "id": "resident_08",
+      "name": "Nico Bell",
+      "appearance": "dock_supervisor",
+      "occupation": "dock inspector",
+      "recurring": false,
+      "home": [
+        -10,
+        0.2,
+        132
+      ],
+      "work": [
+        -10,
+        0.2,
+        152
+      ],
+      "rest": [
+        -10,
+        0.2,
+        141
+      ],
+      "work_start": 8,
+      "work_end": 18,
+      "break_start": 12.5,
+      "break_end": 13,
+      "voice": "Nadia",
+      "background": "A Northline resident balancing work and life near the harbor.",
+      "city_line": "Northline is quieter after closing. The harbor shifts run later.",
+      "call_line": "This is Nico. I am around Northline. Come and find me if you want to talk."
+    },
+    {
+      "id": "resident_09",
+      "name": "June Park",
+      "appearance": "shopkeeper",
+      "occupation": "retail assistant",
+      "recurring": false,
+      "home": [
+        10,
+        0.2,
+        136
+      ],
+      "work": [
+        10,
+        0.2,
+        156
+      ],
+      "rest": [
+        10,
+        0.2,
+        145
+      ],
+      "work_start": 8,
+      "work_end": 18,
+      "break_start": 12.5,
+      "break_end": 13,
+      "voice": "Victor",
+      "background": "A Northline resident balancing work and life near the harbor.",
+      "city_line": "Northline is quieter after closing. The harbor shifts run later.",
+      "call_line": "This is June. I am around Northline. Come and find me if you want to talk."
+    },
+    {
+      "id": "resident_10",
+      "name": "Owen West",
+      "appearance": "delivery_driver",
+      "occupation": "delivery driver",
+      "recurring": false,
+      "home": [
+        -10,
+        0.2,
+        132
+      ],
+      "work": [
+        -10,
+        0.2,
+        152
+      ],
+      "rest": [
+        -10,
+        0.2,
+        141
+      ],
+      "work_start": 8,
+      "work_end": 18,
+      "break_start": 12.5,
+      "break_end": 13,
+      "voice": "Mara",
+      "background": "A Northline resident balancing work and life near the harbor.",
+      "city_line": "Northline is quieter after closing. The harbor shifts run later.",
+      "call_line": "This is Owen. I am around Northline. Come and find me if you want to talk."
+    },
+    {
+      "id": "resident_11",
+      "name": "Mina Sol",
+      "appearance": "industrial_worker",
+      "occupation": "electrician",
+      "recurring": false,
+      "home": [
+        10,
+        0.2,
+        136
+      ],
+      "work": [
+        10,
+        0.2,
+        156
+      ],
+      "rest": [
+        10,
+        0.2,
+        145
+      ],
+      "work_start": 8,
+      "work_end": 18,
+      "break_start": 12.5,
+      "break_end": 13,
+      "voice": "Elena",
+      "background": "A Northline resident balancing work and life near the harbor.",
+      "city_line": "Northline is quieter after closing. The harbor shifts run later.",
+      "call_line": "This is Mina. I am around Northline. Come and find me if you want to talk."
+    },
+    {
+      "id": "resident_12",
+      "name": "Arlo Finch",
+      "appearance": "pedestrian",
+      "occupation": "office worker",
+      "recurring": false,
+      "home": [
+        -10,
+        0.2,
+        160
+      ],
+      "work": [
+        -10,
+        0.2,
+        180
+      ],
+      "rest": [
+        -10,
+        0.2,
+        169
+      ],
+      "work_start": 8,
+      "work_end": 18,
+      "break_start": 12.5,
+      "break_end": 13,
+      "voice": "Elias",
+      "background": "A Northline resident balancing work and life near the harbor.",
+      "city_line": "Northline is quieter after closing. The harbor shifts run later.",
+      "call_line": "This is Arlo. I am around Northline. Come and find me if you want to talk."
+    },
+    {
+      "id": "resident_13",
+      "name": "Rosa Quinn",
+      "appearance": "delivery_driver",
+      "occupation": "courier",
+      "recurring": false,
+      "home": [
+        10,
+        0.2,
+        164
+      ],
+      "work": [
+        10,
+        0.2,
+        184
+      ],
+      "rest": [
+        10,
+        0.2,
+        173
+      ],
+      "work_start": 8,
+      "work_end": 18,
+      "break_start": 12.5,
+      "break_end": 13,
+      "voice": "Mara",
+      "background": "A Northline resident balancing work and life near the harbor.",
+      "city_line": "Northline is quieter after closing. The harbor shifts run later.",
+      "call_line": "This is Rosa. I am around Northline. Come and find me if you want to talk."
+    },
+    {
+      "id": "resident_14",
+      "name": "Sam Idris",
+      "appearance": "industrial_worker",
+      "occupation": "dock worker",
+      "recurring": false,
+      "home": [
+        -10,
+        0.2,
+        160
+      ],
+      "work": [
+        -10,
+        0.2,
+        180
+      ],
+      "rest": [
+        -10,
+        0.2,
+        169
+      ],
+      "work_start": 8,
+      "work_end": 18,
+      "break_start": 12.5,
+      "break_end": 13,
+      "voice": "Marcus",
+      "background": "A Northline resident balancing work and life near the harbor.",
+      "city_line": "Northline is quieter after closing. The harbor shifts run later.",
+      "call_line": "This is Sam. I am around Northline. Come and find me if you want to talk."
+    },
+    {
+      "id": "resident_15",
+      "name": "Talia Moss",
+      "appearance": "shopkeeper",
+      "occupation": "restaurant employee",
+      "recurring": false,
+      "home": [
+        10,
+        0.2,
+        164
+      ],
+      "work": [
+        10,
+        0.2,
+        184
+      ],
+      "rest": [
+        10,
+        0.2,
+        173
+      ],
+      "work_start": 8,
+      "work_end": 18,
+      "break_start": 12.5,
+      "break_end": 13,
+      "voice": "Elena",
+      "background": "A Northline resident balancing work and life near the harbor.",
+      "city_line": "Northline is quieter after closing. The harbor shifts run later.",
+      "call_line": "This is Talia. I am around Northline. Come and find me if you want to talk."
+    },
+    {
+      "id": "resident_16",
+      "name": "Noah Dean",
+      "appearance": "pedestrian",
+      "occupation": "resident",
+      "recurring": false,
+      "home": [
+        -10,
+        0.2,
+        188
+      ],
+      "work": [
+        -10,
+        0.2,
+        208
+      ],
+      "rest": [
+        -10,
+        0.2,
+        197
+      ],
+      "work_start": 8,
+      "work_end": 18,
+      "break_start": 12.5,
+      "break_end": 13,
+      "voice": "Nadia",
+      "background": "A Northline resident balancing work and life near the harbor.",
+      "city_line": "Northline is quieter after closing. The harbor shifts run later.",
+      "call_line": "This is Noah. I am around Northline. Come and find me if you want to talk."
+    },
+    {
+      "id": "resident_17",
+      "name": "Eden Cole",
+      "appearance": "dock_supervisor",
+      "occupation": "logistics foreman",
+      "recurring": false,
+      "home": [
+        10,
+        0.2,
+        192
+      ],
+      "work": [
+        10,
+        0.2,
+        209
+      ],
+      "rest": [
+        10,
+        0.2,
+        201
+      ],
+      "work_start": 8,
+      "work_end": 18,
+      "break_start": 12.5,
+      "break_end": 13,
+      "voice": "Victor",
+      "background": "A Northline resident balancing work and life near the harbor.",
+      "city_line": "Northline is quieter after closing. The harbor shifts run later.",
+      "call_line": "This is Eden. I am around Northline. Come and find me if you want to talk."
+    },
+    {
+      "id": "resident_18",
+      "name": "Amir Vale",
+      "appearance": "delivery_driver",
+      "occupation": "driver",
+      "recurring": false,
+      "home": [
+        -10,
+        0.2,
+        188
+      ],
+      "work": [
+        -10,
+        0.2,
+        208
+      ],
+      "rest": [
+        -10,
+        0.2,
+        197
+      ],
+      "work_start": 8,
+      "work_end": 18,
+      "break_start": 12.5,
+      "break_end": 13,
+      "voice": "Mara",
+      "background": "A Northline resident balancing work and life near the harbor.",
+      "city_line": "Northline is quieter after closing. The harbor shifts run later.",
+      "call_line": "This is Amir. I am around Northline. Come and find me if you want to talk."
+    },
+    {
+      "id": "resident_19",
+      "name": "Cora Wynn",
+      "appearance": "pedestrian",
+      "occupation": "resident",
+      "recurring": false,
+      "home": [
+        10,
+        0.2,
+        192
+      ],
+      "work": [
+        10,
+        0.2,
+        209
+      ],
+      "rest": [
+        10,
+        0.2,
+        201
+      ],
+      "work_start": 8,
+      "work_end": 18,
+      "break_start": 12.5,
+      "break_end": 13,
+      "voice": "Elena",
+      "background": "A Northline resident balancing work and life near the harbor.",
+      "city_line": "Northline is quieter after closing. The harbor shifts run later.",
+      "call_line": "This is Cora. I am around Northline. Come and find me if you want to talk."
+    }
+  ]
+}

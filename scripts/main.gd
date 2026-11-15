@@ -45,6 +45,7 @@ var story_active: bool = true # Legacy checkpoints keep their mission progressio
 var phone: HarborPhone
 var quarter: VeyraQuarter
 var traffic: StreetTraffic
+var living: LivingWorld
 
 func start_story() -> void:
 	if story_active: return
@@ -133,6 +134,9 @@ func _ready() -> void:
 	vehicle_transition=VehicleTransition.new()
 	vehicle_transition.game=self
 	add_child(vehicle_transition)
+	living=LivingWorld.new()
+	living.game=self
+	add_child(living)
 	_load_settings()
 	call_deferred("_populate_city")
 	ambience = AudioStreamPlayer.new()
@@ -156,6 +160,11 @@ func _ready() -> void:
 		validation.call_deferred("run")
 	if OS.get_cmdline_user_args().has("--verify-urban"):
 		var validation:=UrbanValidation.new()
+		validation.game=self
+		add_child(validation)
+		validation.call_deferred("run")
+	if OS.get_cmdline_user_args().has("--verify-living-world"):
+		var validation:=LivingWorldValidation.new()
 		validation.game=self
 		add_child(validation)
 		validation.call_deferred("run")
@@ -216,6 +225,7 @@ func _menu_action(title: String) -> void:
 			phone.close()
 			story_active=false
 			quarter.minutes=1080
+			quarter.day=1
 			quarter.apply_clock()
 			phone.photos.clear()
 			phone.reset_social()
@@ -252,6 +262,7 @@ func _menu_action(title: String) -> void:
 			marker.show()
 			_set_pause(false)
 			marker.hide()
+			living.restore(null)
 			_say("Free roam","Explore Iron Harbor. Open your phone [%s] to choose when to start The Last Address."%phone.key_label())
 		"Settings", "Controls", "Credits":
 			return_screen = ui.current_screen
@@ -471,6 +482,9 @@ func _process(delta: float) -> void:
 		ui.prompt.text = "[E] Interact"
 	elif not story_active and player.position.distance_to(dante.position)<4:
 		ui.prompt.text="[E] Talk to Dante Cross • mechanic"
+	elif living.roster_ready:
+		var resident: CityNPC=living.interaction_target()
+		if resident:ui.prompt.text="[E] Speak to "+living.identities[resident.npc_id].name
 	if vehicle_transition.active: ui.prompt.text="Vehicle interaction: "+vehicle_transition.phase
 	if player.riding_bike:
 		ui.ammo.text="HARRIER / %03d KM/H"%int(bike.linear_velocity.length()*3.6)
@@ -509,6 +523,9 @@ func _interact() -> void:
 		if not test_mode or vehicle_transition.force_animation:
 			vehicle_transition.begin(true)
 		else: _enter_car_immediate()
+	elif living.roster_ready:
+		var resident: CityNPC=living.interaction_target()
+		if resident:phone.talk_to_resident(resident.npc_id)
 
 func _enter_car_immediate() -> void:
 	player.driving = true
@@ -694,6 +711,8 @@ func _save() -> void:
 	var data := memory.snapshot()
 	data["open_world"]={"story_active":story_active,"photos":phone.photos,"dante_social":phone.social_snapshot()}
 	data["city_minutes"]=quarter.minutes
+	data["city_day"]=quarter.day
+	data["living_world"]=living.snapshot()
 	var outcomes: Dictionary={}
 	for citizen: CityNPC in people: outcomes[citizen.npc_id]={"health":citizen.health,"injuries":citizen.injuries.snapshot()}
 	if dante is CityNPC: outcomes[dante.npc_id]={"health":dante.health,"injuries":dante.injuries.snapshot()}
@@ -743,7 +762,7 @@ func _load() -> void:
 			for component: Variant in value:
 				if not (component is float or component is int) or not is_finite(float(component)) or absf(float(component)) > 10000:
 					valid = false
-		if not valid or not memory.restore(data): continue
+		if not valid or not living.validate(data.get("living_world")) or not memory.restore(data): continue
 		phone.close()
 		var world: Dictionary=data.get("open_world",{}) if data.get("open_world",{}) is Dictionary else {}
 		story_active=bool(world.get("story_active",true))
@@ -751,6 +770,7 @@ func _load() -> void:
 		phone.restore_social(world.get("dante_social",{}))
 		var saved_minutes: float=float(data.get("city_minutes",1080))
 		quarter.minutes=fposmod(saved_minutes,1440) if is_finite(saved_minutes) else 1080
+		quarter.day=clampi(int(data.get("city_day",1)),1,100000)
 		quarter.apply_clock()
 		_leave_car(true)
 		var bike_at: Variant=data.get("bike")
@@ -793,6 +813,7 @@ func _load() -> void:
 		if memory.stage == 3: _spawn_guards()
 		marker.show()
 		_say("Checkpoint", "Restored. The city remembers.")
+		living.restore(data.get("living_world"))
 		return
 	_say("Checkpoint", "No valid save or backup found.")
 
@@ -851,6 +872,7 @@ func _populate_city() -> void:
 		actor.route=PackedVector3Array([actor.position,actor.position+Vector3(0,0,3)])
 		add_child(actor)
 		people.append(actor)
+	living.populate()
 
 func publish_city_event(kind: String, point: Vector3, severity: float, source: String) -> void:
 	if is_instance_valid(events): events.publish(kind,point,severity,source)

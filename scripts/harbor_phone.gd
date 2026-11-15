@@ -17,6 +17,17 @@ var call_serial: int = 0
 var call_state: String = "idle"
 var call_audio: AudioStreamPlayer
 var focus_queued: bool = false
+var talking_id: String=""
+
+func release_resident() -> void:
+	if talking_id.is_empty():return
+	var actor: CityNPC=game.living.actor_for(talking_id)
+	if actor:
+		actor.conversing=false
+		if actor.dynamics:
+			actor.dynamics.conversation_active=false
+			actor.dynamics.has_head_target=false
+	talking_id=""
 
 func reset_social() -> void:
 	greeted=false
@@ -64,16 +75,98 @@ func repair_sable() -> String:
 	if not damaged: return "The Sable needs no repair."
 	if game.memory.money<50: return "Not enough cash. No charge made."
 	# Synchronous transaction: checks, charge and real damage reset occur together.
-	game.memory.money-=50
+	if not game.living.transact(-50,"vehicle_repair","sable_gt"):return "Payment failed. No repair made."
 	game.car.repair()
 	game.memory.remember("cross_repair",{"paid":50})
 	return "Paid $50. Engine and body damage repaired."
 
 func contacts() -> void:
+	release_resident()
 	clear("CONTACTS")
 	if dante_contact: button("Dante Cross • call",call_dante)
 	else: note("No saved numbers. Meet Dante at Cross Motor Works, greet him and ask about his work before requesting his number.")
+	for id: String in game.living.relationships:
+		if game.living.relationships[id].contact:
+			var record: Dictionary=game.living.identities[id]
+			button(record.name+" • "+record.occupation,func() -> void:resident_card(id))
 	button("Back",home)
+
+func resident_card(id: String) -> void:
+	clear(game.living.identities[id].name.to_upper())
+	var record: Dictionary=game.living.identities[id]
+	var state: Dictionary=game.living.relation(id)
+	note("%s\nFamiliarity %d • trust %d"%[record.occupation,state.familiarity,state.trust])
+	if game.living.audio_catalog.has(id):button("Call",func() -> void:call_resident(id))
+	note("Topics discussed: "+", ".join(state.topics))
+	button("Back",contacts)
+
+func talk_to_resident(id: String, reply: String="") -> void:
+	if not opened:toggle()
+	if not opened:return
+	if id!=talking_id:release_resident()
+	talking_id=id
+	var actor: CityNPC=game.living.actor_for(id)
+	if actor:actor.conversing=true
+	clear(game.living.identities[id].name.to_upper())
+	var record: Dictionary=game.living.identities[id]
+	note(reply if not reply.is_empty() else record.occupation.capitalize()+" • Northline resident")
+	for pair: Array in [["Greet / ask name","greet"],["Ask about work","job"],["Ask about the neighborhood","city"],["Ask for number","number"]]:
+		var topic: String=pair[1]
+		button(pair[0],func() -> void:talk_to_resident(id,game.living.converse(id,topic)))
+	if id=="resident_00":button("Lantern menu",cafe_menu)
+	button("End conversation",close)
+
+func cafe_menu(reply: String="") -> void:
+	clear("THE LANTERN")
+	note(reply if not reply.is_empty() else "Lena Ortiz • open 08:00–19:00\nCounter break 12:30–13:00\nCash $%d"%game.memory.money)
+	for item: String in ["coffee","sandwich"]:
+		button(("Coffee • $4" if item=="coffee" else "Sandwich • $8"),func() -> void:cafe_menu(game.living.buy_food(item)))
+	button("Back",func() -> void:talk_to_resident("resident_00"))
+
+func wallet() -> void:
+	clear("WALLET & RECEIPTS")
+	note("Cash $%d\nBank $%d"%[game.memory.money,game.living.bank])
+	for i: int in range(game.living.ledger.size()-1,maxi(-1,game.living.ledger.size()-9),-1):
+		var record: Dictionary=game.living.ledger[i]
+		note("Day %d • %s\n%+d • %s"%[record.day,record.category.replace("_"," "),record.amount,record.subject])
+	button("Back",home)
+
+func carried_items(reply: String="") -> void:
+	clear("CARRIED ITEMS")
+	if not reply.is_empty():note(reply)
+	note("Health %d / 100"%int(game.player.health))
+	for item: String in ["coffee","sandwich"]:
+		button("Use %s (%d)"%[item,game.living.inventory.get(item,0)],func() -> void:carried_items("Used." if game.living.consume(item) else "You need the item and missing health."))
+	button("Back",home)
+
+func call_resident(id: String) -> void:
+	if not game.living.relation(id).contact or not game.living.audio_catalog.has(id):return
+	end_call()
+	call_serial+=1
+	var token:=call_serial
+	call_state="ringing"
+	clear("CALLING "+game.living.identities[id].name.to_upper())
+	call_audio.stream=load("res://assets/audio/living/phone_ring.wav")
+	call_audio.volume_db=-16
+	if DisplayServer.get_name()!="headless":call_audio.play()
+	note("Ringing…")
+	button("End call",func() -> void:end_call();contacts())
+	await get_tree().create_timer(.8).timeout
+	if token!=call_serial or not opened:return
+	var actor: CityNPC=game.living.actor_for(id)
+	clear(game.living.identities[id].name.to_upper())
+	if not actor or actor.health<=0 or actor.danger_time>0 or game.quarter.minutes<480 or game.quarter.minutes>=1260:
+		call_audio.stop()
+		call_state="busy"
+		note("Unavailable. Try during the day.")
+	else:
+		call_state="connected"
+		var record: Dictionary=game.living.audio_catalog[id]
+		note(record.line)
+		call_audio.stream=load(record.audio)
+		call_audio.volume_db=game.dialogue_volume
+		if DisplayServer.get_name()!="headless":call_audio.play()
+	button("End call",func() -> void:end_call();contacts())
 
 func call_dante() -> void:
 	if not dante_contact: return
@@ -143,7 +236,13 @@ func _ready() -> void:
 	add_child(shell)
 	column=VBoxContainer.new()
 	column.add_theme_constant_override("separation",12)
-	shell.add_child(column)
+	var scroll:=ScrollContainer.new()
+	scroll.custom_minimum_size=Vector2(278,440)
+	scroll.follow_focus=true
+	scroll.horizontal_scroll_mode=ScrollContainer.SCROLL_MODE_DISABLED
+	shell.add_child(scroll)
+	scroll.add_child(column)
+	column.size_flags_horizontal=Control.SIZE_EXPAND_FILL
 	shell.hide()
 	bind_key(key_code)
 
@@ -169,6 +268,7 @@ func toggle() -> void:
 	home()
 
 func close() -> void:
+	if is_instance_valid(game.living):release_resident()
 	end_call()
 	opened=false
 	if slide: slide.kill()
@@ -212,6 +312,7 @@ func focus_button(reference: WeakRef) -> void:
 		item.grab_focus()
 
 func home() -> void:
+	if is_instance_valid(game.living):release_resident()
 	end_call()
 	clear("VEYRA / PERSONAL")
 	note("Adrian Vale\nIron Harbor • $%d"%game.memory.money)
@@ -219,6 +320,8 @@ func home() -> void:
 	button("Contacts",contacts)
 	button("Camera • capture scene",capture_photo)
 	button("Gallery (%d / 32)"%photos.size(),gallery)
+	button("Wallet & receipts",wallet)
+	button("Carried items",carried_items)
 	button("Close [%s]"%key_label(),close)
 
 func messages() -> void:

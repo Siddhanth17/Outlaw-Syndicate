@@ -10,6 +10,7 @@ var sectors: Dictionary={}
 var kits: Array[PackedScene]=[]
 var check_time: float=0
 var minutes: float=1080
+var day: int=1
 var clock_time: float=0
 var lamps: Array[OmniLight3D]=[]
 var signal_lights: Array[MeshInstance3D]=[]
@@ -165,7 +166,9 @@ func apply_clock() -> void:
 
 func _process(delta: float) -> void:
 	if game.paused or game.cinematic_active:return
-	minutes=fposmod(minutes+delta*.5,1440)
+	var advanced: float=minutes+delta*.5
+	day+=int(advanced/1440)
+	minutes=fposmod(advanced,1440)
 	check_time-=delta
 	clock_time-=delta
 	if check_time<=0:

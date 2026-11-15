@@ -17,11 +17,14 @@ var profile: Dictionary
 var daily_destinations: Dictionary={}
 var schedule_period: String=""
 var citizen_name: String=""
+var schedule_config: Dictionary={}
+var abstracted: bool=false
+var conversing: bool=false
 
 func update_schedule() -> void:
 	if daily_destinations.is_empty():return
 	var hour: float=game.quarter.minutes/60.0
-	var period: String="break" if hour>=12 and hour<13 else ("work" if hour>=8 and hour<18 else "home")
+	var period: String="break" if hour>=float(schedule_config.get("break_start",12)) and hour<float(schedule_config.get("break_end",13)) else ("work" if hour>=float(schedule_config.get("work_start",8)) and hour<float(schedule_config.get("work_end",18)) else "home")
 	if period==schedule_period:return
 	schedule_period=period
 	var at: Vector3=daily_destinations[period]
@@ -52,6 +55,7 @@ func can_see_player() -> bool:
 
 func _on_incident(event: Dictionary) -> void:
 	if state==State.DEFEATED or position.distance_to(event.position)>(16 if event.kind=="defeat" else 32): return
+	if abstracted and event.kind in ["gunshot","vehicle_person","crash","glass","defeat"] and is_instance_valid(game.living):game.living.set_active(self,true)
 	if event.kind=="defeat":
 		var sight:=PhysicsRayQueryParameters3D.create(global_position+Vector3.UP*1.4,event.position+Vector3.UP*0.4,CollisionLayers.STATIC|CollisionLayers.PROP|CollisionLayers.VEHICLE)
 		if not get_world_3d().direct_space_state.intersect_ray(sight).is_empty():return
@@ -81,6 +85,15 @@ func _physics_process(delta: float) -> void:
 		return
 	clock+=delta
 	update_schedule()
+	if conversing and danger_time<=0 and position.distance_to(game.player.position)<4:
+		velocity=Vector3(0,velocity.y-delta*24,0)
+		move_and_slide()
+		_play("Idle")
+		if dynamics:
+			dynamics.conversation_active=true
+			dynamics.has_head_target=true
+			dynamics.head_target=game.player.position+Vector3.UP*1.4
+		return
 	if dynamics:
 		dynamics.wind=game.harbor.wind_vector
 		dynamics.active=position.distance_to(game.player.position)<55
@@ -139,6 +152,10 @@ func take_damage(amount: float, direction: Vector3 = Vector3.ZERO, point: Vector
 		activity="flee"
 
 func restore_outcome(value: float) -> void:
+	conversing=false
+	abstracted=false
+	set_physics_process(true)
+	if animation:animation.active=true
 	if ragdoll:ragdoll.stop()
 	health=clampf(value,1 if story_actor else 0,70)
 	if health>=70 and injuries: injuries.restore([])
