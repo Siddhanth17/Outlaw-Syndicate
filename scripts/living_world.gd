@@ -210,6 +210,11 @@ func validate(value: Variant) -> bool:
 		var amount: Variant=record.get("amount",0)
 		if not (amount is int or amount is float) or not is_finite(float(amount)) or absf(float(amount))>1000000:return false
 		if str(record.category).length()>64 or str(record.get("subject","")).length()>96:return false
+		for key: String in ["id","day","minute","cash_after","bank_after"]:
+			var number: Variant=record.get(key)
+			if not (number is int or number is float) or not is_finite(float(number)) or float(number)<0 or float(number)>1000000000:return false
+			if key!="minute" and float(number)!=floor(float(number)):return false
+		if float(record.minute)>=1440 or int(record.id)<1 or int(record.day)<1:return false
 	return true
 
 func restore(value: Variant) -> bool:

@@ -79,7 +79,7 @@ func _physics_process(delta: float) -> void:
 		for x: float in VeyraQuarter.XS:
 			for z: float in VeyraQuarter.ZS:
 				var ahead:=car.to_local(Vector3(x,car.position.y,z))
-				if ahead.z>9 and ahead.z<16+speed and absf(ahead.x)<5 and not green(north_south):waiting=true
+				if ahead.z>6 and ahead.z<24 and absf(ahead.x)<5 and not green(north_south):waiting=true
 		var blocked:=obstacle(car)
 		reasons[i]="obstacle" if blocked else ("signal" if waiting else "driving")
 		car.ai_throttle=0 if blocked or waiting or speed>desired_speed else .55

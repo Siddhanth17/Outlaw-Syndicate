@@ -123,6 +123,10 @@ func run() -> void:
 	check(not world.restore(payload) and world.bank==10,"unsupported component version is rejected without resetting valid world state")
 	payload=world.snapshot();payload.citizens.resident_00.position=[0,"bad",0]
 	check(not world.validate(payload),"invalid citizen coordinates cannot enter live world state")
+	payload=world.snapshot();payload.ledger[0].id=[]
+	check(not world.validate(payload),"malformed receipt ID is rejected before restoration")
+	payload=world.snapshot();payload.ledger[0].minute="broken"
+	check(not world.validate(payload),"malformed receipt timestamp cannot reach wallet rendering")
 	game.quarter.minutes=1200
 	lena.update_schedule()
 	game.player.position=Vector3(0,.2,-175)
