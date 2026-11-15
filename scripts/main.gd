@@ -482,7 +482,7 @@ func _process(delta: float) -> void:
 	if not story_active:
 		marker.hide()
 		ui.objective_title.text=district+" / FREE ROAM"
-		ui.objective.text="Explore at your own pace.\n[%s] Phone â€¢ choose your story"%phone.key_label()
+		ui.objective.text="Explore at your own pace.\n[%s] Phone • choose your story"%phone.key_label()
 	elif memory.stage < mission.stages.size():
 		ui.objective_title.text="THE LAST ADDRESS"
 		var stage: Dictionary = mission.stages[memory.stage]
@@ -507,7 +507,7 @@ func _process(delta: float) -> void:
 	elif marker.visible and player.position.distance_to(marker.position) < 5:
 		ui.prompt.text = "[E] Interact"
 	elif not story_active and player.position.distance_to(dante.position)<4:
-		ui.prompt.text="[E] Talk to Dante Cross â€¢ mechanic"
+		ui.prompt.text="[E] Talk to Dante Cross • mechanic"
 	elif living.roster_ready:
 		var resident: CityNPC=living.interaction_target()
 		if resident:ui.prompt.text="[E] Speak to "+living.identities[resident.npc_id].name
@@ -659,7 +659,7 @@ func _advance() -> void:
 	_save()
 
 func _say(speaker: String, line: String) -> void:
-	ui.subtitles.text = "%s â€” %s" % [speaker, line]
+	ui.subtitles.text = "%s — %s" % [speaker, line]
 	dialogue_time = 9
 	ui.subtitle_panel.visible = subtitles_enabled
 
