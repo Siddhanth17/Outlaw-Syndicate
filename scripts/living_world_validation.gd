@@ -88,10 +88,11 @@ func run() -> void:
 		game.phone.end_call()
 	game.phone.talk_to_resident("resident_00")
 	var balance: int=game.memory.money
-	var receipt: String=world.buy_food("sandwich")
+	game.phone.cafe_menu()
+	check(press("Sandwich • $8"),"actual checkout button invokes the food transaction")
 	check(world.inventory.get("sandwich",0)==1 and game.memory.money==balance-8,"staffed cafe purchase charges actual cash and grants an actual item")
 	check(world.ledger.back().category=="cafe_purchase" and world.ledger.back().cash_after==game.memory.money,"purchase receipt is tied to the authoritative cash balance")
-	game.phone.cafe_menu(receipt)
+	check(press("Coffee • $4") and world.inventory.get("coffee",0)==1 and game.memory.money==balance-12,"separate menu buttons retain their own product and exact price")
 	await capture("cafe-purchase")
 	game.player.health=50
 	check(world.consume("sandwich") and game.player.health==75 and world.inventory.sandwich==0,"consuming the purchased item changes health and removes inventory")
