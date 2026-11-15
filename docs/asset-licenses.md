@@ -55,3 +55,7 @@ All eight `urban_*.glb` meshes and their editable Blender sources are original p
 ## Living-world foundation
 
 Twenty authored resident call replies use the already installed Kokoro-82M int8 Apache-2.0 model and kokoro-onnx MIT toolchain with existing generic stock presets. No requested impersonation, cloning, model download or replacement of story audio. `living-voices-provenance.json` records model/voice/output hashes, texts and preset assignments. Ring/checkout sounds are original sine-tone synthesis. Existing nine credited NPC appearance variants are reused without claiming new character models. All new simulation/UI/data code is project-authored.
+
+## Veyra III audio and residence
+
+Seventeen vehicle/road/fictional-sidearm WAVs are original mathematical synthesis, authored by `art/build_veyra3_audio.py` and released CC0-1.0; per-file SHA256 and peak/seam data are in `veyra3-audio-provenance.json`. No sampled vehicle or firearm recordings. Existing story/resident voices are preserved. Residence shell, cloth-grid quilt, curved furniture, joinery and household objects are original project-authored Blender geometry from `art/build_vale_home.py`; plaster reuses the existing credited Poly Haven concrete maps. Personal documents are fictional original text. No user reference photographs/screenshots are included.

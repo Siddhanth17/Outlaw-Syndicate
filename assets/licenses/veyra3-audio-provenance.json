@@ -1,0 +1,127 @@
+{
+  "author": "Outlaw Syndicate project",
+  "license": "CC0-1.0",
+  "source": "Original mathematical synthesis, deterministic NumPy generator art/build_veyra3_audio.py. No sampled recordings, brands, cloned voices or external assets.",
+  "sample_rate": 44100,
+  "files": {
+    "car_idle": {
+      "sha256": "956b8ce87272de60aa4238f86e8dc8806ab0ef2a3da52c6374ad8ae973f5691a",
+      "seconds": 3.0,
+      "peak": 0.8199999999999998,
+      "loop": true,
+      "seam_delta": 0.0060194304077934024
+    },
+    "car_mid": {
+      "sha256": "471ba57f3e2f5765f73285f3733f8abe97b533d97f1b53564b4822672dcfbc89",
+      "seconds": 3.0,
+      "peak": 0.82,
+      "loop": true,
+      "seam_delta": 0.014169099092682602
+    },
+    "car_high": {
+      "sha256": "343e4df5f1c9d20f0f5efc901bf77c207d3e5d98ff3200c96fd720fcfd7f4e53",
+      "seconds": 3.0,
+      "peak": 0.8200000000000001,
+      "loop": true,
+      "seam_delta": 0.017175523308220475
+    },
+    "car_load": {
+      "sha256": "4f3f2ff6e355366ac37a4e7fc7aaed76b0ff49c5754c7ac77ca1eb1a6a1448d3",
+      "seconds": 3.0,
+      "peak": 0.82,
+      "loop": true,
+      "seam_delta": 0.010605519692739152
+    },
+    "car_coast": {
+      "sha256": "2213c6b65ee73ce33f078e1f9a73a1938068dc6e381358a133fcf316c65d2fc1",
+      "seconds": 3.0,
+      "peak": 0.82,
+      "loop": true,
+      "seam_delta": 0.006584858699583203
+    },
+    "car_shift": {
+      "sha256": "8027447cb8af984095b8ab7e1ea3266da2d92d52da45d0edf02d430791248aab",
+      "seconds": 0.22,
+      "peak": 0.7185159438550288,
+      "loop": false,
+      "seam_delta": 0.0
+    },
+    "bike_idle": {
+      "sha256": "5306d5683331c85846142deceab491931491b24898c44321d1fb53ef2f64cbb3",
+      "seconds": 3.0,
+      "peak": 0.82,
+      "loop": true,
+      "seam_delta": 0.011593023568921224
+    },
+    "bike_mid": {
+      "sha256": "9bb6556e7c3b9fc10a6b6155974cbf7e89623a15ed2c8079576ccc4158bce0fe",
+      "seconds": 3.0,
+      "peak": 0.82,
+      "loop": true,
+      "seam_delta": 0.0034482498528146666
+    },
+    "bike_high": {
+      "sha256": "7583c53a5a8a0ab8d244433409f75ad4cb9266f98c60b202fde2bb3d0e783644",
+      "seconds": 3.0,
+      "peak": 0.82,
+      "loop": true,
+      "seam_delta": 0.009130526768722835
+    },
+    "bike_load": {
+      "sha256": "4ce2fe7930821909fe4034249884db886189b0300d475e23df5d8de9a88545c1",
+      "seconds": 3.0,
+      "peak": 0.82,
+      "loop": true,
+      "seam_delta": 0.035138670321481144
+    },
+    "bike_coast": {
+      "sha256": "3260fcf01c4fc070f9c1f3ce6b0825db3be592ec91440c8b5bd57586a0a38e7c",
+      "seconds": 3.0,
+      "peak": 0.82,
+      "loop": true,
+      "seam_delta": 0.002176264003826006
+    },
+    "bike_shift": {
+      "sha256": "3bfdb6315b396163d9424983740c01fc77c5759a75ebb8604bb92964b187ef14",
+      "seconds": 0.22,
+      "peak": 0.8200000000000001,
+      "loop": false,
+      "seam_delta": 0.0
+    },
+    "road_roll": {
+      "sha256": "1b28744b60debace6659717af5728d039593f11132c4e307e1e2a3f0f9268606",
+      "seconds": 3.0,
+      "peak": 0.82,
+      "loop": true,
+      "seam_delta": 0.007921933804623749
+    },
+    "sidearm_0": {
+      "sha256": "d423752c9326388b5fa65487c8de7db1230019d4a0453856cac6c0744d9a7294",
+      "seconds": 0.9,
+      "peak": 0.7627680812320092,
+      "loop": false,
+      "seam_delta": 0.0
+    },
+    "sidearm_1": {
+      "sha256": "55e3a28cbcad9381c5b0ea40895c1b502174aa51417d0b8e5cbd97355ea0ce3a",
+      "seconds": 0.9,
+      "peak": 0.7212318736261303,
+      "loop": false,
+      "seam_delta": 0.0
+    },
+    "sidearm_2": {
+      "sha256": "d78d966f6aada74c1ec4fb7ab5d9c41f297f7295928c4c14bced7efb1fca0e05",
+      "seconds": 0.9,
+      "peak": 0.5644980219183792,
+      "loop": false,
+      "seam_delta": 0.0
+    },
+    "sidearm_3": {
+      "sha256": "1030d40debdfbbcdd4f84a5a2ae21faeb1a5878974be0afaf604b2d7c7e7dab8",
+      "seconds": 0.9,
+      "peak": 0.6755305206667358,
+      "loop": false,
+      "seam_delta": 0.0
+    }
+  }
+}

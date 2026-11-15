@@ -7,6 +7,7 @@ var rider: ValePlayer
 var wheels: Array[VehicleWheel3D] = []
 var model: Node3D
 var engine: AudioStreamPlayer3D
+var sound_model: VehicleSound
 var mounting: bool = false
 var mount_direction: bool = true
 var mount_clock: float = 0
@@ -77,6 +78,9 @@ func _ready() -> void:
 	engine.volume_db=-35
 	add_child(engine)
 	if DisplayServer.get_name()!="headless":engine.play()
+	sound_model=VehicleSound.new()
+	add_child(sound_model)
+	sound_model.setup(engine,"bike")
 
 func outside_point() -> Variant:
 	var point:=to_global(Vector3(-1.0,0,0))
@@ -168,8 +172,7 @@ func _physics_process(delta: float) -> void:
 	lean=lerpf(lean,clampf(-steering*linear_velocity.length()*0.07,-0.40,0.40),1-exp(-delta*6))
 	model.rotation.z=lean
 	handlebar.rotation.y=steering
-	engine.pitch_scale=0.8+minf(1.4,linear_velocity.length()*0.065+absf(throttle)*0.3)
-	engine.volume_db=-20 if occupied else -40
+	sound_model.update(delta,speed,throttle,brake>1,100,occupied)
 	contact_cooldown=maxf(0,contact_cooldown-delta)
 	if global_position.y < -15:
 		release()

@@ -135,6 +135,13 @@ func consume(item: String) -> bool:
 	return true
 
 func set_active(actor: CityNPC, active: bool) -> void:
+	if active and actor.abstracted:
+		actor.path_points.clear()
+		actor.planned_target=Vector3.INF
+		actor.plan_time=0
+		actor.stuck_duration=0
+		actor.progress_origin=actor.position
+		actor.progress_time=0
 	actor.abstracted=not active
 	actor.set_physics_process(active)
 	if actor.animation:actor.animation.active=active
@@ -147,8 +154,8 @@ func set_active(actor: CityNPC, active: bool) -> void:
 func abstract_step(actor: CityNPC, delta: float) -> void:
 	actor.update_schedule()
 	var id: String=actor.npc_id
-	if not paths.has(id) or paths[id].period!=actor.schedule_period:
-		paths[id]={"period":actor.schedule_period,"points":game.navigation.path(actor.position,actor.route[actor.route_index]),"index":0}
+	if not paths.has(id) or paths[id].period!=actor.schedule_period or paths[id].route_index!=actor.route_index:
+		paths[id]={"period":actor.schedule_period,"route_index":actor.route_index,"points":game.navigation.path(actor.position,actor.route[actor.route_index]),"index":0}
 	var data: Dictionary=paths[id]
 	var travel: float=float(actor.profile.pace)*delta
 	while travel>0 and data.index<data.points.size():
@@ -161,6 +168,12 @@ func abstract_step(actor: CityNPC, delta: float) -> void:
 		else:
 			actor.position=actor.position.move_toward(target,travel)
 			travel=0
+	if data.index>=data.points.size() and not data.points.is_empty():
+		actor.activity_time-=delta
+		if actor.activity_time<=0:
+			actor.route_index=(actor.route_index+1)%actor.route.size()
+			actor.activity_time=8
+	actor.velocity=Vector3.ZERO
 
 func refresh(delta: float) -> void:
 	if not roster_ready:return
@@ -240,6 +253,10 @@ func restore(value: Variant) -> bool:
 		if actor and actor.health>0:
 			actor.position=point(value.citizens[id].position)
 			actor.velocity=Vector3.ZERO
+			actor.path_points.clear()
+			actor.planned_target=Vector3.INF
+			actor.stuck_duration=0
+			actor.plan_time=0
 			actor.schedule_period=""
 			actor.update_schedule()
 			actor.reset_physics_interpolation()

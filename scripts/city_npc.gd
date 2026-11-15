@@ -20,6 +20,17 @@ var citizen_name: String=""
 var schedule_config: Dictionary={}
 var abstracted: bool=false
 var conversing: bool=false
+var navigation_status: String="unplanned"
+var stuck_duration: float=0
+var repath_count: int=0
+var progress_origin:=Vector3.ZERO
+var progress_time: float=0
+var planned_target:=Vector3.INF
+var arrival_count: int=0
+
+func diagnostic() -> Dictionary:
+	var target: Vector3=route[route_index] if not route.is_empty() else position
+	return {"name":citizen_name,"state":activity,"destination":[target.x,target.y,target.z],"navigation":navigation_status,"actual_velocity":[get_real_velocity().x,get_real_velocity().y,get_real_velocity().z],"stuck_seconds":stuck_duration,"repaths":repath_count,"arrivals":arrival_count,"budget":game.living.budget,"schedule":schedule_period}
 
 func update_schedule() -> void:
 	if daily_destinations.is_empty():return
@@ -31,8 +42,11 @@ func update_schedule() -> void:
 	route=PackedVector3Array([at,at+Vector3(0,0,3)])
 	route_index=0
 	plan_time=0
+	planned_target=Vector3.INF
+	path_points.clear()
 
 func _ready() -> void:
+	floor_snap_length=.3
 	set_meta("protected_story",story_actor)
 	set_meta("civilian",NPCCatalog.profile(appearance_id).role not in ["police","faction","security"])
 	super._ready()
@@ -113,36 +127,70 @@ func _physics_process(delta: float) -> void:
 		target=Vector3(clampf(position.x+away.x*8,-115,115),position.y,clampf(position.z+away.z*8,-205,228))
 	else:
 		activity="routine" if schedule_period.is_empty() else schedule_period
-		if position.distance_to(target)<1.0:
+		var endpoint: Vector3=path_points[-1] if not path_points.is_empty() and planned_target==target else target
+		if Vector2(position.x-endpoint.x,position.z-endpoint.z).length()<.8:
 			if activity_time<=0:
 				route_index=(route_index+1)%route.size()
-				activity_time=4.0 if profile.role in ["work","inspect","repair","trade"] else 1.0
+				arrival_count+=1
+				activity_time=8.0 if profile.role in ["work","inspect","repair","trade"] else 3.0
+				target=route[route_index]
 			else:
+				navigation_status="intentional_idle"
+				stuck_duration=0
 				velocity=Vector3(0,velocity.y-delta*24,0)
 				move_and_slide()
 				_play("Interact" if profile.role in ["work","repair","inspect"] else "Idle")
 				return
-	if plan_time<=0:
-		path_points=game.navigation.path(position,target)
-		path_index=0
-		plan_time=1.4
-	var next: Vector3=target
+	if planned_target!=target or (plan_time<=0 and (path_points.is_empty() or stuck_duration>=1.5)):
+		path_points=game.navigation.path(position,target,true)
+		path_index=1 if path_points.size()>1 else 0
+		planned_target=target
+		plan_time=2.5+float(abs(hash(npc_id))%5)*.13
+		repath_count+=1
+		navigation_status="following" if not path_points.is_empty() else "no_reachable_path"
+	var next: Vector3=position
 	while path_index<path_points.size() and Vector2(path_points[path_index].x-position.x,path_points[path_index].z-position.z).length()<0.7: path_index+=1
 	if path_index<path_points.size(): next=path_points[path_index]
 	var direction: Vector3=next-position
 	direction.y=0
 	direction=direction.normalized()
-	var ray:=PhysicsRayQueryParameters3D.create(position+Vector3.UP,position+Vector3.UP+direction*0.8,CollisionLayers.PROP|CollisionLayers.VEHICLE)
+	# Keep moving pedestrians from meeting head-on on the same sidewalk centerline.
+	if not fleeing:
+		for other: CityNPC in game.people:
+			if other==self or other.abstracted or other.health<=0:continue
+			var gap: Vector3=other.position-position
+			gap.y=0
+			if gap.length()<1.5 and gap.dot(direction)>.1:
+				direction=(direction+direction.cross(Vector3.UP)*1.1-gap.normalized()*.25).normalized()
+				break
+	var ray:=PhysicsRayQueryParameters3D.create(position+Vector3.UP,position+Vector3.UP+direction*0.8,CollisionLayers.STATIC|CollisionLayers.PROP|CollisionLayers.VEHICLE)
 	ray.exclude=[get_rid()]
-	if not get_world_3d().direct_space_state.intersect_ray(ray).is_empty(): direction=Vector3.ZERO
+	if not get_world_3d().direct_space_state.intersect_ray(ray).is_empty():
+		direction=Vector3.ZERO
+		navigation_status="blocked"
 	var speed: float=3.5 if fleeing else float(profile.pace)
 	velocity.x=direction.x*speed
 	velocity.z=direction.z*speed
 	velocity.y-=delta*24
+	# A CharacterBody does not climb a vertical curb by itself. Sweep at raised
+	# height before a small physical upward move; never step over people/walls.
+	var travel: Vector3=direction*.35
+	if is_on_floor() and direction.length()>.1 and test_move(global_transform,travel):
+		var raised:=global_transform
+		raised.origin.y+=.24
+		if not test_move(raised,travel):move_and_collide(Vector3.UP*.24)
 	move_and_slide()
+	progress_time+=delta
+	if progress_time>=.5:
+		var progress: float=Vector2(position.x-progress_origin.x,position.z-progress_origin.z).length()
+		stuck_duration=stuck_duration+progress_time if progress<.12 else 0
+		progress_origin=position
+		progress_time=0
+		if stuck_duration>2:navigation_status="repath_pending"
 	if direction.length()>0.1:
 		visual.rotation.y=lerp_angle(visual.rotation.y,atan2(direction.x,direction.z),delta*5)
-	_play("Run" if fleeing else "Walk")
+	var moving: bool=Vector2(get_real_velocity().x,get_real_velocity().z).length()>.15
+	_play(("Run" if fleeing else "Walk") if moving else "Idle")
 
 func take_damage(amount: float, direction: Vector3 = Vector3.ZERO, point: Vector3 = Vector3.ZERO) -> void:
 	super.take_damage(amount,direction,point)
@@ -152,6 +200,10 @@ func take_damage(amount: float, direction: Vector3 = Vector3.ZERO, point: Vector
 		activity="flee"
 
 func restore_outcome(value: float) -> void:
+	path_points.clear()
+	planned_target=Vector3.INF
+	stuck_duration=0
+	plan_time=0
 	conversing=false
 	abstracted=false
 	set_physics_process(true)

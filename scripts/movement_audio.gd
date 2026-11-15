@@ -28,12 +28,14 @@ func _ready() -> void:
 			if not samples.has(path): samples[path] = load(path)
 	for i: int in range(4):
 		var voice := AudioStreamPlayer3D.new()
+		voice.bus="Footsteps"
 		voice.max_distance = 22
 		voice.unit_size = 2
 		voice.position.y = 0.1
 		add_child(voice)
 		pool.append(voice)
 	cloth = AudioStreamPlayer3D.new()
+	cloth.bus="Footsteps"
 	cloth.max_distance = 8
 	add_child(cloth)
 

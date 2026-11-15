@@ -43,6 +43,9 @@ func _ready() -> void:
 					var pose:=Transform3D(Basis(Vector3.UP,frontage_yaw(dx,dz)),center+Vector3(dx,.14,dz))
 					var floor_body:=harbor.solid(pose*Vector3(0,.1,0),Vector3(18,.2,18))
 					floor_body.set_meta("foot_surface","interior")
+					# The modeled upper floor must also be physical for camera clearance
+					# and acoustic enclosure queries inside the ground-floor shop.
+					harbor.solid(pose*Vector3(0,3.4,0),Vector3(18,.2,18))
 					var shop_light:=OmniLight3D.new()
 					shop_light.position=pose*Vector3(0,2.4,7)
 					shop_light.light_color=Color(1,.73,.42)

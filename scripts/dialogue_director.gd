@@ -20,6 +20,7 @@ var speaker: int = 0
 func _ready() -> void:
 	database = JSON.parse_string(FileAccess.get_file_as_string("res://data/dialogue.json"))
 	audio = AudioStreamPlayer.new()
+	audio.bus="Dialogue"
 	audio.volume_db = -4
 	add_child(audio)
 	for visual: Node3D in [game.player.visual, game.dante]:

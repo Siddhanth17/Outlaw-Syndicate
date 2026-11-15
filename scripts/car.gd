@@ -21,6 +21,7 @@ var ai_brake: float = 35
 var integrity: float = 100
 var wheels: Array[VehicleWheel3D] = []
 var engine_audio: AudioStreamPlayer3D
+var sound_model: VehicleSound
 var tire_audio: AudioStreamPlayer3D
 var lamps: Array[SpotLight3D] = []
 var last_velocity := Vector3.ZERO
@@ -117,6 +118,15 @@ func _ready() -> void:
 	tire_audio.unit_size = 5
 	add_child(tire_audio)
 	if DisplayServer.get_name() != "headless": tire_audio.play()
+	sound_model=VehicleSound.new()
+	add_child(sound_model)
+	sound_model.setup(engine_audio,"car")
+	tire_audio.bus="Vehicles"
+	impact_audio.bus="Vehicles"
+	var rolling: AudioStreamWAV=load("res://assets/audio/veyra3/road_roll.wav").duplicate()
+	rolling.loop_mode=AudioStreamWAV.LOOP_FORWARD
+	rolling.loop_end=rolling.data.size()/2
+	tire_audio.stream=rolling
 	_setup_bullet_regions()
 
 func _physics_process(delta: float) -> void:
@@ -161,9 +171,8 @@ func _physics_process(delta: float) -> void:
 		wheel.suspension_stiffness = 45 - float(damage.zones[wheel_zone]) * 0.12
 		wheel.wheel_friction_slip = (0.42 if flat else 1.0) * (1.0 - float(damage.zones[wheel_zone]) * 0.004) * (2.0 if absf(position.x) > 8 else (1.8 if Input.is_action_pressed("handbrake") and occupied else 3.2))
 	last_velocity = linear_velocity
-	engine_audio.pitch_scale = 0.7 + minf(absf(forward_speed) * 0.055 + absf(throttle_smoothed) * 0.3, 1.8)
-	engine_audio.volume_db = -16 if occupied else -28
-	tire_audio.volume_db = -24 if occupied and linear_velocity.length() > 5 else -60
+	sound_model.update(delta,forward_speed,throttle_smoothed,brake>1,integrity,occupied or autonomous)
+	tire_audio.volume_db = -30+minf(8,linear_velocity.length()*.3) if (occupied or autonomous) and linear_velocity.length()>1 else -80
 	for i: int in range(lamps.size()):
 		lamps[i].visible = damage.light_damage[i]<60 and integrity > 20 and float(damage.zones["front_left" if i == 0 else "front_right"]) < 55
 

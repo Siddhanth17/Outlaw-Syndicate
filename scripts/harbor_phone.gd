@@ -219,6 +219,7 @@ func key_label() -> String: return "O" if key_code==KEY_O else "Tab"
 func _ready() -> void:
 	layer=5
 	call_audio=AudioStreamPlayer.new()
+	call_audio.bus="Dialogue"
 	add_child(call_audio)
 	shell=PanelContainer.new()
 	shell.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)

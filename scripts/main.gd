@@ -46,6 +46,7 @@ var phone: HarborPhone
 var quarter: VeyraQuarter
 var traffic: StreetTraffic
 var living: LivingWorld
+var city_audio: CityAudio
 
 func start_story() -> void:
 	if story_active: return
@@ -56,6 +57,8 @@ func start_story() -> void:
 func _ready() -> void:
 	test_mode = OS.get_cmdline_args().has("--script") or OS.get_cmdline_args().has("--headless")
 	_setup_input()
+	city_audio=CityAudio.new()
+	add_child(city_audio)
 	mission = JSON.parse_string(FileAccess.get_file_as_string("res://data/homecoming.json"))
 	events=CityEvents.new()
 	events.game=self
@@ -137,9 +140,14 @@ func _ready() -> void:
 	living=LivingWorld.new()
 	living.game=self
 	add_child(living)
+	if OS.get_cmdline_user_args().has("--city-debug"):
+		var debug:=CityDiagnostics.new()
+		debug.game=self
+		add_child(debug)
 	_load_settings()
 	call_deferred("_populate_city")
 	ambience = AudioStreamPlayer.new()
+	ambience.bus="Environment"
 	ambience.stream = _loop("harbor")
 	ambience.volume_db = -20
 	add_child(ambience)
@@ -165,6 +173,16 @@ func _ready() -> void:
 		validation.call_deferred("run")
 	if OS.get_cmdline_user_args().has("--verify-living-world"):
 		var validation:=LivingWorldValidation.new()
+		validation.game=self
+		add_child(validation)
+		validation.call_deferred("run")
+	if OS.get_cmdline_user_args().has("--audit-motion"):
+		var audit:=MotionAudit.new()
+		audit.game=self
+		add_child(audit)
+		audit.call_deferred("run")
+	if OS.get_cmdline_user_args().has("--verify-veyra3"):
+		var validation:=Veyra3Validation.new()
 		validation.game=self
 		add_child(validation)
 		validation.call_deferred("run")
@@ -203,17 +221,25 @@ func _loop(name: String) -> AudioStreamWAV:
 	return stream
 
 func sound(name: String, at: Vector3) -> void:
+	if name=="shot":
+		city_audio.fire(at)
+		return
 	if DisplayServer.get_name() == "headless": return
 	var source := AudioStreamPlayer3D.new()
 	source.stream = load("res://assets/audio/" + name + ".wav")
 	source.position = at
 	source.unit_size = 12
 	source.volume_db = -9
+	source.bus="UI" if name.begins_with("living/") else "Environment"
 	add_child(source)
 	source.finished.connect(source.queue_free)
 	source.play()
 
 func _menu_action(title: String) -> void:
+	for bus: String in CityAudio.BUSES:
+		if title==bus+" mix +" or title==bus+" mix -":
+			city_audio.adjust(bus,2 if title.ends_with("+") else -2)
+			return
 	match title:
 		"Resume": _set_pause(false)
 		"Back": ui.show_screen(return_screen)
@@ -456,7 +482,7 @@ func _process(delta: float) -> void:
 	if not story_active:
 		marker.hide()
 		ui.objective_title.text=district+" / FREE ROAM"
-		ui.objective.text="Explore at your own pace.\n[%s] Phone • choose your story"%phone.key_label()
+		ui.objective.text="Explore at your own pace.\n[%s] Phone â€¢ choose your story"%phone.key_label()
 	elif memory.stage < mission.stages.size():
 		ui.objective_title.text="THE LAST ADDRESS"
 		var stage: Dictionary = mission.stages[memory.stage]
@@ -481,7 +507,7 @@ func _process(delta: float) -> void:
 	elif marker.visible and player.position.distance_to(marker.position) < 5:
 		ui.prompt.text = "[E] Interact"
 	elif not story_active and player.position.distance_to(dante.position)<4:
-		ui.prompt.text="[E] Talk to Dante Cross • mechanic"
+		ui.prompt.text="[E] Talk to Dante Cross â€¢ mechanic"
 	elif living.roster_ready:
 		var resident: CityNPC=living.interaction_target()
 		if resident:ui.prompt.text="[E] Speak to "+living.identities[resident.npc_id].name
@@ -633,7 +659,7 @@ func _advance() -> void:
 	_save()
 
 func _say(speaker: String, line: String) -> void:
-	ui.subtitles.text = "%s — %s" % [speaker, line]
+	ui.subtitles.text = "%s â€” %s" % [speaker, line]
 	dialogue_time = 9
 	ui.subtitle_panel.visible = subtitles_enabled
 

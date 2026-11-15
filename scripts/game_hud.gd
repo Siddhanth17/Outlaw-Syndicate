@@ -139,6 +139,10 @@ func show_screen(screen: String) -> void:
 			modal_column.add_child(label("Original harbor kit / Sable vehicle: project-authored\nHuman / Walk / Run: vibeassets CC0, Meshy-origin\nAsphalt / Concrete: Rob Tuytel, Poly Haven CC0\nGodot Engine / Jolt: MIT\nSee assets/licenses and docs/asset-licenses.md", 16))
 			actions = ["Back"]
 		"defeat": actions = ["Retry checkpoint", "New game", "Main menu"]
+	if screen=="settings":
+		for bus: String in CityAudio.BUSES:
+			actions.append(bus+" mix -")
+			actions.append(bus+" mix +")
 	for title: String in actions:
 		var button := Button.new()
 		button.text = title
