@@ -30,9 +30,11 @@ No new external models/textures or downloads. `art/build_living_voices.py` uses 
 
 Uncommitted `road_network.gd`, `network_validation.gd`, `tests/network.gd` and traffic-controller changes define nine junction IDs, 24 directed lanes, closure-aware BFS routing, curved movements and reservation ownership. The additional fleet is **opt-in and disabled by default** until validated.
 
-First 60-second headless gate: graph/routing/reservation unit checks passed, but only **six total cars** spawned instead of ten. All six finished with integrity 100 and on-road positions; target-count-dependent checks failed. Do not loosen the spawn-clearance test. Exact next diagnostic: inspect `SPAWN_BLOCKED` output in `tools/living2-network-source.log` to identify the four rejected positions/colliders, then rerun the minute-long route. No traffic variation, police vehicles, parking, generalized recovery or finished pedestrian crossing signal system is claimed.
+First 60-second headless gate: graph/routing/reservation unit checks passed, but only **six total cars** spawned instead of ten. All six finished with integrity 100 and on-road positions; target-count-dependent checks failed. Do not loosen the spawn-clearance test. A later test explicitly enabling the fleet after five physics frames produced all ten cars and **10 passing checks**, with all ten intact/on road and multiple completed junction movements. This points to physics-space initialization timing; normal-startup spawn deferral still needs verification before enabling the fleet by default. No ten-car exported run, traffic variation, police vehicles, parking, generalized recovery or finished pedestrian crossing signal system is claimed.
 
-The resume directive requires publishing stable P0/P1 before continuing P2. Preserve the experiment in the working tree. Stage the foundation separately; an isolated source snapshot of its commit can be built without reverting or overwriting the P2 working files. Do not include the `--verify-network` hook in that foundation snapshot unless its referenced experiment is also included.
+The resume directive requires publishing stable P0/P1 before continuing P2. The foundation was staged independently as `0deb9dc`; actual checkout-widget tests followed in `c6bfb07`. Exact source snapshots under builds retain only committed foundation code, while all P2 edits stay untouched in the primary working tree. The committed snapshot excludes the `--verify-network` hook and experimental controllers.
+
+Exported regression exposed red-light brake chatter at a speed-dependent threshold: a stopped car briefly released its brakes as the threshold shrank. `6506321` fixes the hold region and adds receipt-ID/timestamp validation. The exact hardened snapshot is undergoing the final full source/exported gates; do not publish a candidate whose urban route still has two failed signal/brake assertions.
 
 ## Still unfinished
 
@@ -44,3 +46,13 @@ P2 general populated traffic remains under test. P3 witness crime registry/dispa
 2. Publish a coherent P0/P1 source snapshot after full source and exported validation; update this file with actual commit/build/hash/push results.
 3. Resume the gated P2 spawn-clearance diagnostic, then validate ten-car movement/turns/reservations/obstacles and native-1080p populated performance before enabling it in normal gameplay.
 4. Then implement witnessed crime reporting and physical dispatch using existing events/actors, followed by a useful safehouse and persistent commercial ownership loops.
+
+## Validated foundation release — 2026-11-15
+
+Exact game source: `650632102c72323053780faa2224d3b7d5411096` (preceded by `0deb9dc` and `c6bfb07`). All **357 source checks passed**. Actual Windows executable: urban 22, living-world 32, mission 14, mobility 54, ragdoll 53, metropolis 33: **208 exported checks, zero failures**. The opening mission completes and rewards once. Red-stop/brake assertions pass after the hold-region fix.
+
+Build: `builds/living-world-foundation-final/OutlawSyndicate.exe`. Archive: `builds/OutlawSyndicate-Living-World-Foundation-Windows-x64.zip`, CRC verified. PCK SHA256: `78f16baad9a269b69885333533d860716f406bc8b222884a5f6760901254ac78`. The archive contains screenshots, logs, performance JSON, asset notices and source manifest. Previous builds remain untouched.
+
+Final native 1920x1080 samples: day walk 153.21 FPS / 1% low 69.19 / p95 8.950ms; night 139.07 / 62.87 / 9.618ms; phone 142.70 / 79.55 / 9.217ms. Two traffic vehicles, 22–23 active citizens, 13–14 abstract. Short controlled samples only. Actual exported cafe capture inspected: readable aligned phone checkout, real transaction and visible resident actors; repeated character variants, sparse interior and prototype art remain apparent. No photorealism claim. Human extended playtest NOT RUN. Texture RID shutdown warnings remain.
+
+The previous pending-gate paragraph is historical: final hardened source and exported gates are now complete. Publish foundation commits before further traffic edits. P2 remains opt-in and excluded from this build. Next task is physics-frame-safe delayed spawning, then real ten-car exported intersection validation and performance; do not turn it on by default before those pass.
