@@ -48,6 +48,7 @@ var traffic: StreetTraffic
 var living: LivingWorld
 var city_audio: CityAudio
 var residence: ValeHome
+var law: CityLaw
 
 func start_story() -> void:
 	if story_active: return
@@ -148,6 +149,9 @@ func _ready() -> void:
 		var debug:=CityDiagnostics.new()
 		debug.game=self
 		add_child(debug)
+	law=CityLaw.new()
+	law.game=self
+	add_child(law)
 	_load_settings()
 	call_deferred("_populate_city")
 	ambience = AudioStreamPlayer.new()
@@ -197,6 +201,11 @@ func _ready() -> void:
 		validation.call_deferred("run")
 	if OS.get_cmdline_user_args().has("--verify-home"):
 		var validation:=HomeValidation.new()
+		validation.game=self
+		add_child(validation)
+		validation.call_deferred("run")
+	if OS.get_cmdline_user_args().has("--verify-law"):
+		var validation:=LawValidation.new()
 		validation.game=self
 		add_child(validation)
 		validation.call_deferred("run")
@@ -279,6 +288,7 @@ func _menu_action(title: String) -> void:
 			character_impacts.reset()
 			memory = CityMemory.new()
 			events.recent.clear()
+			law.restore(null)
 			for citizen: CityNPC in people:
 				citizen.restore_outcome(70)
 				citizen.position=citizen.origin
@@ -777,6 +787,7 @@ func _save() -> void:
 	data["living_world"]=living.snapshot()
 	data["residence"]=residence.snapshot()
 	data["traffic"]=traffic.snapshot()
+	data["city_law"]=law.snapshot()
 	var outcomes: Dictionary={}
 	for citizen: CityNPC in people: outcomes[citizen.npc_id]={"health":citizen.health,"injuries":citizen.injuries.snapshot()}
 	if dante is CityNPC: outcomes[dante.npc_id]={"health":dante.health,"injuries":dante.injuries.snapshot()}
@@ -826,7 +837,7 @@ func _load() -> void:
 			for component: Variant in value:
 				if not (component is float or component is int) or not is_finite(float(component)) or absf(float(component)) > 10000:
 					valid = false
-		if not valid or not living.validate(data.get("living_world")) or not residence.validate(data.get("residence")) or not traffic.validate(data.get("traffic")) or not memory.restore(data): continue
+		if not valid or not living.validate(data.get("living_world")) or not residence.validate(data.get("residence")) or not traffic.validate(data.get("traffic")) or not law.validate(data.get("city_law")) or not memory.restore(data): continue
 		phone.close()
 		var world: Dictionary=data.get("open_world",{}) if data.get("open_world",{}) is Dictionary else {}
 		story_active=bool(world.get("story_active",true))
@@ -881,6 +892,7 @@ func _load() -> void:
 		residence.restore(data.get("residence"))
 		residence.repair_saved_location()
 		traffic.restore(data.get("traffic"))
+		law.restore(data.get("city_law"))
 		return
 	_say("Checkpoint", "No valid save or backup found.")
 

@@ -322,6 +322,7 @@ func home() -> void:
 	button("Camera • capture scene",capture_photo)
 	button("Gallery (%d / 32)"%photos.size(),gallery)
 	button("Wallet & receipts",wallet)
+	button("Crime reports",crime_reports)
 	button("Carried items",carried_items)
 	button("Map • home & districts",city_map)
 	button("Close [%s]"%key_label(),close)
@@ -387,3 +388,11 @@ func restore(value: Variant) -> void:
 	for entry: Variant in value:
 		if entry is String and entry.begins_with("photo_") and entry.ends_with(".png") and entry==entry.get_file() and not entry.contains("..") and FileAccess.file_exists("user://phone-gallery/"+entry) and photos.size()<32:
 			photos.append(entry)
+
+func crime_reports() -> void:
+	clear("VEYRA / CRIME REPORTS")
+	note("Confirmed witness reports: %d"%game.law.reported_count())
+	for record: Dictionary in game.law.records:
+		if record.status=="reported":note("Report #%d • %s"%[record.id,String(record.kind).replace("_"," ").capitalize()])
+	note("Witness reports are retained with your checkpoint. Police dispatch and case resolution are not yet connected to this registry.")
+	button("Back",home)

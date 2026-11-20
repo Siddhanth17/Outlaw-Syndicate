@@ -84,3 +84,41 @@ Completion remains PARTIAL: ownership/economy, police expansion, factions, Missi
 Continuous evidence: exported MovieWriter captures at 30 FPS / 1280x720 with engine audio, explicitly offline simulation, separate from 1080p benchmarks. `evidence/motion/pedestrians.mp4` covers 30 seconds and `cafe.mp4` 12 seconds. Inspected frames show displaced pedestrians and Lena crossing into the cafe. Her trace goes from (-10,.2,76) to (-13.7245,.34094,79.8974), intentional idle inside. Movies and per-second identity traces are shipped locally, not temporary source assets.
 
 Traffic movie completed with all 13 network checks passing, including physical obstruction stop/resume. Its normal player camera is partly pitched down early, so the movie provides limited traffic framing rather than a comprehensive vehicle visual review. MovieWriter exit additionally reports ObjectDB/resource-in-use cleanup diagnostics; non-recorded benchmark exits only report the existing seven texture RIDs. These shutdown issues remain open. Release source hash verification passed for all 766 files after all captures. No secret-pattern matches were found in reviewed code.
+
+
+## Police witness foundation — next milestone begun, 2026-11-20
+
+The core was committed and pushed as `96e07a9e44f3dbb39e2870a01a0094279f8d9b57`. Its Windows ZIP is `builds/OutlawSyndicate-Operation-Veyra-III-Windows-x64.zip` (313,473,780 bytes, CRC checked). EXE/PCK SHA256, source commit, tests and clean profiles are in `builds/operation-veyra-iii-release/build-manifest.json`. This frozen core package remains separate from subsequent police changes.
+
+Implemented `CityLaw`: active healthy residents within28m must have an unobstructed static/prop/vehicle ray to observe a player-attributed incident. Calls take two simulation seconds and pause with the game. A sole incapacitated witness cannot finish calling. Confirmed reports and pending call timers survive the actual checkpoint path. History is bounded64 with monotonic IDs, New Game clears it, malformed/unknown witness state is rejected before live restoration, and legacy checkpoints without the optional component remain accepted. Phone > Crime reports displays confirmed entries. Current production attribution is player gunfire; existing defeat/vehicle events carry victim/source IDs and are deliberately not guessed to be player crimes.
+
+Source law route:18 checks passed. Exported law route:19 checks passed, including actual opened phone UI; `tools/qa-data/law-native-law/Godot/app_userdata/OUTLAW SYNDICATE/law-verification/reported-case.png` visually inspected at1080p. First law fixture16/1 is preserved: loading reactivated other witnesses, so the sole-caller scenario was corrected to re-isolate the crowd and explicitly assert one observed witness. No gameplay threshold was weakened.
+
+This is a witness/crime-history foundation, not completed police AI. Existing combat/search remains independent. Reports do not yet dispatch officers, set new wanted levels, impose fines, clear cases, create a station or spawn pursuit vehicles. No new art/audio assets were added. The police candidate is `builds/veyra3-law-witness-candidate/OutlawSyndicate.exe` plus matching PCK, with772 verified gameplay source hashes. Core day/night numbers above belong to commit96e07a9, not a new police-candidate benchmark.
+
+Exact continuation: connect confirmed reports to a bounded dispatch queue using existing officer identities and physically navigable last-observed locations; distinguish hearing gunfire from identifying its shooter; add investigation expiry/abandonment, witnessed reacquisition and persistent case resolution. Then validate wanted/pursuit/station consequences before economy/ownership, richer schedules, factions and Mission02. Do not rerun asset generators or replace the published core. Preserve `tools/stage_veyra3_foundation.py` as an obsolete untracked helper; do not execute it against the integrated project.
+
+
+## Acceptance report index — current session
+
+| Requested item | Status | Actual result |
+|---|---|---|
+|1 Recovered work / Git|COMPLETE|Uncommitted home, city, traffic and assets recovered; no reset, clean, history rewrite or previous-build replacement. Core96e07a9 pushed. Obsolete helper intentionally preserved untracked.|
+|2 Navigation tests|COMPLETE|Five completed source navigation suites passed; exact counts above, including physical doorway/counter arrival.|
+|3 Windows tests|COMPLETE for core|Final home31, VeyraIII27, living-world32, urban22; retained exported physics50/ragdoll53/mobility54/metropolis33/network13. Police-candidate results recorded separately.|
+|4 Sustained day/night|COMPLETE for core|Two unrecorded247-second1080p circuits,11 junctions/764m each; day175.77/64.10 and night180.63/70.47 average/1%low FPS. Full distributions and simulation costs in JSON.|
+|5 Cafe owner navigation|COMPLETE within tested route|Lena physically enters raised counter space, floor contact and business availability verified;12-second movie and trace retained.|
+|6 Crowd and traffic|PARTIAL|Physical walking, curb/obstacle recovery, six-car default, ten-car stop/resume and save/load tested. General traffic incident recovery and richer routines unfinished.|
+|7 Home|PARTIAL|Rest, wardrobe/material, storage, desk/checkpoint, safe restore and physical exit work. Original modeled furnishings remain prototype art.|
+|8 Audio|PARTIAL / listening NOT RUN|18 original procedural assets, load/speed/lateral-slip layers, independent mix buses, physical indoor reflection. Actual engine mix recorded, non-silent and unclipped; no subjective quality claim.|
+|9 City expansion|COMPLETE within defined scope|Eight connected blocks, original four plus two west/two east;15 junctions44 directed edges; explicit roadworks boundaries. City-wide metropolis unfinished.|
+|10 Gameplay evidence|COMPLETE with framing limits|1080p screenshots, synchronized720p30FPS offline pedestrian/cafe/traffic movies and identity traces. Traffic camera partly looks down early. No capture timing used as benchmark.|
+|11 EXE and PCK|COMPLETE|Stable core: `builds/operation-veyra-iii-release/OutlawSyndicate.exe` and `.pck`; police witness candidate separate in `builds/veyra3-law-witness-candidate/`. Run beside matching PCK, choose New game; Tab phone, Esc controls.|
+|12 Source consistency|COMPLETE|Core766 hashes verified before packaging; police772 verified after export. Build manifests distinguish revisions.|
+|13 Commits|COMPLETE for core|96e07a9 integrated city/home/traffic; preceding7b0c6a0 andbc93815 foundation retained. Police publication recorded below after validation.|
+|14 GitHub push|COMPLETE for core|Normal push confirmedbc93815..96e07a9 to origin/main. No force push.|
+|15 Missing features|PARTIAL|Dispatch/wanted/pursuit/station, ownership/economy expansion, advanced NPC life, factions, Mission02 and five-act campaign unfinished. Texture RID cleanup open; MovieWriter also emits resource cleanup diagnostics. Human extended playtest NOT RUN.|
+|16 Next milestone begun|PARTIAL|Implemented physically witnessed delayed crime reports, persistent bounded registry and phone history; source18/native19 checks passed. Existing combat/search remains independent.|
+|17 Continuation|PARTIAL|Next connect confirmed reports to physical officer investigation, then wanted/pursuit and persistent case resolution. Exact handoff above. Work does not continue after the session ends.|
+
+Police-candidate final regression results: source production39, home/continuity/Mission01 total31, VeyraIII27, living-world32, witness registry18; all passed, processes exited0. Native candidate witness19, home/continuity/Mission01 total31, VeyraIII27; all passed, processes exited0.772 gameplay hashes verified again after the runs. Native exits retain seven texture RID warnings. No additional police-candidate sustained benchmark or human listening/extended playtest was run.
