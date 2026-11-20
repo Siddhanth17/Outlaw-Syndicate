@@ -39,7 +39,7 @@ func update_schedule() -> void:
 	if period==schedule_period:return
 	schedule_period=period
 	var at: Vector3=daily_destinations[period]
-	route=PackedVector3Array([at,at+Vector3(0,0,3)])
+	route=PackedVector3Array([at]) if period=="work" and bool(schedule_config.get("stationary_work",false)) else PackedVector3Array([at,at+Vector3(0,0,3)])
 	route_index=0
 	plan_time=0
 	planned_target=Vector3.INF
@@ -92,6 +92,13 @@ func _on_incident(event: Dictionary) -> void:
 		plan_time=0
 
 func _physics_process(delta: float) -> void:
+	var started: int=Time.get_ticks_usec()
+	_simulate(delta)
+	if is_instance_valid(game.living) and not story_actor:
+		game.living.npc_cost_us+=Time.get_ticks_usec()-started
+		game.living.npc_steps+=1
+
+func _simulate(delta: float) -> void:
 	if game.paused or game.cinematic_active: return
 	if _update_injury(delta): return
 	if profile.role in ["police","faction","security"] and suspicion>=1:
@@ -124,7 +131,7 @@ func _physics_process(delta: float) -> void:
 	var fleeing: bool=danger_time>0
 	if fleeing:
 		var away: Vector3=(position-threat).normalized()
-		target=Vector3(clampf(position.x+away.x*8,-115,115),position.y,clampf(position.z+away.z*8,-205,228))
+		target=Vector3(clampf(position.x+away.x*8,-154,154),position.y,clampf(position.z+away.z*8,-205,228))
 	else:
 		activity="routine" if schedule_period.is_empty() else schedule_period
 		var endpoint: Vector3=path_points[-1] if not path_points.is_empty() and planned_target==target else target
@@ -145,6 +152,7 @@ func _physics_process(delta: float) -> void:
 		path_points=game.navigation.path(position,target,true)
 		path_index=1 if path_points.size()>1 else 0
 		planned_target=target
+		if not path_points.is_empty() and Vector2(path_points[-1].x-target.x,path_points[-1].z-target.z).length()>1.7:path_points.clear()
 		plan_time=2.5+float(abs(hash(npc_id))%5)*.13
 		repath_count+=1
 		navigation_status="following" if not path_points.is_empty() else "no_reachable_path"

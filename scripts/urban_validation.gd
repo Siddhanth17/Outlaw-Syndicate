@@ -37,6 +37,7 @@ func run() -> void:
 		get_window().content_scale_mode=Window.CONTENT_SCALE_MODE_VIEWPORT
 		get_window().content_scale_aspect=Window.CONTENT_SCALE_ASPECT_KEEP
 	game._menu_action("New game")
+	game.traffic.set_fleet_enabled(false) # Isolate the two original controller fixtures; the ten-car graph has its own tests.
 	DirAccess.make_dir_recursive_absolute("user://urban-verification")
 	game.ui.gameplay.hide()
 	game.quarter.minutes=720
@@ -71,7 +72,7 @@ func run() -> void:
 	await frames(450)
 	print("TRAFFIC_TURN ",traffic_car.position," yaw=",traffic_car.rotation.y," reason=",game.traffic.reasons[0])
 	check(traffic_car.position.x>-60 and traffic_car.position.z<226 and game.traffic.targets[0]==2,"physical traffic negotiates its first junction turn")
-	check(game.quarter.centers.size()==4,"four connected urban blocks defined")
+	check(game.quarter.centers.size()==8,"eight connected urban blocks retain the original four and add west/east pairs")
 	check(game.quarter.kits.size()==4,"four original detailed frontage assets loaded")
 	check(game.navigation.path(Vector3(-10,.2,40),Vector3(-10,.2,210)).size()>20,"collision-aware pedestrian navigation connects harbor and new quarter")
 	var citizen: CityNPC=game.people.back()
@@ -91,7 +92,7 @@ func run() -> void:
 	game.player.position=Vector3(0,.2,138)
 	await frames(12)
 	game.quarter.refresh(true)
-	check(game.quarter.sectors.size()==4,"all four sectors resident from the central intersection")
+	check(game.quarter.sectors.size()==8,"all eight connected sectors are resident from the central intersection")
 	game.ui.gameplay.hide()
 	game.quarter.minutes=720
 	game.quarter.apply_clock()
@@ -110,10 +111,10 @@ func run() -> void:
 	game.player.position=Vector3(0,.2,-150)
 	game.quarter.refresh(true)
 	await frames(2)
-	check(game.quarter.sectors.size()==0 and game.quarter.unload_count>=4,"distant decorative sectors unload with hysteresis")
+	check(game.quarter.sectors.size()==0 and game.quarter.unload_count>=8,"distant decorative sectors unload with hysteresis")
 	game.player.position=Vector3(0,.2,138)
 	game.quarter.refresh(true)
-	check(game.quarter.sectors.size()==4 and game.quarter.load_count>=loads+4,"sector reload restores original detailed buildings")
+	check(game.quarter.sectors.size()==8 and game.quarter.load_count>=loads+8,"sector reload restores original and west/east detailed buildings")
 	game.quarter.minutes=60
 	game.quarter.apply_clock()
 	await view(Vector3(5,2,126),Vector3(25,5,100),"night-avenue")

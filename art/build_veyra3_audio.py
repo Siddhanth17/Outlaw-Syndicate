@@ -32,6 +32,7 @@ for vehicle,freqs in [('car',[40,70,110]),('bike',[30,60,100])]:
     save(vehicle+'_shift',noise(len(t),180,1800)*np.exp(-t*24)+np.sin(t*2*np.pi*140)*np.exp(-t*40))
 t=np.arange(SR*3)/SR
 save('road_roll',noise(len(t),100,1800),True)
+save('road_skid',noise(len(t),650,6500)*(.8+.2*np.sin(t*2*np.pi*17)),True)
 for i in range(4):
     t=np.arange(int(SR*.9))/SR
     x=noise(len(t),800,14000)*np.exp(-t*210)*2.2

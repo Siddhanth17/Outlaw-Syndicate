@@ -95,31 +95,38 @@
       "loop": true,
       "seam_delta": 0.007921933804623749
     },
+    "road_skid": {
+      "sha256": "84d15d554ac5c5e11ee9b746fd3e352fd672820efe8c955bb4d5fdee84397778",
+      "seconds": 3.0,
+      "peak": 0.82,
+      "loop": true,
+      "seam_delta": 0.07026795542096563
+    },
     "sidearm_0": {
-      "sha256": "d423752c9326388b5fa65487c8de7db1230019d4a0453856cac6c0744d9a7294",
+      "sha256": "c4049d517793aa89a182ef034310c61989fae28fddb7982345c44397f0a75510",
       "seconds": 0.9,
-      "peak": 0.7627680812320092,
+      "peak": 0.6071310664514191,
       "loop": false,
       "seam_delta": 0.0
     },
     "sidearm_1": {
-      "sha256": "55e3a28cbcad9381c5b0ea40895c1b502174aa51417d0b8e5cbd97355ea0ce3a",
+      "sha256": "15149c20d81a90af57a8a0f390f535953e4ba4f9ead28893e780ee8026309543",
       "seconds": 0.9,
-      "peak": 0.7212318736261303,
+      "peak": 0.6256493426207425,
       "loop": false,
       "seam_delta": 0.0
     },
     "sidearm_2": {
-      "sha256": "d78d966f6aada74c1ec4fb7ab5d9c41f297f7295928c4c14bced7efb1fca0e05",
+      "sha256": "b6efbeba74833e30aa7ef4bc971ac72073146690b1253846f54b2378201b4a49",
       "seconds": 0.9,
-      "peak": 0.5644980219183792,
+      "peak": 0.82,
       "loop": false,
       "seam_delta": 0.0
     },
     "sidearm_3": {
-      "sha256": "1030d40debdfbbcdd4f84a5a2ae21faeb1a5878974be0afaf604b2d7c7e7dab8",
+      "sha256": "4ad920c97796b7fae86f0f18e7a4094c8934336b02acfc12cd3a97803fcfd1f0",
       "seconds": 0.9,
-      "peak": 0.6755305206667358,
+      "peak": 0.725628206166662,
       "loop": false,
       "seam_delta": 0.0
     }

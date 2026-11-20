@@ -2,7 +2,7 @@ class_name VeyraQuarter
 extends Node3D
 
 # Persistent gameplay/collisions stay resident. Only decorative GLB sectors stream.
-const XS: Array[float]=[-70,0,72]
+const XS: Array[float]=[-140,-70,0,72,142]
 const ZS: Array[float]=[58,138,218]
 var game: Node3D
 var centers: Array[Vector3]=[]
@@ -24,15 +24,15 @@ func frontage_yaw(dx: float, dz: float) -> float:
 func _ready() -> void:
 	for i: int in range(4): kits.append(load("res://assets/environment/urban_frontage_%d.glb"%i))
 	var harbor: IronHarbor=game.harbor
-	harbor.solid(Vector3(0,-0.55,144),Vector3(174,1,190))
-	harbor.surface(Vector3(0,-0.045,144),Vector2(174,190),"concrete",Color(.5,.5,.48),3,.9)
+	harbor.solid(Vector3(1,-0.55,144),Vector3(316,1,190))
+	harbor.surface(Vector3(1,-0.045,144),Vector2(316,190),"concrete",Color(.5,.5,.48),3,.9)
 	for x: float in XS:
 		harbor.surface(Vector3(x,.06,140),Vector2(14,178),"asphalt",Color.WHITE,3,.7)
 	for z: float in ZS:
-		harbor.surface(Vector3(1,.061,z),Vector2(156,14),"asphalt",Color.WHITE,3,.7)
+		harbor.surface(Vector3(1,.061,z),Vector2(296,14),"asphalt",Color.WHITE,3,.7)
 	for row: int in range(2):
-		for col: int in range(2):
-			var center:=Vector3(-35 if col==0 else 36,0,98+row*80)
+		for col: int in range(4):
+			var center:=Vector3([-35,36,-105,107][col],0,98+row*80)
 			centers.append(center)
 			for dx: float in [-24,24]: harbor.solid(center+Vector3(dx,2,0),Vector3(.32,4,.32))
 			for dx: float in [-6,6]: harbor.solid(center+Vector3(dx,.42,0),Vector3(2,.6,.5))
@@ -40,6 +40,7 @@ func _ready() -> void:
 			harbor.surface(center+Vector3.UP*.136,Vector2(56,66),"concrete",Color(.7,.69,.64),2,.85)
 			for dx: float in [-14,14]:
 				for dz: float in [-18,18]:
+					if center.x==-105 and row==0 and dx==-14 and dz==-18:continue # Vale residence has its own modeled shell/collisions.
 					var pose:=Transform3D(Basis(Vector3.UP,frontage_yaw(dx,dz)),center+Vector3(dx,.14,dz))
 					var floor_body:=harbor.solid(pose*Vector3(0,.1,0),Vector3(18,.2,18))
 					floor_body.set_meta("foot_surface","interior")
@@ -88,7 +89,7 @@ func _ready() -> void:
 			if abs(z-138)<12: continue
 			paint(Vector3(x,.075,z),Vector2(.12,3),Color(.75,.64,.39))
 	for z: float in ZS:
-		for x: int in range(-56,64,8):
+		for x: int in range(-126,134,8):
 			if abs(x)<12:continue
 			paint(Vector3(x,.075,z),Vector2(3,.12),Color(.75,.64,.39))
 	# Harbor terminus: visible physical safety barriers separate background scenery.
@@ -96,6 +97,16 @@ func _ready() -> void:
 		for dx: float in [-4,0,4]:
 			game.harbor.asset("environment/urban_barrier",Vector3(x+dx,0,-205),PI/2)
 		game.harbor.solid(Vector3(x,.5,-205),Vector3(13,1,.76))
+	# Explicit production boundaries: connected T-junctions remain traversable;
+	# straight-ahead roadworks cannot lead a player off the physical city plate.
+	for x: float in XS:
+		for dx: float in [-4,0,4]:game.harbor.asset("environment/urban_barrier",Vector3(x+dx,.14,232))
+		game.harbor.solid(Vector3(x,.64,232),Vector3(13,1,.76))
+	for z: float in ZS:
+		for x: float in [-154,156]:
+			for dz: float in [-4,0,4]:game.harbor.asset("environment/urban_barrier",Vector3(x,.14,z+dz),PI/2)
+			game.harbor.solid(Vector3(x,.64,z),Vector3(.76,1,13))
+	var closure:=Label3D.new();closure.text="VEYRA CENTRAL / ROADWORKS";closure.position=Vector3(0,2,231);closure.rotation.y=PI;closure.font_size=36;closure.pixel_size=.009;add_child(closure)
 	refresh(true)
 
 func paint(at: Vector3, size: Vector2, color: Color) -> void:
@@ -120,6 +131,7 @@ func refresh(all_now: bool=false) -> void:
 			add_child(sector)
 			sector.position=centers[i]
 			for a: int in range(4):
+				if centers[i].x==-105 and centers[i].z==98 and a==0:continue
 				var model: Node3D=kits[(i+a)%4].instantiate()
 				sector.add_child(model)
 				model.position=Vector3(-14 if a%2==0 else 14,.14,-18 if a<2 else 18)

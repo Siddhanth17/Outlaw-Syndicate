@@ -1,0 +1,14 @@
+{
+  "license": "CC0-1.0",
+  "source": "Original NumPy mathematical textures and Blender geometry; see art/build_home_surfaces.py and art/build_vale_home.py. The existing Poly Haven concrete plaster maps retain their original CC0 provenance. No downloaded models or private reference images.",
+  "files": {
+    "vale-oak.png": "fe27d3829bd060d72091f879d2f0196399e4b25b5b6aed4051588dfc06b0192a",
+    "vale-oak-normal.png": "b0430aada42292a2126442ca6c22a6bc25a82b47134761b922e1c7088505f7cf",
+    "vale-leather.png": "da1cd1e5e21b6fa7d304a59e45be4c555855496365112fa7882699c9e3a6ec7e",
+    "vale-leather-normal.png": "44b6c8b55e001484b894e63c37c6e4d5b9c05096617dd26c1f6fadec93df08ce",
+    "vale-linen.png": "0e4c0c5fcaecc6a40ff45e6bf0840980f5f1a2a6e244879e64148c600457baa1",
+    "vale-linen-normal.png": "1fe38ffba24ded52e8b392839cc0c90356777a800b85c282c16f7399a6cf8096",
+    "vale-quilt.png": "22db1dcfc57348f213df959b7ebe6b74f842fbab508275c8d7bb14d5037d22c0",
+    "vale-quilt-normal.png": "1fe38ffba24ded52e8b392839cc0c90356777a800b85c282c16f7399a6cf8096"
+  }
+}

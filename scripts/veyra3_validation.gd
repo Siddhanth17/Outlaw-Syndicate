@@ -4,6 +4,8 @@ var game: Node3D
 var passes: int=0
 var failures: int=0
 var tick: int=0
+var worker_visited: bool=false
+var staff_visited: bool=false
 func check(ok: bool,message: String) -> void:
 	print(("PASS " if ok else "FAIL ")+message)
 	if ok:passes+=1
@@ -12,6 +14,11 @@ func frames(count: int) -> void:
 	for i: int in range(count):
 		await get_tree().physics_frame
 		tick+=1
+		if tick<=1800:
+			var worker: CityNPC=game.living.actor_for("resident_01")
+			if worker and not worker.abstracted and worker.is_on_floor() and worker.position.distance_to(LivingWorld.point(game.living.identities.resident_01.work))<1:worker_visited=true
+			var staff: CityNPC=game.living.actor_for("resident_00")
+			if staff and not staff.abstracted and staff.is_on_floor() and staff.position.x<-12.5 and staff.position.y>.3 and game.living.cafe_available():staff_visited=true
 		if tick<=1800 and tick%12==0 and OS.get_cmdline_user_args().has("--record-veyra3") and DisplayServer.get_name()!="headless":
 			await RenderingServer.frame_post_draw
 			game.get_viewport().get_texture().get_image().save_png("user://veyra3-verification/walking-%03d.png"%(tick/12-1))
@@ -30,6 +37,7 @@ func run() -> void:
 	game.player.camera.current=true
 	game.player.pitch=-.1
 	game.living.refresh(0)
+	check(game.traffic.cars.filter(func(c: VeyraCar) -> bool:return c.visible).size()==6 and game.traffic.retained.size()==2,"normal startup enables a measured six-car graph fleet across old/west/east roads")
 	DirAccess.make_dir_recursive_absolute("user://veyra3-verification")
 	var origins: Dictionary={}
 	for actor: CityNPC in game.people:origins[actor.npc_id]=actor.position
@@ -43,11 +51,20 @@ func run() -> void:
 	check(moving>=8,"multiple real nearby residents walk more than five meters in thirty seconds")
 	check(stalled.is_empty(),"no active resident silently remains stalled for over four seconds in the normal route")
 	var worker: CityNPC=game.living.actor_for("resident_01")
-	check(worker.arrival_count>0,"Soren physically reaches his scheduled workplace")
+	check(worker_visited and worker.arrival_count>0 and staff_visited,"Soren reaches his work zone and Lena physically arrives at the real staffed cafe counter during this route")
 	var crossing: CityNPC=game.living.actor_for("resident_10")
-	check(crossing.position.z>149,"resident physically climbs the raised sidewalk beyond the junction")
+	check(crossing.position.z>149 and not crossing.abstracted and crossing.is_on_floor(),"resident physically climbs the raised sidewalk beyond the junction")
 	game._save()
+	var traffic_before: Dictionary=game.traffic.snapshot()
+	game.traffic.cars[0].reset_pose(Transform3D(Basis.IDENTITY,Vector3(0,.9,-170)))
+	game.traffic.cars[0].integrity=15
+	await frames(2)
 	game._load()
+	await frames(2)
+	check(game.traffic.cars[0].position.distance_to(LivingWorld.point(traffic_before.drivers.retained_00.position))<2 and game.traffic.cars[0].integrity>85,"checkpoint restores the actual traffic vehicle transform, condition and graph route")
+	var malformed: Dictionary=traffic_before.duplicate(true)
+	malformed.drivers.retained_00.position=[INF,0,0]
+	check(not game.traffic.validate(malformed),"malformed traffic state is rejected before replacing live checkpoint state")
 	var previous: Vector3=crossing.position
 	await frames(240)
 	check(crossing.navigation_status!="unplanned" and crossing.stuck_duration<4,"checkpoint restore rebuilds a current navigation path without freezing the resident")

@@ -47,6 +47,7 @@ var quarter: VeyraQuarter
 var traffic: StreetTraffic
 var living: LivingWorld
 var city_audio: CityAudio
+var residence: ValeHome
 
 func start_story() -> void:
 	if story_active: return
@@ -84,6 +85,9 @@ func _ready() -> void:
 	quarter=VeyraQuarter.new()
 	quarter.game=self
 	add_child(quarter)
+	residence=ValeHome.new()
+	residence.game=self
+	add_child(residence)
 	traffic=StreetTraffic.new()
 	traffic.game=self
 	add_child(traffic)
@@ -176,6 +180,11 @@ func _ready() -> void:
 		validation.game=self
 		add_child(validation)
 		validation.call_deferred("run")
+	if OS.get_cmdline_user_args().has("--verify-network"):
+		var validation:=NetworkValidation.new()
+		validation.game=self
+		add_child(validation)
+		validation.call_deferred("run")
 	if OS.get_cmdline_user_args().has("--audit-motion"):
 		var audit:=MotionAudit.new()
 		audit.game=self
@@ -183,6 +192,16 @@ func _ready() -> void:
 		audit.call_deferred("run")
 	if OS.get_cmdline_user_args().has("--verify-veyra3"):
 		var validation:=Veyra3Validation.new()
+		validation.game=self
+		add_child(validation)
+		validation.call_deferred("run")
+	if OS.get_cmdline_user_args().has("--verify-home"):
+		var validation:=HomeValidation.new()
+		validation.game=self
+		add_child(validation)
+		validation.call_deferred("run")
+	if OS.get_cmdline_user_args().has("--verify-expansion"):
+		var validation:=ExpansionValidation.new()
 		validation.game=self
 		add_child(validation)
 		validation.call_deferred("run")
@@ -250,7 +269,7 @@ func _menu_action(title: String) -> void:
 		"New game":
 			phone.close()
 			story_active=false
-			quarter.minutes=1080
+			quarter.minutes=480 # Begin at home during the morning commute, rather than after most shifts end.
 			quarter.day=1
 			quarter.apply_clock()
 			phone.photos.clear()
@@ -260,7 +279,15 @@ func _menu_action(title: String) -> void:
 			character_impacts.reset()
 			memory = CityMemory.new()
 			events.recent.clear()
-			for citizen: CityNPC in people: citizen.restore_outcome(70)
+			for citizen: CityNPC in people:
+				citizen.restore_outcome(70)
+				citizen.position=citizen.origin
+				citizen.route_index=0
+				citizen.activity_time=0
+				citizen.arrival_count=0
+				citizen.repath_count=0
+				citizen.schedule_period=""
+				citizen.update_schedule()
 			if dante is CityNPC: dante.restore_outcome(70)
 			faction_rep = 0
 			reload_time = 0
@@ -289,7 +316,11 @@ func _menu_action(title: String) -> void:
 			_set_pause(false)
 			marker.hide()
 			living.restore(null)
-			_say("Free roam","Explore Iron Harbor. Open your phone [%s] to choose when to start The Last Address."%phone.key_label())
+			residence.restore(null)
+			player.position=residence.spawn_point()
+			player.yaw=0
+			player.pitch=-.1
+			_say("Home","18 Vale / West Northline. Explore your home, then head outside. Story missions remain optional in Messages.")
 		"Settings", "Controls", "Credits":
 			return_screen = ui.current_screen
 			ui.show_screen(title.to_lower())
@@ -479,6 +510,9 @@ func _process(delta: float) -> void:
 	if not observed:
 		memory.heat = maxf(0, memory.heat - delta * 5)
 	var district: String="NORTHLINE" if player.position.z>65 else "IRON HARBOR"
+	if player.position.z>65:
+		if player.position.x<-70:district="WEST NORTHLINE"
+		elif player.position.x>72:district="EAST LOGISTICS"
 	if not story_active:
 		marker.hide()
 		ui.objective_title.text=district+" / FREE ROAM"
@@ -517,10 +551,12 @@ func _process(delta: float) -> void:
 		ui.prompt.text="[E] Dismount Harrier" if bike.linear_velocity.length()<2 else ""
 	elif not player.driving and player.position.distance_to(bike.position)<3:
 		ui.prompt.text="[E] Ride Harrier motorcycle"
+	if not residence.target().is_empty() and not phone.opened:ui.prompt.text="[E] Home / "+residence.target().capitalize()
 	ui.crosshair.visible = player.aiming and not player.driving and not player.riding_bike
 
 func _interact() -> void:
 	if vehicle_transition.active or bike.mounting:return
+	if residence.interact():return
 	if not story_active and not player.driving and not player.riding_bike and player.position.distance_to(dante.position)<4:
 		phone.talk_to_dante()
 		return
@@ -739,6 +775,8 @@ func _save() -> void:
 	data["city_minutes"]=quarter.minutes
 	data["city_day"]=quarter.day
 	data["living_world"]=living.snapshot()
+	data["residence"]=residence.snapshot()
+	data["traffic"]=traffic.snapshot()
 	var outcomes: Dictionary={}
 	for citizen: CityNPC in people: outcomes[citizen.npc_id]={"health":citizen.health,"injuries":citizen.injuries.snapshot()}
 	if dante is CityNPC: outcomes[dante.npc_id]={"health":dante.health,"injuries":dante.injuries.snapshot()}
@@ -788,7 +826,7 @@ func _load() -> void:
 			for component: Variant in value:
 				if not (component is float or component is int) or not is_finite(float(component)) or absf(float(component)) > 10000:
 					valid = false
-		if not valid or not living.validate(data.get("living_world")) or not memory.restore(data): continue
+		if not valid or not living.validate(data.get("living_world")) or not residence.validate(data.get("residence")) or not traffic.validate(data.get("traffic")) or not memory.restore(data): continue
 		phone.close()
 		var world: Dictionary=data.get("open_world",{}) if data.get("open_world",{}) is Dictionary else {}
 		story_active=bool(world.get("story_active",true))
@@ -840,6 +878,9 @@ func _load() -> void:
 		marker.show()
 		_say("Checkpoint", "Restored. The city remembers.")
 		living.restore(data.get("living_world"))
+		residence.restore(data.get("residence"))
+		residence.repair_saved_location()
+		traffic.restore(data.get("traffic"))
 		return
 	_say("Checkpoint", "No valid save or backup found.")
 

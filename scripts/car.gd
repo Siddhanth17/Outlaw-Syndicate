@@ -120,7 +120,7 @@ func _ready() -> void:
 	if DisplayServer.get_name() != "headless": tire_audio.play()
 	sound_model=VehicleSound.new()
 	add_child(sound_model)
-	sound_model.setup(engine_audio,"car")
+	sound_model.setup(engine_audio,"car",tire_audio)
 	tire_audio.bus="Vehicles"
 	impact_audio.bus="Vehicles"
 	var rolling: AudioStreamWAV=load("res://assets/audio/veyra3/road_roll.wav").duplicate()
@@ -171,8 +171,7 @@ func _physics_process(delta: float) -> void:
 		wheel.suspension_stiffness = 45 - float(damage.zones[wheel_zone]) * 0.12
 		wheel.wheel_friction_slip = (0.42 if flat else 1.0) * (1.0 - float(damage.zones[wheel_zone]) * 0.004) * (2.0 if absf(position.x) > 8 else (1.8 if Input.is_action_pressed("handbrake") and occupied else 3.2))
 	last_velocity = linear_velocity
-	sound_model.update(delta,forward_speed,throttle_smoothed,brake>1,integrity,occupied or autonomous)
-	tire_audio.volume_db = -30+minf(8,linear_velocity.length()*.3) if (occupied or autonomous) and linear_velocity.length()>1 else -80
+	sound_model.update(delta,forward_speed,throttle_smoothed,brake>1,integrity,occupied or autonomous,absf(linear_velocity.dot(global_basis.x)))
 	for i: int in range(lamps.size()):
 		lamps[i].visible = damage.light_damage[i]<60 and integrity > 20 and float(damage.zones["front_left" if i == 0 else "front_right"]) < 55
 

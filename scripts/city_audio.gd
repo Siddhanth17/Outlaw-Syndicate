@@ -38,7 +38,7 @@ func fire(at: Vector3) -> void:
 	var voice:=AudioStreamPlayer3D.new()
 	voice.stream=load("res://assets/audio/veyra3/sidearm_%d.wav"%shot_index)
 	voice.bus="Weapons"
-	voice.position=at;voice.unit_size=8;voice.max_distance=130;voice.volume_db=-12
+	voice.position=at;voice.unit_size=8;voice.max_distance=130;voice.volume_db=-3
 	voice.pitch_scale=1+float(shot_index-2)*.018
 	voice.max_polyphony=2
 	get_parent().add_child(voice)

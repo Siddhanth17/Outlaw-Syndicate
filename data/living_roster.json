@@ -3,6 +3,7 @@
   "citizens": [
     {
       "id": "resident_00",
+      "stationary_work": true,
       "name": "Lena Ortiz",
       "appearance": "shopkeeper",
       "occupation": "cafe owner",
@@ -68,19 +69,19 @@
       "occupation": "maintenance technician",
       "recurring": true,
       "home": [
-        -10,
+        -130,
         0.2,
-        76
+        80
       ],
       "work": [
-        -10,
+        -130,
         0.2,
-        96
+        100
       ],
       "rest": [
-        -10,
+        -130,
         0.2,
-        85
+        88
       ],
       "work_start": 8,
       "work_end": 18,
@@ -98,19 +99,19 @@
       "occupation": "community officer",
       "recurring": true,
       "home": [
-        10,
+        132,
         0.2,
         80
       ],
       "work": [
-        10,
+        132,
         0.2,
         100
       ],
       "rest": [
-        10,
+        132,
         0.2,
-        89
+        88
       ],
       "work_start": 8,
       "work_end": 18,
@@ -128,19 +129,19 @@
       "occupation": "courier",
       "recurring": true,
       "home": [
-        -10,
+        -130,
         0.2,
-        104
+        96
       ],
       "work": [
-        -10,
+        -130,
         0.2,
-        124
+        116
       ],
       "rest": [
-        -10,
+        -130,
         0.2,
-        113
+        104
       ],
       "work_start": 8,
       "work_end": 18,
@@ -158,19 +159,19 @@
       "occupation": "office assistant",
       "recurring": true,
       "home": [
-        10,
+        132,
         0.2,
-        108
+        96
       ],
       "work": [
-        10,
+        132,
         0.2,
-        128
+        116
       ],
       "rest": [
-        10,
+        132,
         0.2,
-        117
+        104
       ],
       "work_start": 8,
       "work_end": 18,
@@ -188,19 +189,19 @@
       "occupation": "security officer",
       "recurring": true,
       "home": [
-        -10,
+        -130,
         0.2,
-        104
+        112
       ],
       "work": [
-        -10,
+        -130,
         0.2,
-        124
+        132
       ],
       "rest": [
-        -10,
+        -130,
         0.2,
-        113
+        120
       ],
       "work_start": 8,
       "work_end": 18,
@@ -218,19 +219,19 @@
       "occupation": "property agent",
       "recurring": true,
       "home": [
-        10,
+        132,
         0.2,
-        108
+        112
       ],
       "work": [
-        10,
+        132,
         0.2,
-        128
+        132
       ],
       "rest": [
-        10,
+        132,
         0.2,
-        117
+        120
       ],
       "work_start": 8,
       "work_end": 18,
@@ -248,19 +249,19 @@
       "occupation": "dock inspector",
       "recurring": false,
       "home": [
-        -10,
+        -130,
         0.2,
-        132
+        128
       ],
       "work": [
-        -10,
+        -130,
         0.2,
-        152
+        148
       ],
       "rest": [
-        -10,
+        -130,
         0.2,
-        141
+        136
       ],
       "work_start": 8,
       "work_end": 18,
@@ -278,19 +279,19 @@
       "occupation": "retail assistant",
       "recurring": false,
       "home": [
-        10,
+        132,
         0.2,
-        136
+        128
       ],
       "work": [
-        10,
+        132,
         0.2,
-        156
+        148
       ],
       "rest": [
-        10,
+        132,
         0.2,
-        145
+        136
       ],
       "work_start": 8,
       "work_end": 18,
@@ -338,19 +339,19 @@
       "occupation": "electrician",
       "recurring": false,
       "home": [
-        10,
+        132,
         0.2,
-        136
+        144
       ],
       "work": [
-        10,
+        132,
         0.2,
-        156
+        164
       ],
       "rest": [
-        10,
+        132,
         0.2,
-        145
+        152
       ],
       "work_start": 8,
       "work_end": 18,
@@ -368,19 +369,19 @@
       "occupation": "office worker",
       "recurring": false,
       "home": [
-        -10,
+        -130,
         0.2,
-        160
+        144
       ],
       "work": [
-        -10,
+        -130,
         0.2,
-        180
+        164
       ],
       "rest": [
-        -10,
+        -130,
         0.2,
-        169
+        152
       ],
       "work_start": 8,
       "work_end": 18,
@@ -398,19 +399,19 @@
       "occupation": "courier",
       "recurring": false,
       "home": [
-        10,
+        132,
         0.2,
-        164
+        160
       ],
       "work": [
-        10,
+        132,
         0.2,
-        184
+        180
       ],
       "rest": [
-        10,
+        132,
         0.2,
-        173
+        168
       ],
       "work_start": 8,
       "work_end": 18,
@@ -428,19 +429,19 @@
       "occupation": "dock worker",
       "recurring": false,
       "home": [
-        -10,
+        -130,
         0.2,
         160
       ],
       "work": [
-        -10,
+        -130,
         0.2,
         180
       ],
       "rest": [
-        -10,
+        -130,
         0.2,
-        169
+        168
       ],
       "work_start": 8,
       "work_end": 18,
@@ -458,19 +459,19 @@
       "occupation": "restaurant employee",
       "recurring": false,
       "home": [
-        10,
+        132,
         0.2,
-        164
+        176
       ],
       "work": [
-        10,
+        132,
         0.2,
-        184
+        196
       ],
       "rest": [
-        10,
+        132,
         0.2,
-        173
+        184
       ],
       "work_start": 8,
       "work_end": 18,
@@ -488,19 +489,19 @@
       "occupation": "resident",
       "recurring": false,
       "home": [
-        -10,
+        -130,
         0.2,
-        188
+        176
       ],
       "work": [
-        -10,
+        -130,
         0.2,
-        208
+        196
       ],
       "rest": [
-        -10,
+        -130,
         0.2,
-        197
+        184
       ],
       "work_start": 8,
       "work_end": 18,
@@ -518,19 +519,19 @@
       "occupation": "logistics foreman",
       "recurring": false,
       "home": [
-        10,
+        132,
         0.2,
         192
       ],
       "work": [
-        10,
+        132,
         0.2,
-        209
+        212
       ],
       "rest": [
-        10,
+        132,
         0.2,
-        201
+        200
       ],
       "work_start": 8,
       "work_end": 18,

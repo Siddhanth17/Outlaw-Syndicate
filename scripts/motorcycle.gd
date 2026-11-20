@@ -172,7 +172,7 @@ func _physics_process(delta: float) -> void:
 	lean=lerpf(lean,clampf(-steering*linear_velocity.length()*0.07,-0.40,0.40),1-exp(-delta*6))
 	model.rotation.z=lean
 	handlebar.rotation.y=steering
-	sound_model.update(delta,speed,throttle,brake>1,100,occupied)
+	sound_model.update(delta,speed,throttle,brake>1,100,occupied,absf(linear_velocity.dot(global_basis.x)))
 	contact_cooldown=maxf(0,contact_cooldown-delta)
 	if global_position.y < -15:
 		release()

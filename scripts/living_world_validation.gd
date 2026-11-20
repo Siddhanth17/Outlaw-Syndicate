@@ -36,7 +36,7 @@ func benchmark(label: String, seconds: float, walking: bool=false) -> void:
 	var count: int=maxi(1,int(ceil(times.size()*.01)))
 	var slow: float=0
 	for i: int in range(times.size()-count,times.size()):slow+=times[i]
-	profiles[label]={"seconds":seconds,"frames":times.size(),"mean_fps":times.size()*1000/total,"one_percent_low_fps":1000/(slow/count),"p95_ms":times[int(times.size()*.95)],"p99_ms":times[int(times.size()*.99)],"max_ms":times.back(),"active_citizens":game.living.active_count,"abstract_citizens":game.living.abstract_count,"traffic_cars":game.traffic.cars.size(),"render_size":[int(game.get_viewport().get_texture().get_size().x),int(game.get_viewport().get_texture().get_size().y)],"texture_buffer_bytes":Performance.get_monitor(Performance.RENDER_VIDEO_MEM_USED)}
+	profiles[label]={"seconds":seconds,"frames":times.size(),"mean_fps":times.size()*1000/total,"one_percent_low_fps":1000/(slow/count),"p95_ms":times[int(times.size()*.95)],"p99_ms":times[int(times.size()*.99)],"max_ms":times.back(),"active_citizens":game.living.active_count,"abstract_citizens":game.living.abstract_count,"traffic_cars":game.traffic.cars.filter(func(c: VeyraCar) -> bool:return c.visible).size(),"render_size":[int(game.get_viewport().get_texture().get_size().x),int(game.get_viewport().get_texture().get_size().y)],"texture_buffer_bytes":Performance.get_monitor(Performance.RENDER_VIDEO_MEM_USED)}
 	print("LIVING_PROFILE ",label," ",profiles[label])
 func run() -> void:
 	game.test_mode=true
@@ -69,6 +69,11 @@ func run() -> void:
 	await capture("crowded-avenue")
 	var lena:=world.actor_for("resident_00")
 	check(lena.citizen_name=="Lena Ortiz" and lena.schedule_period=="work","named cafe owner uses individual working hours")
+	for i: int in range(600):
+		if lena.position.x<-12.5 and lena.position.y>.3 and world.cafe_available() and lena.is_on_floor():break
+		await frames(1)
+	print("STAFF_ARRIVAL ",lena.position," ",lena.diagnostic())
+	check(lena.position.x<-12.5 and lena.position.y>.3 and world.cafe_available() and lena.is_on_floor() and not lena.abstracted,"cafe owner physically walks through the entrance onto the raised interior floor and opens her staffed service area")
 	game.player.position=Vector3(-11,.2,80)
 	await frames(20)
 	game.cine_camera.position=Vector3(-6,1.9,80)
@@ -91,7 +96,7 @@ func run() -> void:
 	game.phone.cafe_menu()
 	check(press("Sandwich • $8"),"actual checkout button invokes the food transaction")
 	check(world.inventory.get("sandwich",0)==1 and game.memory.money==balance-8,"staffed cafe purchase charges actual cash and grants an actual item")
-	check(world.ledger.back().category=="cafe_purchase" and world.ledger.back().cash_after==game.memory.money,"purchase receipt is tied to the authoritative cash balance")
+	check(not world.ledger.is_empty() and world.ledger.back().category=="cafe_purchase" and world.ledger.back().cash_after==game.memory.money,"purchase receipt is tied to the authoritative cash balance")
 	check(press("Coffee • $4") and world.inventory.get("coffee",0)==1 and game.memory.money==balance-12,"separate menu buttons retain their own product and exact price")
 	await capture("cafe-purchase")
 	game.player.health=50

@@ -323,7 +323,15 @@ func home() -> void:
 	button("Gallery (%d / 32)"%photos.size(),gallery)
 	button("Wallet & receipts",wallet)
 	button("Carried items",carried_items)
+	button("Map • home & districts",city_map)
 	button("Close [%s]"%key_label(),close)
+
+func city_map() -> void:
+	clear("VEYRA / LIVE MAP")
+	note("Blue • West Northline\nGold • East Logistics\nGray • original quarter & Iron Harbor\nPink • 18 Vale / your home\nGreen • you   Orange • traffic vehicles\nYellow • resident locations")
+	var map:=CityMap.new();map.game=game;column.add_child(map)
+	button("Home / property",game.residence.info)
+	button("Back",home)
 
 func messages() -> void:
 	clear("DANTE CROSS")

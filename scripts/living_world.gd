@@ -18,6 +18,12 @@ var abstract_count: int=0
 var timer: float=0
 var paths: Dictionary={}
 var audio_catalog: Dictionary={}
+var npc_cost_us: int=0
+var npc_steps: int=0
+
+func _physics_process(_delta: float) -> void:
+	npc_cost_us=0
+	npc_steps=0
 
 func populate() -> void:
 	var data: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://data/living_roster.json"))
@@ -28,7 +34,7 @@ func populate() -> void:
 		actor.citizen_name=record.name
 		actor.appearance_id=record.appearance
 		actor.schedule_config=record.duplicate(true)
-		actor.position=point(record.work if record.id=="resident_00" else record.home)
+		actor.position=point(record.home)
 		actor.daily_destinations={"home":point(record.home),"work":point(record.work),"break":point(record.rest)}
 		actor.route=PackedVector3Array([actor.position,actor.position+Vector3(0,0,2)])
 		game.add_child(actor)
@@ -187,7 +193,7 @@ func refresh(delta: float) -> void:
 			if actor.abstracted:set_active(actor,true)
 			active_count+=1
 			continue
-		var active: bool=actor.health>0 and actor.position.distance_to(game.player.position)<115 and active_count<budget
+		var active: bool=actor.health>0 and actor.position.distance_to(game.player.position)<160 and active_count<budget
 		if actor.abstracted==active:set_active(actor,active)
 		if active:active_count+=1
 		elif actor.health>0:

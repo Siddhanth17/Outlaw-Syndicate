@@ -44,9 +44,13 @@ func brake() -> void:
 		if game.car.linear_velocity.length() < 0.5: break
 	Input.action_release("handbrake")
 
-func run() -> void:
+func run(from_home: bool=false) -> void:
 	game.test_mode = true
-	game._menu_action("New game")
+	if not from_home:
+		game._menu_action("New game")
+		# This fixture isolates the original harbor mission; HomeValidation covers
+		# the physical new-home exit and walk to this same garage approach.
+		game.player.position=Vector3(0,1,12)
 	game.start_story() # Story routes now require explicit acceptance.
 	game._end_cinematic()
 	await step(90)
@@ -68,11 +72,29 @@ func run() -> void:
 	game._interact()
 	check(game.memory.stage == 3 and game.guards.size() == 2, "ledger starts security encounter")
 	for guard: HarborGuard in game.guards:
-		for shot: int in range(4):
+		for shot: int in range(6):
 			if guard.state == HarborGuard.State.DEFEATED: break
 			await step(20)
+			# Physics may catch up several steps before the next rendered process
+			# update. Wait for the real cooldown instead of assuming 20 ticks imply it.
+			for waiting: int in range(120):
+				if game.cooldown<=0 and game.reload_time<=0:break
+				await step()
 			game.player.camera.look_at(guard.global_position + Vector3.UP * 1.1)
+			var ray:=PhysicsRayQueryParameters3D.create(game.player.camera.global_position,guard.global_position+Vector3.UP*1.1,CollisionLayers.STATIC|CollisionLayers.NPC|CollisionLayers.PROP|CollisionLayers.PROJECTILE|CollisionLayers.RAGDOLL)
+			ray.exclude=[game.player.get_rid()];ray.collide_with_areas=true
+			var sight: Dictionary=game.get_world_3d().direct_space_state.intersect_ray(ray)
+			if not sight.is_empty() and sight.collider!=guard:
+				print("MISSION_COVER ",guard.name," blocked_by=",sight.collider," at=",sight.position)
+				# Reposition with actual player input rather than firing through cover
+				# or assuming a fixed camera ray remains clear in a moving city.
+				await walk_to(game.player.position+Vector3(-2 if shot%2==0 else 4,0,0),180,.7)
+				continue
+			if game.ammunition<=0:
+				game._reload();await step(100)
+			var health: float=guard.health
 			game._fire()
+			print("MISSION_SHOT ",guard.name," health=",health," -> ",guard.health," ammo=",game.ammunition)
 	check(game.guards.all(func(guard: HarborGuard) -> bool: return guard.state == HarborGuard.State.DEFEATED), "mission guards defeated through weapon hit detection")
 	check(await walk_to(game.car.position, 1000, 3.5), "return to getaway car on foot")
 	game._interact()
