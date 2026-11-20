@@ -1,5 +1,7 @@
 # Operation Veyra III — recovery and acceptance record
 
+Latest validated state (2026-11-20): core `96e07a9` and witness foundation `24394b0` are pushed. Stable core: `builds/operation-veyra-iii-release/`; latest police candidate: `builds/veyra3-law-witness-candidate/`. Both preserve earlier builds. See [current acceptance report](#acceptance-report-index--current-session) and the final publication entry below; earlier pending notes are historical. Overall production remains **PARTIAL**.
+
 Baseline `af6aa75`, main, origin `https://github.com/Siddhanth17/Outlaw-Syndicate.git`. Previous releases preserved. Overall directive **PARTIAL**. No work continues after the active session ends.
 
 ## Diagnosis
@@ -122,3 +124,5 @@ Exact continuation: connect confirmed reports to a bounded dispatch queue using 
 |17 Continuation|PARTIAL|Next connect confirmed reports to physical officer investigation, then wanted/pursuit and persistent case resolution. Exact handoff above. Work does not continue after the session ends.|
 
 Police-candidate final regression results: source production39, home/continuity/Mission01 total31, VeyraIII27, living-world32, witness registry18; all passed, processes exited0. Native candidate witness19, home/continuity/Mission01 total31, VeyraIII27; all passed, processes exited0.772 gameplay hashes verified again after the runs. Native exits retain seven texture RID warnings. No additional police-candidate sustained benchmark or human listening/extended playtest was run.
+
+Publication confirmed: core `96e07a9e44f3dbb39e2870a01a0094279f8d9b57` and police witness foundation `24394b0938c1e10d63ef87129fcdcc641e950330` pushed normally to origin/main. Police EXE/PCK, SHA256 manifest, native logs and inspected phone evidence are in `builds/veyra3-law-witness-candidate/`. The stable core ZIP remains untouched. Final source changes are committed; the obsolete foundation staging helper remains intentionally untracked.
