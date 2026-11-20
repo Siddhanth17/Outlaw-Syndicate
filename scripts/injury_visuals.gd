@@ -18,6 +18,7 @@ func setup(model: Node3D) -> void:
 			material.set_shader_parameter("albedo_map",old.albedo_texture)
 			material.set_shader_parameter("tint",old.albedo_color)
 			material.set_shader_parameter("base_roughness",old.roughness)
+			material.set_shader_parameter("mark_units_per_meter",1.0/maxf(mesh.global_basis.get_scale().x,.0001))
 			if old.roughness_texture:
 				material.set_shader_parameter("roughness_map",old.roughness_texture)
 				material.set_shader_parameter("use_roughness_map",true)

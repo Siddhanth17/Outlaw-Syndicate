@@ -229,6 +229,7 @@ func restore_outcome(value: float) -> void:
 	danger_time=0
 	suspicion=0
 	state=State.PATROL if health>0 else State.DEFEATED
+	for region: NPCHitRegion in hit_regions:region.collision_layer=NPCHitRegion.LAYER if health>0 else 0
 	visual.visible=health>0
 	collision_layer=CollisionLayers.NPC if health>0 else 0
 	collision_mask=CollisionLayers.SOLIDS if health>0 else 0

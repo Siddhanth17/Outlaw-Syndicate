@@ -1,0 +1,7 @@
+{
+  "sidearm": {"damage": 45.0, "regions": {"head": 1.0, "neck": 1.5, "upper_torso": 1.0, "lower_torso": 0.85, "left_arm": 0.5, "right_arm": 0.5, "left_leg": 0.6, "right_leg": 0.6}},
+  "civilian": {"max_health": 70.0, "torso_protection": 0.0},
+  "security": {"max_health": 70.0, "torso_protection": 0.12},
+  "police": {"max_health": 70.0, "torso_protection": 0.55},
+  "elite": {"max_health": 70.0, "torso_protection": 0.4}
+}

@@ -16,6 +16,10 @@ var last_vehicle_hit: float = -10
 var bullet_hit_count: int = 0
 var crash_reactions: int = 0
 var state: State = State.PATROL
+var hit_regions: Array[NPCHitRegion]=[]
+var last_damage: Dictionary={}
+var combat_profile: String="security"
+var max_health: float=70
 var health: float = 70
 var suspicion: float = 0
 var game: Node3D
@@ -57,6 +61,10 @@ func _ready() -> void:
 				animation.get_animation(name).loop_mode = Animation.LOOP_LINEAR
 	var skeletons := visual.find_children("*", "Skeleton3D", true, false)
 	if not skeletons.is_empty():
+		hit_regions=NPCHitRegion.install(self,skeletons[0])
+		var role: String=NPCCatalog.profile(appearance_id).role
+		combat_profile="police" if role=="police" else ("security" if role in ["faction","security"] else "civilian")
+		max_health=float(NPCHitRegion.rules()[combat_profile].max_health);health=max_health
 		dynamics = HumanDynamics.new()
 		dynamics.actor = self
 		skeletons[0].add_child(dynamics)
@@ -157,6 +165,7 @@ func take_damage(amount: float, direction: Vector3 = Vector3.ZERO, point: Vector
 	else: game.memory.remember("guard_alert_"+name,{"district":"iron_harbor","faction":"rell_security","reputation":-1})
 	if health<=0:
 		state=State.DEFEATED
+		for region: NPCHitRegion in hit_regions:region.collision_layer=0
 		injury_time=1000
 		if dynamics: dynamics.active=false
 		if ragdoll:ragdoll.start(direction,point if point!=Vector3.ZERO else global_position+Vector3.UP,amount)
@@ -188,7 +197,9 @@ func receive_vehicle_contact(speed: float, direction: Vector3, point: Vector3) -
 	knock_velocity.y=minf(speed*0.04,0.8)
 	injury_time=0.6 if speed<6 else 3.0
 	state=State.STAGGER if speed<6 else State.KNOCKED_DOWN
-	if health<=0: state=State.DEFEATED
+	if health<=0:
+		state=State.DEFEATED
+		for region: NPCHitRegion in hit_regions:region.collision_layer=0
 	if speed>=6 and ragdoll:ragdoll.start(direction,point,speed*2)
 	if dynamics: dynamics.impact+=direction.normalized()*minf(speed,7)
 	if is_instance_valid(game.events): game.events.publish("vehicle_person",point,speed,name)
@@ -251,3 +262,17 @@ func _hear_event(event: Dictionary) -> void:
 		last_seen=event.position
 		destination=event.position
 		state=State.INVESTIGATE
+
+func receive_projectile(region: String,point: Vector3,direction: Vector3) -> void:
+	if state==State.DEFEATED:return
+	var profiles: Dictionary=NPCHitRegion.rules()
+	var profile: Dictionary=profiles[combat_profile]
+	var protection: float=float(profile.torso_protection) if region in ["upper_torso","lower_torso"] else 0.0
+	var critical: bool=region=="head" and not get_meta("protected_story",false)
+	var applied: float=health if critical else float(profiles.sidearm.damage)*float(profiles.sidearm.regions.get(region,1.0))*(1-protection)
+	var before: float=health
+	take_damage(applied,direction,point)
+	last_damage={"npc_id":get("npc_id") if self is CityNPC else name,"region":region,"weapon":"sidearm","before":before,"applied":before-health,"after":health,"protection":protection,"critical":critical,"protected_story":get_meta("protected_story",false),"state":State.keys()[state],"defeated":state==State.DEFEATED}
+	game.damage_events.append(last_damage.duplicate(true))
+	if game.damage_events.size()>64:game.damage_events.pop_front()
+	if OS.get_cmdline_user_args().has("--damage-debug"):print("DAMAGE ",JSON.stringify(last_damage))

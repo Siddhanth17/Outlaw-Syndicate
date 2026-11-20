@@ -49,6 +49,7 @@ var living: LivingWorld
 var city_audio: CityAudio
 var residence: ValeHome
 var law: CityLaw
+var damage_events: Array[Dictionary]=[]
 
 func start_story() -> void:
 	if story_active: return
@@ -149,6 +150,8 @@ func _ready() -> void:
 		var debug:=CityDiagnostics.new()
 		debug.game=self
 		add_child(debug)
+	if OS.get_cmdline_user_args().has("--damage-debug"):
+		var inspector:=DamageInspector.new();inspector.game=self;add_child(inspector)
 	law=CityLaw.new()
 	law.game=self
 	add_child(law)
@@ -204,6 +207,8 @@ func _ready() -> void:
 		validation.game=self
 		add_child(validation)
 		validation.call_deferred("run")
+	if OS.get_cmdline_user_args().has("--combat-lab"):
+		var lab:=CombatLab.new();lab.game=self;add_child(lab);lab.call_deferred("run")
 	if OS.get_cmdline_user_args().has("--verify-law"):
 		var validation:=LawValidation.new()
 		validation.game=self
@@ -440,11 +445,15 @@ func _fire() -> void:
 	var camera := player.camera
 	var query := PhysicsRayQueryParameters3D.create(camera.global_position, camera.global_position - camera.global_basis.z * 100)
 	query.exclude = [player.get_rid()]
-	query.collision_mask=CollisionLayers.STATIC|CollisionLayers.NPC|CollisionLayers.PROP|CollisionLayers.PROJECTILE|CollisionLayers.RAGDOLL
+	query.collision_mask=CollisionLayers.STATIC|NPCHitRegion.LAYER|CollisionLayers.PROP|CollisionLayers.PROJECTILE|CollisionLayers.RAGDOLL
 	query.collide_with_areas=true
 	var hit := get_world_3d().direct_space_state.intersect_ray(query)
 	if not hit.is_empty():
-		if hit.collider is HarborPhysicalBone:
+		if hit.collider is NPCHitRegion:
+			hit.collider.receive_hit(hit.position,-camera.global_basis.z)
+			if hit.collider.actor.get_meta("civilian",false):memory.heat=minf(100,memory.heat+8)
+			else:faction_rep-=1
+		elif hit.collider is HarborPhysicalBone:
 			hit.collider.driver.nudge(hit.collider,-camera.global_basis.z*2.0)
 		elif hit.collider is HarborGuard:
 			hit.collider.take_damage(35, -camera.global_basis.z, hit.position)
@@ -461,6 +470,11 @@ func _fire() -> void:
 		flash.omni_range = 1.3
 		add_child(flash)
 		get_tree().create_timer(0.08).timeout.connect(flash.queue_free)
+	if hit.is_empty() or not hit.collider is NPCHitRegion:
+		var trace: Dictionary={"npc_id":"none","region":"miss" if hit.is_empty() else "blocked_or_nonliving","weapon":"sidearm","before":0,"applied":0,"after":0,"protection":0,"critical":false,"protected_story":false,"state":"NO_NPC_DAMAGE","defeated":false}
+		damage_events.append(trace)
+		if damage_events.size()>64:damage_events.pop_front()
+		if OS.get_cmdline_user_args().has("--damage-debug"):print("DAMAGE ",JSON.stringify(trace))
 	var muzzle := OmniLight3D.new()
 	muzzle.position = player.position + Vector3(0, 1.2, 0)
 	muzzle.light_color = Color(1, 0.7, 0.4)

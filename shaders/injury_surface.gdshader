@@ -6,12 +6,13 @@ uniform bool use_roughness_map=false;
 uniform int roughness_channel=0;
 uniform float base_roughness = 0.65;
 uniform vec4 marks[4];
+uniform float mark_units_per_meter=1.0;
 varying vec3 surface_position;
 void vertex(){ surface_position=VERTEX; }
 void fragment(){
  vec3 color=texture(albedo_map,UV).rgb*tint.rgb;
  for(int i=0;i<4;i++){
-  float distance_to_hit=distance(surface_position,marks[i].xyz);
+  float distance_to_hit=distance(surface_position,marks[i].xyz)/mark_units_per_meter;
   float bruise=(1.0-smoothstep(0.025,0.12,distance_to_hit))*marks[i].w;
   float stain=(1.0-smoothstep(0.012,0.055,distance_to_hit))*marks[i].w;
   color=mix(color,color*vec3(0.65,0.48,0.56),bruise*0.6);

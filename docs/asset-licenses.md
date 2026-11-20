@@ -59,3 +59,7 @@ Twenty authored resident call replies use the already installed Kokoro-82M int8 
 ## Veyra III audio and residence
 
 Eighteen vehicle/road/fictional-sidearm WAVs are original mathematical synthesis, authored by `art/build_veyra3_audio.py` and released CC0-1.0; per-file SHA256 and peak/seam data are in `veyra3-audio-provenance.json`. No sampled vehicle or firearm recordings. Existing story/resident voices are preserved. Residence shell, cloth-grid quilt, curved furniture, joinery and household objects are original project-authored Blender geometry from `art/build_vale_home.py`; plaster reuses the existing credited Poly Haven concrete maps. Personal documents are fictional original text. No user reference photographs/screenshots are included.
+
+## Veyra IV combat effects
+
+Regional hit volumes, fictional damage data, the runtime-generated irregular stain alpha mask, ballistic droplet meshes and developer inspector are original project-authored code/geometry. No new third-party image, recording or model was imported. Existing character, vehicle and audio licenses remain as credited above. Effects approximate restrained liquid-looking droplets; they do not use a general fluid solver.

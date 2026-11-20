@@ -148,6 +148,7 @@ func set_active(actor: CityNPC, active: bool) -> void:
 		actor.stuck_duration=0
 		actor.progress_origin=actor.position
 		actor.progress_time=0
+	for region: NPCHitRegion in actor.hit_regions:region.collision_layer=NPCHitRegion.LAYER if active and actor.health>0 else 0
 	actor.abstracted=not active
 	actor.set_physics_process(active)
 	if actor.animation:actor.animation.active=active
