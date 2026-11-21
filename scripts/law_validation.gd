@@ -17,6 +17,8 @@ func run() -> void:
 		get_window().content_scale_aspect=Window.CONTENT_SCALE_ASPECT_KEEP
 	await frames(6)
 	game._menu_action("New game")
+	# Isolate civilian visibility/call checks from the new separate officer-hearing channel.
+	if game.law.unit:game.law.unit.set_physics_process(false);game.law.unit.car.freeze=true
 	game.living.set_process(false)
 	game.living.set_physics_process(false)
 	for actor: CityNPC in game.people:

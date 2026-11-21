@@ -19,5 +19,7 @@ func _draw() -> void:
 	for actor: CityNPC in game.people:draw_circle(map_point(actor.position),1.8,Color(.8,.78,.5))
 	for car: VeyraCar in game.traffic.cars:
 		if car.visible:draw_circle(map_point(car.position),2.4,Color(.9,.42,.22))
+	if game.law.unit and game.law.unit.case_id>0 and game.law.unit.car.position.distance_to(game.player.position)<120:draw_circle(map_point(game.law.unit.car.position),3.5,Color(.2,.7,1))
+	draw_rect(Rect2(map_point(VeyraStation.ADDRESS)-Vector2(3,3),Vector2(6,6)),Color(.5,.75,1))
 	draw_circle(map_point(game.residence.global_position),5,Color(.9,.54,.7))
 	draw_circle(map_point(game.player.position),4,Color(.35,1,.8))

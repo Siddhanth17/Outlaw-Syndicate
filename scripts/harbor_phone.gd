@@ -275,10 +275,11 @@ func close() -> void:
 	if slide: slide.kill()
 	shell.hide()
 	if is_instance_valid(game.player):
-		game.player.camera_input_enabled=not game.paused and not game.cinematic_active
-		game.player.set_physics_process(not game.paused and not game.cinematic_active)
+		var custody: bool=is_instance_valid(game.law) and game.law.locked()
+		game.player.camera_input_enabled=not game.paused and not game.cinematic_active and not custody
+		game.player.set_physics_process(not game.paused and not game.cinematic_active and not custody)
 		game.ui.gameplay.visible=not game.paused
-	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE if game.paused else Input.MOUSE_MODE_CAPTURED
+	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE if game.paused or (is_instance_valid(game.law) and game.law.locked()) else Input.MOUSE_MODE_CAPTURED
 
 func clear(title: String) -> void:
 	focus_queued=false
@@ -323,13 +324,14 @@ func home() -> void:
 	button("Gallery (%d / 32)"%photos.size(),gallery)
 	button("Wallet & receipts",wallet)
 	button("Crime reports",crime_reports)
+	button("Legal status",game.law.legal_menu)
 	button("Carried items",carried_items)
 	button("Map • home & districts",city_map)
 	button("Close [%s]"%key_label(),close)
 
 func city_map() -> void:
 	clear("VEYRA / LIVE MAP")
-	note("Blue • West Northline\nGold • East Logistics\nGray • original quarter & Iron Harbor\nPink • 18 Vale / your home\nGreen • you   Orange • traffic vehicles\nYellow • resident locations")
+	note("Blue • West Northline\nGold • East Logistics\nGray • original quarter & Iron Harbor\nPink • 18 Vale / your home\nGreen • you   Orange • traffic vehicles\nYellow • resident locations\nCyan • nearby responding patrol / station")
 	var map:=CityMap.new();map.game=game;column.add_child(map)
 	button("Home / property",game.residence.info)
 	button("Back",home)
@@ -394,5 +396,14 @@ func crime_reports() -> void:
 	note("Confirmed witness reports: %d"%game.law.reported_count())
 	for record: Dictionary in game.law.records:
 		if record.status=="reported":note("Report #%d • %s"%[record.id,String(record.kind).replace("_"," ").capitalize()])
-	note("Witness reports are retained with your checkpoint. Police dispatch and case resolution are not yet connected to this registry.")
+	note("Reports are retained with your checkpoint.")
+	if game.law.unit:note("Patrol01 • "+game.law.unit.duty.replace("_"," ").capitalize())
+	for case: Dictionary in game.law.cases:note("Case #%d • %s"%[case.id,String(case.phase).capitalize()])
 	button("Back",home)
+
+func open_for_custody() -> void:
+	if opened:return
+	opened=true;game.player.set_physics_process(false);game.player.camera_input_enabled=false
+	game.ui.gameplay.hide();shell.show()
+	shell.position.y=get_viewport().get_visible_rect().size.y-510
+	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE

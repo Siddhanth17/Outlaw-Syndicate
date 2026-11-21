@@ -40,7 +40,7 @@ func _ready() -> void:
 			harbor.surface(center+Vector3.UP*.136,Vector2(56,66),"concrete",Color(.7,.69,.64),2,.85)
 			for dx: float in [-14,14]:
 				for dz: float in [-18,18]:
-					if center.x==-105 and row==0 and dx==-14 and dz==-18:continue # Vale residence has its own modeled shell/collisions.
+					if center.x==-105 and dx==-14 and dz==-18:continue # Vale residence has its own modeled shell/collisions.
 					var pose:=Transform3D(Basis(Vector3.UP,frontage_yaw(dx,dz)),center+Vector3(dx,.14,dz))
 					var floor_body:=harbor.solid(pose*Vector3(0,.1,0),Vector3(18,.2,18))
 					floor_body.set_meta("foot_surface","interior")
@@ -131,7 +131,7 @@ func refresh(all_now: bool=false) -> void:
 			add_child(sector)
 			sector.position=centers[i]
 			for a: int in range(4):
-				if centers[i].x==-105 and centers[i].z==98 and a==0:continue
+				if centers[i].x==-105 and a==0:continue
 				var model: Node3D=kits[(i+a)%4].instantiate()
 				sector.add_child(model)
 				model.position=Vector3(-14 if a%2==0 else 14,.14,-18 if a<2 else 18)

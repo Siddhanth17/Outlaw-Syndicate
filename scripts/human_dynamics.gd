@@ -3,6 +3,8 @@ extends SkeletonModifier3D
 
 # Scale-aware angular springs. Runs after AnimationMixer via SkeletonModifier3D.
 # Hair/hem bones deform the actual weighted surface; no detached proxy meshes.
+var reaction_region: String=""
+var reaction_strength: float=0
 var posture_bias: float=0
 var conversation_active: bool = false
 var gesture_tag: String = ""
@@ -32,6 +34,7 @@ func reset_state() -> void:
 	previous_velocity = Vector3.ZERO
 	acceleration = Vector3.ZERO
 	impact = Vector3.ZERO
+	reaction_strength=0
 	if is_instance_valid(actor): previous_position = actor.global_position
 	reset_count += 1
 
@@ -99,6 +102,17 @@ func _process_modification_with_delta(delta: float) -> void:
 		skeleton.set_bone_pose_rotation(head, skeleton.get_bone_pose_rotation(head) * Quaternion(Vector3.UP, turn))
 	elif head >= 0 and driving and is_instance_valid(driver.vehicle):
 		skeleton.set_bone_pose_rotation(head, skeleton.get_bone_pose_rotation(head) * Quaternion(Vector3.UP, driver.vehicle.steering * 0.18))
+
+	if reaction_strength>0:
+		var hit_bone: String="Spine"
+		match reaction_region:
+			"left_arm":hit_bone="LeftArm"
+			"right_arm":hit_bone="RightArm"
+			"left_leg":hit_bone="LeftUpLeg"
+			"right_leg":hit_bone="RightUpLeg"
+		var bone: int=skeleton.find_bone(hit_bone)
+		if bone>=0:skeleton.set_bone_pose_rotation(bone,skeleton.get_bone_pose_rotation(bone)*Quaternion(Vector3.RIGHT,reaction_strength*.14))
+		reaction_strength=move_toward(reaction_strength,0,dt*4)
 
 func _set_secondary(skeleton: Skeleton3D, name: String, angle: Vector2) -> void:
 	var index: int = skeleton.find_bone(name)

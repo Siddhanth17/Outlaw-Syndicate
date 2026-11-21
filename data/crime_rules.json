@@ -1,0 +1,7 @@
+{
+  "minor_traffic": {"title":"Unsafe driving","tier":1,"fine":25,"bail":0,"detention_hours":0,"reputation":0,"priority":1},
+  "property_damage": {"title":"Dangerous property damage","tier":2,"fine":60,"bail":100,"detention_hours":2,"reputation":-1,"priority":2},
+  "public_gunfire": {"title":"Public firearm discharge","tier":3,"fine":0,"bail":120,"detention_hours":6,"reputation":-1,"priority":4},
+  "assault": {"title":"Serious assault","tier":4,"fine":0,"bail":300,"detention_hours":12,"reputation":-2,"priority":5},
+  "serious_violence": {"title":"Severe violent incident","tier":5,"fine":0,"bail":500,"detention_hours":24,"reputation":-3,"priority":6}
+}

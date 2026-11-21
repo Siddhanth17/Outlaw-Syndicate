@@ -48,6 +48,7 @@ var traffic: StreetTraffic
 var living: LivingWorld
 var city_audio: CityAudio
 var residence: ValeHome
+var station: VeyraStation
 var law: CityLaw
 var damage_events: Array[Dictionary]=[]
 
@@ -87,6 +88,7 @@ func _ready() -> void:
 	quarter=VeyraQuarter.new()
 	quarter.game=self
 	add_child(quarter)
+	station=VeyraStation.new();add_child(station)
 	residence=ValeHome.new()
 	residence.game=self
 	add_child(residence)
@@ -207,6 +209,10 @@ func _ready() -> void:
 		validation.game=self
 		add_child(validation)
 		validation.call_deferred("run")
+	if OS.get_cmdline_user_args().has("--verify-awareness"):
+		var validation:=LawAwarenessValidation.new();validation.game=self;add_child(validation);validation.call_deferred("run")
+	if OS.get_cmdline_user_args().has("--dispatch-lab"):
+		var lab:=DispatchLab.new();lab.game=self;add_child(lab);lab.call_deferred("run")
 	if OS.get_cmdline_user_args().has("--combat-lab"):
 		var lab:=CombatLab.new();lab.game=self;add_child(lab);lab.call_deferred("run")
 	if OS.get_cmdline_user_args().has("--verify-law"):
@@ -380,9 +386,10 @@ func _menu_action(title: String) -> void:
 func _set_pause(value: bool, screen: String = "pause") -> void:
 	paused = value
 	if is_instance_valid(phone) and phone.opened: phone.close()
-	player.camera_input_enabled = not paused and not cinematic_active
+	var custody: bool=is_instance_valid(law) and law.locked()
+	player.camera_input_enabled = not paused and not cinematic_active and not custody
 	harbor.pause_props(paused or cinematic_active)
-	player.set_physics_process(not paused and not cinematic_active)
+	player.set_physics_process(not paused and not cinematic_active and not custody)
 	car.set_physics_process(not paused and not cinematic_active)
 	car.freeze = paused or cinematic_active or (is_instance_valid(vehicle_transition) and vehicle_transition.active)
 	for parked: VeyraCar in parked_vehicles:
@@ -391,12 +398,14 @@ func _set_pause(value: bool, screen: String = "pause") -> void:
 	bike.freeze=paused or cinematic_active or bike.mounting
 	bike.set_physics_process(not paused and not cinematic_active)
 	ui.show_screen(screen if paused else "")
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if paused else Input.MOUSE_MODE_CAPTURED
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if paused or custody else Input.MOUSE_MODE_CAPTURED
 
 func _pause() -> void:
 	_set_pause(not paused)
 
 func _input(event: InputEvent) -> void:
+	if law and law.locked() and event.is_action_pressed("phone"):
+		get_viewport().set_input_as_handled();return
 	# Handle the binding before GUI focus consumes Tab as focus-next.
 	if event.is_action_pressed("phone") and not event.is_echo() and not paused and not cinematic_active:
 		phone.toggle()
@@ -428,6 +437,7 @@ func _reload() -> void:
 		sound("reload", player.position)
 
 func _fire() -> void:
+	if law and law.locked():return
 	if player.riding_bike or bike.mounting:return
 	if is_instance_valid(vehicle_transition) and vehicle_transition.active:return
 	if cooldown > 0 or reload_time > 0 or player.driving:
@@ -486,6 +496,7 @@ func _fire() -> void:
 		player.pitch += 0.015
 
 func damage_player(amount: float, direction: Vector3 = Vector3.ZERO) -> void:
+	if law and law.locked():return
 	if paused or cinematic_active:
 		return
 	if player.driving:
@@ -531,7 +542,7 @@ func _process(delta: float) -> void:
 	for guard: HarborGuard in guards:
 		if is_instance_valid(guard) and guard.state == HarborGuard.State.ENGAGE:
 			observed = true
-	if not observed:
+	if not observed and not law.locked():
 		memory.heat = maxf(0, memory.heat - delta * 5)
 	var district: String="NORTHLINE" if player.position.z>65 else "IRON HARBOR"
 	if player.position.z>65:
@@ -546,9 +557,9 @@ func _process(delta: float) -> void:
 		var stage: Dictionary = mission.stages[memory.stage]
 		var at := Vector3(stage.position[0], 0, stage.position[2])
 		marker.position = at + Vector3(0, 0.12, 0)
-		if stage.kind == "drive" and player.driving and player.position.distance_to(at) < 15:
+		if not law.locked() and stage.kind == "drive" and player.driving and player.position.distance_to(at) < 15:
 			_advance()
-		elif stage.kind == "escape" and memory.heat <= 0:
+		elif not law.locked() and stage.kind == "escape" and memory.heat <= 0:
 			_advance()
 		ui.objective.text = "%s\n%d m" % [stage.objective, int(player.position.distance_to(at))]
 	else:
@@ -577,8 +588,15 @@ func _process(delta: float) -> void:
 		ui.prompt.text="[E] Ride Harrier motorcycle"
 	if not residence.target().is_empty() and not phone.opened:ui.prompt.text="[E] Home / "+residence.target().capitalize()
 	ui.crosshair.visible = player.aiming and not player.driving and not player.riding_bike
+	if law.locked():
+		marker.hide();ui.objective_title.text="VEYRA / IN CUSTODY"
+		ui.objective.text="Serving detention." if law.stage=="detained" else "Police processing."
+		ui.prompt.text="";ui.crosshair.hide()
+	elif law.unit and law.unit.duty=="arrest_offer" and law.unit.officer.position.distance_to(player.position)<3.5:ui.prompt.text="[E] Respond to officer"
+	if not story_active:ui.status.text="%s / %02d:%02d\n$%d / %s"%[district,int(quarter.minutes)/60,int(quarter.minutes)%60,memory.money,law.alert_state()]
 
 func _interact() -> void:
+	if law and law.interact():return
 	if vehicle_transition.active or bike.mounting:return
 	if residence.interact():return
 	if not story_active and not player.driving and not player.riding_bike and player.position.distance_to(dante.position)<4:
@@ -803,8 +821,8 @@ func _save() -> void:
 	data["traffic"]=traffic.snapshot()
 	data["city_law"]=law.snapshot()
 	var outcomes: Dictionary={}
-	for citizen: CityNPC in people: outcomes[citizen.npc_id]={"health":citizen.health,"injuries":citizen.injuries.snapshot()}
-	if dante is CityNPC: outcomes[dante.npc_id]={"health":dante.health,"injuries":dante.injuries.snapshot()}
+	for citizen: CityNPC in people: outcomes[citizen.npc_id]={"health":citizen.health,"injuries":citizen.injuries.snapshot(),"regional_injuries":citizen.region_injuries.duplicate()}
+	if dante is CityNPC: outcomes[dante.npc_id]={"health":dante.health,"injuries":dante.injuries.snapshot(),"regional_injuries":dante.region_injuries.duplicate()}
 	data["npc_outcomes"]=outcomes
 	data["player"] = [player.position.x, player.position.y, player.position.z]
 	data["bike"]=[bike.position.x,bike.position.y,bike.position.z]
@@ -891,11 +909,15 @@ func _load() -> void:
 		for citizen: CityNPC in people:
 			var value: Variant=outcomes.get(citizen.npc_id,70)
 			citizen.restore_outcome(float(value.get("health",70)) if value is Dictionary else float(value))
-			if value is Dictionary: citizen.injuries.restore(value.get("injuries",[]) if value.get("injuries",[]) is Array else [])
+			if value is Dictionary:
+				citizen.injuries.restore(value.get("injuries",[]) if value.get("injuries",[]) is Array else [])
+				citizen.restore_regions(value.get("regional_injuries",{}))
 		if dante is CityNPC:
 			var value: Variant=outcomes.get(dante.npc_id,70)
 			dante.restore_outcome(float(value.get("health",70)) if value is Dictionary else float(value))
-			if value is Dictionary: dante.injuries.restore(value.get("injuries",[]) if value.get("injuries",[]) is Array else [])
+			if value is Dictionary:
+				dante.injuries.restore(value.get("injuries",[]) if value.get("injuries",[]) is Array else [])
+				dante.restore_regions(value.get("regional_injuries",{}))
 		reload_time = 0
 		harbor.consequence(memory.stage >= 3)
 		_clear_guards()
@@ -919,7 +941,7 @@ func _notification(what: int) -> void:
 		if not paused: _set_pause(true)
 
 func _on_crash(point: Vector3, speed: float) -> void:
-	if is_instance_valid(events): events.publish("crash",point,speed,str(car.get_instance_id()))
+	if is_instance_valid(events): events.publish("crash",point,speed,"player" if car.occupied else str(car.get_instance_id()))
 	if point.distance_to(dante.position)<24:
 		crash_interest=point+Vector3.UP
 		crash_interest_time=2.5

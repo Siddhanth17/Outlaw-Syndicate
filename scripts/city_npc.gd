@@ -2,6 +2,7 @@ class_name CityNPC
 extends HarborGuard
 
 var npc_id: String = ""
+var phone_pose: WitnessPhone
 var story_actor: bool = false
 var route: PackedVector3Array = []
 var route_index: int = 0
@@ -51,6 +52,8 @@ func _ready() -> void:
 	set_meta("civilian",NPCCatalog.profile(appearance_id).role not in ["police","faction","security"])
 	super._ready()
 	profile=NPCCatalog.profile(appearance_id)
+	if dynamics:
+		phone_pose=WitnessPhone.new();phone_pose.caller=self;dynamics.get_parent().add_child(phone_pose)
 	if weapon: weapon.hide()
 	if npc_id.is_empty(): npc_id=name
 	if dynamics:
@@ -68,6 +71,7 @@ func can_see_player() -> bool:
 	return super.can_see_player() if profile.role in ["police","faction","security"] and suspicion>=1 else false
 
 func _on_incident(event: Dictionary) -> void:
+	if profile.role=="police" and is_instance_valid(game.law) and is_instance_valid(game.law.unit) and game.law.unit.officer==self:return
 	if state==State.DEFEATED or position.distance_to(event.position)>(16 if event.kind=="defeat" else 32): return
 	if abstracted and event.kind in ["gunshot","vehicle_person","crash","glass","defeat"] and is_instance_valid(game.living):game.living.set_active(self,true)
 	if event.kind=="defeat":
@@ -101,6 +105,11 @@ func _physics_process(delta: float) -> void:
 func _simulate(delta: float) -> void:
 	if game.paused or game.cinematic_active: return
 	if _update_injury(delta): return
+	if phone_pose and phone_pose.calling:
+		var facing: Vector3=threat-position
+		if facing.length()>.1:visual.rotation.y=lerp_angle(visual.rotation.y,atan2(facing.x,facing.z),delta*3)
+		if dynamics:dynamics.has_head_target=true;dynamics.head_target=threat+Vector3.UP*1.4
+		velocity=Vector3(0,velocity.y-delta*24,0);move_and_slide();_play("Idle");activity="emergency_call";return
 	if profile.role in ["police","faction","security"] and suspicion>=1:
 		super._physics_process(delta)
 		return
@@ -176,7 +185,7 @@ func _simulate(delta: float) -> void:
 	if not get_world_3d().direct_space_state.intersect_ray(ray).is_empty():
 		direction=Vector3.ZERO
 		navigation_status="blocked"
-	var speed: float=3.5 if fleeing else float(profile.pace)
+	var speed: float=(3.5 if fleeing else float(profile.pace))*mobility_factor()
 	velocity.x=direction.x*speed
 	velocity.z=direction.z*speed
 	velocity.y-=delta*24
@@ -213,12 +222,15 @@ func restore_outcome(value: float) -> void:
 	stuck_duration=0
 	plan_time=0
 	conversing=false
+	if phone_pose:phone_pose.finish()
 	abstracted=false
 	set_physics_process(true)
 	if animation:animation.active=true
 	if ragdoll:ragdoll.stop()
 	health=clampf(value,1 if story_actor else 0,70)
-	if health>=70 and injuries: injuries.restore([])
+	if health>=max_health:
+		region_injuries.clear()
+		if injuries:injuries.restore([])
 	injury_time=0
 	fall_angle=0
 	knock_velocity=Vector3.ZERO

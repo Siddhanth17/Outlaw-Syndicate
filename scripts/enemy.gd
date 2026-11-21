@@ -19,6 +19,7 @@ var state: State = State.PATROL
 var hit_regions: Array[NPCHitRegion]=[]
 var last_damage: Dictionary={}
 var combat_profile: String="security"
+var region_injuries: Dictionary={}
 var max_health: float=70
 var health: float = 70
 var suspicion: float = 0
@@ -119,7 +120,7 @@ func _physics_process(delta: float) -> void:
 				game.damage_player(8, (game.player.position - position).normalized())
 				game.sound("shot", position)
 				if is_instance_valid(game.events): game.events.publish("gunshot",position,20,"security")
-				shot_timer = 1.25
+				shot_timer = 1.25*(1+maxf(float(region_injuries.get("left_arm",0)),float(region_injuries.get("right_arm",0)))*.7)
 		State.INVESTIGATE:
 			if position.distance_to(destination) < 1:
 				suspicion = maxf(0, suspicion - delta * 0.3)
@@ -129,8 +130,8 @@ func _physics_process(delta: float) -> void:
 	direction.y = 0
 	if direction.length() > 0.7 and reaction <= 0:
 		direction = direction.normalized()
-		velocity.x = direction.x * 2.3
-		velocity.z = direction.z * 2.3
+		velocity.x = direction.x * 2.3 * mobility_factor()
+		velocity.z = direction.z * 2.3 * mobility_factor()
 		visual.rotation.y = lerp_angle(visual.rotation.y, atan2(direction.x, direction.z), delta * 6)
 		_play("Walk")
 	else:
@@ -183,7 +184,7 @@ func hear_crash(at: Vector3, speed: float) -> void:
 		dynamics.has_head_target=true
 		dynamics.head_target=at+Vector3.UP
 
-func receive_vehicle_contact(speed: float, direction: Vector3, point: Vector3) -> void:
+func receive_vehicle_contact(speed: float, direction: Vector3, point: Vector3,source: String="unknown") -> void:
 	var now: float=game.elapsed
 	if speed<1.5 or now-last_vehicle_hit<0.9 or state in [State.DEFEATED,State.KNOCKED_DOWN,State.RECOVER]: return
 	last_vehicle_hit=now
@@ -202,7 +203,7 @@ func receive_vehicle_contact(speed: float, direction: Vector3, point: Vector3) -
 		for region: NPCHitRegion in hit_regions:region.collision_layer=0
 	if speed>=6 and ragdoll:ragdoll.start(direction,point,speed*2)
 	if dynamics: dynamics.impact+=direction.normalized()*minf(speed,7)
-	if is_instance_valid(game.events): game.events.publish("vehicle_person",point,speed,name)
+	if is_instance_valid(game.events): game.events.publish("vehicle_person",point,speed,source)
 	game.memory.heat=minf(100,game.memory.heat+(8 if speed<6 else 25))
 	game.memory.remember("npc_vehicle_injury_"+name,{"severity":speed,"district":"iron_harbor"})
 
@@ -271,8 +272,22 @@ func receive_projectile(region: String,point: Vector3,direction: Vector3) -> voi
 	var critical: bool=region=="head" and not get_meta("protected_story",false)
 	var applied: float=health if critical else float(profiles.sidearm.damage)*float(profiles.sidearm.regions.get(region,1.0))*(1-protection)
 	var before: float=health
+	region_injuries[region]=clampf(float(region_injuries.get(region,0))+applied/max_health*1.5,0,1)
+	if dynamics:dynamics.reaction_region=region;dynamics.reaction_strength=1
 	take_damage(applied,direction,point)
+	game.events.publish("defeat" if health<=0 else "assault",point,100 if health<=0 else applied,"player")
 	last_damage={"npc_id":get("npc_id") if self is CityNPC else name,"region":region,"weapon":"sidearm","before":before,"applied":before-health,"after":health,"protection":protection,"critical":critical,"protected_story":get_meta("protected_story",false),"state":State.keys()[state],"defeated":state==State.DEFEATED}
 	game.damage_events.append(last_damage.duplicate(true))
 	if game.damage_events.size()>64:game.damage_events.pop_front()
 	if OS.get_cmdline_user_args().has("--damage-debug"):print("DAMAGE ",JSON.stringify(last_damage))
+
+func mobility_factor() -> float:
+	return clampf(1-maxf(float(region_injuries.get("left_leg",0)),float(region_injuries.get("right_leg",0)))*.5,.55,1)
+
+func restore_regions(value: Variant) -> void:
+	region_injuries.clear()
+	if not value is Dictionary or health>=max_health:return
+	for region: Variant in value:
+		if not region is String or not NPCHitRegion.rules().sidearm.regions.has(region):continue
+		var severity: Variant=value[region]
+		if (severity is int or severity is float) and is_finite(float(severity)) and severity>=0 and severity<=1:region_injuries[region]=float(severity)

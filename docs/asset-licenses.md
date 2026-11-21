@@ -63,3 +63,9 @@ Eighteen vehicle/road/fictional-sidearm WAVs are original mathematical synthesis
 ## Veyra IV combat effects
 
 Regional hit volumes, fictional damage data, the runtime-generated irregular stain alpha mask, ballistic droplet meshes and developer inspector are original project-authored code/geometry. No new third-party image, recording or model was imported. Existing character, vehicle and audio licenses remain as credited above. Effects approximate restrained liquid-looking droplets; they do not use a general fluid solver.
+
+## Veyra IV police and justice prototype
+
+The handset, station shell, curved reception joinery, furniture, holding bars and editable Blender sources are original project-authored assets from `art/build_police_kit.py`, released CC0-1.0. The station reuses the existing credited Poly Haven concrete maps. Exact model hashes are in `assets/licenses/veyra4-police-kit-provenance.json`. These are prototype assets, not final realism acceptance.
+
+Call-connected, radio-chirp and short patrol-siren WAVs are original deterministic mathematical synthesis, CC0-1.0, with hashes in `veyra4-law-audio-provenance.json`. Three original fictional officer lines use the already installed Kokoro Apache-2.0 model and kokoro-onnx MIT toolchain with the generic `am_fenrir` preset. `veyra4-police-voices-provenance.json` records texts, model/preset provenance and output hashes. No real-person voice cloning, new third-party downloads or replacement of earlier audio. The initial justice increment includes these authored voice resources; spoken officer dialogue integration is a subsequent task. Subjective listening has not been performed.

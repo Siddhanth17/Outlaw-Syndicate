@@ -164,7 +164,7 @@ func abstract_step(actor: CityNPC, delta: float) -> void:
 	if not paths.has(id) or paths[id].period!=actor.schedule_period or paths[id].route_index!=actor.route_index:
 		paths[id]={"period":actor.schedule_period,"route_index":actor.route_index,"points":game.navigation.path(actor.position,actor.route[actor.route_index]),"index":0}
 	var data: Dictionary=paths[id]
-	var travel: float=float(actor.profile.pace)*delta
+	var travel: float=float(actor.profile.pace)*actor.mobility_factor()*delta
 	while travel>0 and data.index<data.points.size():
 		var target: Vector3=data.points[data.index]
 		var distance: float=actor.position.distance_to(target)

@@ -133,7 +133,7 @@ func _physics_process(delta: float) -> void:
 	contact_clock += delta
 	for contact: Dictionary in pending_npc_contacts:
 		var actor: Object=contact.actor.get_ref()
-		if is_instance_valid(actor): actor.receive_vehicle_contact(contact.speed,contact.direction,contact.point)
+		if is_instance_valid(actor): actor.receive_vehicle_contact(contact.speed,contact.direction,contact.point,"player" if occupied else name)
 	pending_npc_contacts.clear()
 	for hit: Dictionary in pending_contacts:
 		if OS.get_cmdline_user_args().has("--trace-physics"): print("CRASH_EVENT ",hit," at ",position," prior ",last_velocity)

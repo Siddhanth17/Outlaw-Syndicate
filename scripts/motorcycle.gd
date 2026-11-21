@@ -188,5 +188,5 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 			var normal:=state.get_contact_local_normal(i)
 			var closing: float=-(linear_velocity-actor.velocity).dot(normal)
 			if closing>1.5:
-				actor.call_deferred("receive_vehicle_contact",closing,-normal,state.get_contact_local_position(i))
+				actor.call_deferred("receive_vehicle_contact",closing,-normal,state.get_contact_local_position(i),"player" if is_instance_valid(rider) and rider.riding_bike else name)
 				contact_cooldown=0.9

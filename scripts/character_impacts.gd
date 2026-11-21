@@ -13,6 +13,8 @@ var stain_age: Array[float]=[]
 var stain_cursor: int=0
 var collision_contacts: int=0
 
+var simulation_us: int=0
+
 func _ready() -> void:
 	var texture:=GradientTexture2D.new()
 	var gradient:=Gradient.new()
@@ -98,6 +100,11 @@ func hit(at: Vector3, direction: Vector3, severity: float) -> void:
 		drops[slot]={"p":at,"v":velocity,"life":.85}
 
 func _physics_process(delta: float) -> void:
+	var began: int=Time.get_ticks_usec()
+	_simulate_impacts(delta)
+	simulation_us=Time.get_ticks_usec()-began
+
+func _simulate_impacts(delta: float) -> void:
 	if get_parent().paused:return
 	for i: int in range(drops.size()):
 		var drop: Dictionary=drops[i]

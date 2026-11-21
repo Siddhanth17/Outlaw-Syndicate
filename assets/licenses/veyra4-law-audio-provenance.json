@@ -1,0 +1,22 @@
+{
+  "license": "CC0-1.0",
+  "source": "Original deterministic NumPy sine synthesis in art/build_police_audio.py; no sampled recordings or cloned voices",
+  "sample_rate": 44100,
+  "files": {
+    "call_connected": {
+      "sha256": "2cbc58f227091089b134545da3e653fe77334398efb2faa562f1dc59dd155743",
+      "seconds": 0.32,
+      "peak": 0.3099354204477313
+    },
+    "radio_chirp": {
+      "sha256": "3cb652cb461834dd4f4ebf94a54ce8fff9f36ad6377bc80b7f5e0a6b58377d9c",
+      "seconds": 0.24,
+      "peak": 0.3099354204477313
+    },
+    "patrol_siren": {
+      "sha256": "71aecd0b61c318ae77239fdae080f1127fccabbbe2308bfedb993f2426bbf17d",
+      "seconds": 2.0,
+      "peak": 0.3099356607335035
+    }
+  }
+}

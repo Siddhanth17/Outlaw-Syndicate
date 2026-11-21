@@ -1,0 +1,9 @@
+{
+  "license": "CC0-1.0",
+  "source": "Original handset, curved reception desk, office furniture and station geometry authored in art/build_police_kit.py; editable Blender sources retained. Station plaster reuses existing credited Poly Haven concrete maps under CC0. No reference photos, proprietary logos or downloaded models. Prototype art.",
+  "files": {
+    "assets/props/veyra_handset.glb": "eab6b7fe4541dc21665c7e983a5b1a288452347f24c7d2284f31aca50c01e90a",
+    "assets/environment/veyra_station_shell.glb": "81cd11317ecbe107cdbe690fb5dfae4577b51adc1561b953c865a81180cffdd9",
+    "assets/environment/veyra_station_equipment.glb": "2a2357acfedcd1a120bd23fa105e7b4480ac6ebcece3c51637c59194b463e8d0"
+  }
+}
