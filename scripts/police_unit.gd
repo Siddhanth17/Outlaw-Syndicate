@@ -30,6 +30,10 @@ var siren_clock: float=-12
 var resume_pursuit: bool=false
 var boarding_from:=Vector3.ZERO
 var flash: OmniLight3D
+var command_voice: AudioStreamPlayer3D
+var command_lines: Dictionary={}
+var command_history: Array[String]=[]
+var command_at_car: bool=false
 
 var simulation_us: int=0
 
@@ -42,6 +46,8 @@ func _ready() -> void:
 		var material:=StandardMaterial3D.new();material.albedo_color=Color(.035,.12,.7);material.emission_enabled=true;material.emission=Color(.05,.15,1);material.emission_energy_multiplier=2
 		lamp.material_override=material;car.add_child(lamp);lamp.position=Vector3(x,.8,0);lamp.hide();lights.append(lamp)
 	siren=AudioStreamPlayer3D.new();siren.bus="Vehicles";siren.stream=load("res://assets/audio/law/patrol_siren.wav");siren.volume_db=-24;siren.max_distance=75;car.add_child(siren)
+	command_lines=JSON.parse_string(FileAccess.get_file_as_string("res://data/police_voices.json"))
+	command_voice=AudioStreamPlayer3D.new();command_voice.bus="Dialogue";command_voice.volume_db=-12;command_voice.max_distance=40;add_child(command_voice)
 	for side: float in [-1,1]:
 		var badge:=Label3D.new();badge.text="VEYRA\nPOLICE";badge.font_size=48;badge.pixel_size=.002;badge.modulate=Color(.85,.92,1);car.add_child(badge);badge.position=Vector3(side*.97,-.08,.35);badge.rotation.y=side*PI/2
 	flash=OmniLight3D.new();flash.light_color=Color(.08,.2,1);flash.light_energy=2;flash.omni_range=8;flash.shadow_enabled=false;flash.distance_fade_enabled=true;flash.distance_fade_begin=35;flash.distance_fade_length=20;car.add_child(flash);flash.position=Vector3(0,.85,0);flash.hide()
@@ -83,6 +89,7 @@ func next_for_goal() -> int:
 
 func assign(id: int,at: Vector3) -> bool:
 	if duty!="patrol" or not officer or officer.health<=0:return false
+	var new_assignment: bool=case_id!=id
 	case_id=id;destination_node=0
 	for j: int in range(network.nodes.size()):
 		if at.distance_squared_to(network.nodes[j])<at.distance_squared_to(network.nodes[destination_node]):destination_node=j
@@ -90,6 +97,18 @@ func assign(id: int,at: Vector3) -> bool:
 	if index==0 and not admitted:
 		var next: int=next_for_goal()
 		if next>=0:c=next;points=network.movement(a,b,c)
+	if new_assignment:command("dispatch_ack")
+	return true
+
+func command(key: String) -> bool:
+	if not command_lines.has(key) or not officer or officer.health<=0:return false
+	command_at_car=key=="dispatch_ack"
+	command_voice.global_position=car.global_position if command_at_car else officer.global_position+Vector3.UP*1.4
+	command_voice.stream=load(command_lines[key].audio)
+	if DisplayServer.get_name()!="headless":command_voice.play()
+	command_history.append(key)
+	if command_history.size()>16:command_history.pop_front()
+	game._say("Officer Hale",command_lines[key].line+(" [E] Respond to officer." if key=="officer_stop" else ""))
 	return true
 
 func drive(delta: float) -> void:
@@ -164,6 +183,8 @@ func _physics_process(delta: float) -> void:
 
 func _simulate_unit(delta: float) -> void:
 	car.freeze=game.paused or game.cinematic_active
+	command_voice.stream_paused=car.freeze
+	command_voice.global_position=car.global_position if command_at_car else officer.global_position+Vector3.UP*1.4
 	if car.freeze:
 		if siren:siren.stop()
 		return
@@ -175,7 +196,7 @@ func _simulate_unit(delta: float) -> void:
 	for i: int in range(lights.size()):lights[i].visible=duty in ["respond","pursuit","investigate","approach","arrest_offer"] and response_tier()>=3 and int(clock*5)%2==i
 	flash.visible=duty in ["respond","pursuit","investigate","approach","arrest_offer"] and response_tier()>=3 and int(clock*5)%2==0
 	travel_meters+=car.position.distance_to(previous);previous=car.position
-	if not officer or officer.health<=0:duty="officer_down";car.ai_throttle=0;car.ai_brake=50;return
+	if not officer or officer.health<=0:duty="officer_down";car.ai_throttle=0;car.ai_brake=50;command_voice.stop();return
 	if duty in ["patrol","respond","pursuit"]:
 		seat_officer()
 		if duty=="pursuit":
@@ -216,7 +237,7 @@ func _simulate_unit(delta: float) -> void:
 				if (game.player.driving or game.player.riding_bike) and response_tier()>=3:
 					resume_pursuit=true;duty="returning";walk_to(exit_point);return
 				if officer.position.distance_to(last_seen)<3.2 and not game.player.driving and not game.player.riding_bike:
-					if duty!="arrest_offer":game._say("Veyra police","Stop. [E] Respond to the officer.")
+					if duty!="arrest_offer":command("officer_stop")
 					duty="arrest_offer";walk_to(officer.position)
 				else:duty="approach";walk_to(last_seen)
 			elif duty in ["arrest_offer","approach"]:duty="investigate";walk_to(last_seen)
@@ -250,6 +271,8 @@ func reset_unit() -> void:
 	officer_target=Vector3.INF
 	clock=0;siren_clock=-12
 	if siren:siren.stop()
+	if command_voice:command_voice.stop()
+	command_history.clear()
 	car.reset_pose(Transform3D(Basis.IDENTITY,Vector3(3,.9,108)));previous=car.position
 	if officer:officer.daily_destinations.clear();seat_officer()
 

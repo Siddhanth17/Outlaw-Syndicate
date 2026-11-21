@@ -315,7 +315,7 @@ func begin_arrest(id: int) -> bool:
 	if case.is_empty() or not case.get("identified",false):return false
 	game.phone.close();stage="arresting";booked_case=id;booking_timer=1.5
 	case.arrests=int(case.get("arrests",0))+1
-	lock_player();return true
+	lock_player();unit.command("comply");return true
 
 func justice_tick(delta: float) -> void:
 	if stage=="free":return

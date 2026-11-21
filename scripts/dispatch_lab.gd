@@ -67,11 +67,18 @@ func run() -> void:
 	await frames(90)
 	check(game.law.reported_count()>0 and not game.law.cases.is_empty(),"completed posed calls create persistent reports and bounded dispatch cases")
 	check(unit.case_id>0 and unit.duty=="respond","an available physical patrol receives the confirmed case")
+	check(unit.command_history.has("dispatch_ack") and (DisplayServer.get_name()=="headless" or unit.command_voice.playing),"confirmed dispatch starts its authored spatial radio acknowledgement")
+	game._set_pause(true);await frames(2)
+	if DisplayServer.get_name()=="headless":print("NOT RUN physical officer audio pause in headless mode; streams are intentionally not started")
+	else:check(unit.command_voice.stream_paused,"pause suspends the active officer command stream")
+	game._set_pause(false);await frames(2)
+	if DisplayServer.get_name()!="headless":check(not unit.command_voice.stream_paused,"resume restores the officer command stream")
 	var initial: Vector3=unit.car.position
 	game._save()
 	var saved: Dictionary=unit.snapshot()
 	game._load()
 	check(unit.case_id==int(saved.case_id) and unit.car.position.distance_to(LivingWorld.point(saved.car.position))<.2,"save/load retains the responding unit and actual vehicle transform")
+	check(unit.command_history.is_empty() and not unit.command_voice.playing,"loading a checkpoint does not replay an old dispatch command")
 	var observed: Array=[]
 	for i: int in range(18000):
 		if observer:
@@ -88,6 +95,7 @@ func run() -> void:
 	check(unit.car.integrity>85 and unit.car.position.y>0,"responding patrol keeps valid road contact and vehicle condition")
 	check(unit.duty=="arrest_offer" and unit.officer.position.distance_to(game.player.position)<3.3,"officer exits, navigates, identifies the reported suspect and approaches for an arrest offer")
 	check(game.law.cases[0].identified,"suspect identification is recorded from actual nearby officer sight")
+	check(unit.command_history.has("officer_stop") and (DisplayServer.get_name()=="headless" or unit.command_voice.playing),"the actual first officer stop plays its authored spoken command")
 	await capture("police-arrival")
 	var case_id: int=unit.case_id
 	if OS.get_cmdline_user_args().has("--pursuit-lab"):
@@ -100,6 +108,7 @@ func run() -> void:
 			if unit.duty=="pursuit":break
 			await frames(1)
 		check(unit.duty=="pursuit","identified vehicle flight makes the officer physically return and board for pursuit")
+		check(not unit.command_history.has("dispatch_ack"),"boarding for the same pursuit does not replay a new-dispatch acknowledgement")
 		var pursuit_start: Vector3=unit.car.position
 		for i: int in range(600):
 			if game.car.linear_velocity.length()<6:Input.action_press("forward")
@@ -128,6 +137,7 @@ func run() -> void:
 	var ammunition: int=game.ammunition
 	check(game.law.begin_arrest(case_id),"compliance starts one real proximity-checked arrest")
 	check(not game.law.begin_arrest(case_id),"an active arrest rejects duplicate compliance")
+	check(unit.command_history.count("comply")==1 and (DisplayServer.get_name()=="headless" or unit.command_voice.playing),"accepted compliance plays one command without duplicate arrest playback")
 	await frames(30)
 	game._save();var saved_restraint_time: float=game.law.booking_timer
 	game.law.booking_timer=9;game._load()
