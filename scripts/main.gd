@@ -1,6 +1,13 @@
 extends Node3D
 
 const SAVE_PATH: String = "user://veyra-save.json"
+var profile_spans: Array[Dictionary]=[]
+func profile_step(label: String, started: int) -> int:
+	var ended: int=Time.get_ticks_usec()
+	if OS.get_cmdline_user_args().has("--law-benchmark"):
+		profile_spans.append({"name":label,"at_ms":ended/1000.0,"duration_ms":(ended-started)/1000.0})
+		if profile_spans.size()>512:profile_spans.pop_front()
+	return ended
 var vehicle_transition: VehicleTransition
 var character_impacts: CharacterImpacts
 var events: CityEvents
@@ -209,6 +216,8 @@ func _ready() -> void:
 		validation.game=self
 		add_child(validation)
 		validation.call_deferred("run")
+	if OS.get_cmdline_user_args().has("--verify-transitions"):
+		var validation:=TransitionValidation.new();validation.game=self;add_child(validation);validation.call_deferred("run")
 	if OS.get_cmdline_user_args().has("--verify-awareness"):
 		var validation:=LawAwarenessValidation.new();validation.game=self;add_child(validation);validation.call_deferred("run")
 	if OS.get_cmdline_user_args().has("--dispatch-lab"):
@@ -809,6 +818,11 @@ func _load_settings() -> void:
 	player.movement_audio.volume_db=movement_volume
 
 func _save() -> void:
+	var began: int=Time.get_ticks_usec()
+	_save_impl()
+	profile_step("save.total",began)
+
+func _save_impl() -> void:
 	if vehicle_transition.active or bike.mounting:
 		_say("Checkpoint","Finish the vehicle interaction before saving.")
 		return
@@ -852,12 +866,20 @@ func _save() -> void:
 		_say("Save", "Checkpoint replacement failed; previous save retained.")
 
 func _load() -> void:
+	var began: int=Time.get_ticks_usec()
+	_load_impl()
+	profile_step("load.total",began)
+
+func _load_impl() -> void:
+	var step: int=Time.get_ticks_usec()
 	character_impacts.reset()
 	if dialogue_director.active: dialogue_director.stop()
+	step=profile_step("load.effects_dialogue",step)
 	for path: String in [SAVE_PATH, SAVE_PATH + ".bak"]:
 		if not FileAccess.file_exists(path): continue
 		var parser := JSON.new()
 		if parser.parse(FileAccess.get_file_as_string(path)) != OK: continue
+		step=profile_step("load.read_parse",step)
 		var data: Variant = parser.data
 		if not data is Dictionary: continue
 		var valid: bool = true
@@ -870,6 +892,7 @@ func _load() -> void:
 				if not (component is float or component is int) or not is_finite(float(component)) or absf(float(component)) > 10000:
 					valid = false
 		if not valid or not living.validate(data.get("living_world")) or not residence.validate(data.get("residence")) or not traffic.validate(data.get("traffic")) or not law.validate(data.get("city_law")) or not memory.restore(data): continue
+		step=profile_step("load.validate",step)
 		phone.close()
 		var world: Dictionary=data.get("open_world",{}) if data.get("open_world",{}) is Dictionary else {}
 		story_active=bool(world.get("story_active",true))
@@ -905,6 +928,7 @@ func _load() -> void:
 		ammunition = clampi(int(data.get("ammunition", 12)), 0, 12)
 		reserve = maxi(0, int(data.get("reserve", 72)))
 		faction_rep = int(data.get("faction_rep", 0))
+		step=profile_step("load.player_vehicle",step)
 		var outcomes: Dictionary=data.get("npc_outcomes",{}) if data.get("npc_outcomes",{}) is Dictionary else {}
 		for citizen: CityNPC in people:
 			var value: Variant=outcomes.get(citizen.npc_id,70)
@@ -918,17 +942,23 @@ func _load() -> void:
 			if value is Dictionary:
 				dante.injuries.restore(value.get("injuries",[]) if value.get("injuries",[]) is Array else [])
 				dante.restore_regions(value.get("regional_injuries",{}))
+		step=profile_step("load.npc_outcomes",step)
 		reload_time = 0
 		harbor.consequence(memory.stage >= 3)
 		_clear_guards()
 		if memory.stage == 3: _spawn_guards()
 		marker.show()
 		_say("Checkpoint", "Restored. The city remembers.")
+		step=profile_step("load.mission",step)
 		living.restore(data.get("living_world"))
+		step=profile_step("load.living",step)
 		residence.restore(data.get("residence"))
 		residence.repair_saved_location()
+		step=profile_step("load.residence",step)
 		traffic.restore(data.get("traffic"))
+		step=profile_step("load.traffic",step)
 		law.restore(data.get("city_law"))
+		profile_step("load.law",step)
 		return
 	_say("Checkpoint", "No valid save or backup found.")
 

@@ -16,6 +16,7 @@ var glass: Array[Dictionary] = []
 var debris: Array[RigidBody3D] = []
 var max_displacement: float = 0
 var rebuild_count: int = 0
+var geometry_rebuild_count: int = 0
 
 func setup(body: Node3D, owner_car: RigidBody3D) -> void:
 	car = owner_car
@@ -81,31 +82,37 @@ func _rebuild(effects: bool) -> void:
 	for part: Dictionary in parts:
 		var node: MeshInstance3D = part.node
 		var rest: Mesh = part.rest
-		var result := ArrayMesh.new()
-		for index: int in range(rest.get_surface_count()):
-			var arrays: Array = rest.surface_get_arrays(index).duplicate(true)
-			var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
-			var to_car: Transform3D = car.global_transform.affine_inverse() * node.global_transform
-			for i: int in range(vertices.size()):
-				var original: Vector3 = to_car * vertices[i]
-				var displacement := Vector3.ZERO
-				for hit: Dictionary in hits:
-					var p := Vector3(hit.p[0], hit.p[1], hit.p[2])
-					var n := Vector3(hit.n[0], hit.n[1], hit.n[2]).normalized()
-					var falloff: float = maxf(0, 1 - original.distance_to(p) / 1.05)
-					displacement += n * float(hit.strength) * 0.38 * falloff * falloff
-				displacement = displacement.limit_length(0.40)
-				max_displacement = maxf(max_displacement, displacement.length())
-				vertices[i] += to_car.basis.inverse() * displacement
-			arrays[Mesh.ARRAY_VERTEX] = vertices
-			var source := ArrayMesh.new()
-			source.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-			var surface := SurfaceTool.new()
-			surface.create_from(source, 0)
-			surface.generate_normals()
-			surface.commit(result)
-			result.surface_set_material(index, rest.surface_get_material(index))
-		node.mesh = result
+		if hits.is_empty():
+			# Pristine/repair restores share immutable authored geometry. Do not
+			# duplicate vertices, regenerate normals or upload identical meshes.
+			node.mesh=rest
+		else:
+			geometry_rebuild_count+=1
+			var result := ArrayMesh.new()
+			for index: int in range(rest.get_surface_count()):
+				var arrays: Array = rest.surface_get_arrays(index).duplicate(true)
+				var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+				var to_car: Transform3D = car.global_transform.affine_inverse() * node.global_transform
+				for i: int in range(vertices.size()):
+					var original: Vector3 = to_car * vertices[i]
+					var displacement := Vector3.ZERO
+					for hit: Dictionary in hits:
+						var p := Vector3(hit.p[0], hit.p[1], hit.p[2])
+						var n := Vector3(hit.n[0], hit.n[1], hit.n[2]).normalized()
+						var falloff: float = maxf(0, 1 - original.distance_to(p) / 1.05)
+						displacement += n * float(hit.strength) * 0.38 * falloff * falloff
+					displacement = displacement.limit_length(0.40)
+					max_displacement = maxf(max_displacement, displacement.length())
+					vertices[i] += to_car.basis.inverse() * displacement
+				arrays[Mesh.ARRAY_VERTEX] = vertices
+				var source := ArrayMesh.new()
+				source.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+				var surface := SurfaceTool.new()
+				surface.create_from(source, 0)
+				surface.generate_normals()
+				surface.commit(result)
+				result.surface_set_material(index, rest.surface_get_material(index))
+			node.mesh = result
 		if part.paint:
 			var points := PackedVector4Array()
 			for i: int in range(12):
@@ -312,6 +319,7 @@ func bullet(point: Vector3, incoming: Vector3, power: float, kind: String, index
 
 func _render_marks() -> void:
 	if DisplayServer.get_name()=="headless": return
+	if mark_pool.is_empty() and bullet_marks.is_empty():return
 	if mark_pool.is_empty():
 		var image:=Image.create(64,64,false,Image.FORMAT_RGBA8)
 		for x: int in range(64):

@@ -123,6 +123,11 @@ func paint(at: Vector3, size: Vector2, color: Color) -> void:
 	add_child(mesh)
 
 func refresh(all_now: bool=false) -> void:
+	var began: int=Time.get_ticks_usec()
+	_refresh_impl(all_now)
+	game.profile_step("stream.sector",began)
+
+func _refresh_impl(all_now: bool=false) -> void:
 	var at: Vector3=game.player.position
 	for i: int in range(centers.size()):
 		var distance: float=Vector2(at.x-centers[i].x,at.z-centers[i].z).length()
